@@ -1,0 +1,121 @@
+{
+  "case_id": "SC-04",
+  "title": "Osteveda dual PC + AE (dual routing)",
+  "difficulty_tier": 4,
+  "channel": "voice",
+  "therapeutic_area": "bone health",
+  "inquiry_category": "other",
+  "inquirer_contact": {
+    "name": "Riley Nguyen",
+    "background": "patient",
+    "phone": "(555) 0177-3050",
+    "address": "Tacoma, WA"
+  },
+  "products": [
+    {
+      "name": "Osteveda",
+      "is_fictional": true,
+      "srl_id": "SRL-OST-HYPOCAL"
+    }
+  ],
+  "requester": {
+    "type": "patient",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Perioral tingling and numbness (possible hypocalcemia), onset hours after Osteveda injection.",
+    "pc_present": true,
+    "pc_description": "Prefilled syringe solution appeared cloudy and needle was bent; product used anyway.",
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": true,
+    "correct_routes": [
+      "pv",
+      "quality"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Refer urgently to HCP/ER for hypocalcemia symptoms; MI does not manage clinically."
+  },
+  "correct_srl": "SRL-OST-HYPOCAL",
+  "decoy_srl_ids": [
+    "SRL-OST-ONJ",
+    "SRL-OST-PREG",
+    "SRL-CDZ-BLEED"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "patient_contact",
+      "product",
+      "inquiry_summary",
+      "ae_description",
+      "ae_onset",
+      "pc_description",
+      "lot_number",
+      "expiration_date",
+      "ndc",
+      "suspect_product_availability",
+      "retrieval_kit_offered",
+      "concomitant_meds",
+      "medical_history",
+      "srl_cited",
+      "response_route",
+      "dual_routing_flags"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Persona volunteers up front the product complaint: cloudy solution and bent needle on the prefilled syringe.",
+      "detail_withheld": "lot number, expiration date, NDC, suspect product availability",
+      "surfaces_when": "trainee asks for lot/expiry/NDC and whether the product is still available",
+      "volunteers_cue": true
+    },
+    {
+      "cue": "Persona volunteers offhand in beat 2: \"and honestly I've felt a bit off since.\"",
+      "detail_withheld": "perioral tingling and numbness, onset hours after injection",
+      "surfaces_when": "trainee catches the volunteered 'felt off since' cue and clarifies it",
+      "volunteers_cue": true
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Handles the PC, lets the 'felt off since' cue pass without clarifying",
+        "expected_critical_fail": [
+          "S2.1"
+        ]
+      },
+      {
+        "description": "Identifies both AE and PC but routes to only one department",
+        "expected_critical_fail": [
+          "S2.3",
+          "S3.3"
+        ]
+      },
+      {
+        "description": "Doesn't capture lot/expiry",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Doesn't offer retrieval kit",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "case_id": "SC-05",
+  "title": "Neurovance hostile caller / legal threat (escalation)",
+  "difficulty_tier": 5,
+  "channel": "voice",
+  "therapeutic_area": "neurology",
+  "inquiry_category": "safety",
+  "inquirer_contact": {
+    "name": "Sam Rivera",
+    "background": "caregiver (adult child of pt. Lucia Rivera)",
+    "phone": "(555) 0158-6642",
+    "address": "27 Halewood Ct, Providence, RI 02906"
+  },
+  "products": [
+    {
+      "name": "Neurovance",
+      "is_fictional": true,
+      "srl_id": "SRL-NEU-RASH"
+    }
+  ],
+  "requester": {
+    "type": "caregiver",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Blistering rash with mouth sores, hospitalized, possible SJS; onset ~2 weeks after starting Neurovance. Serious AE.",
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "legal",
+      "media"
+    ],
+    "dual_routing_required": true,
+    "correct_routes": [
+      "pv",
+      "legal",
+      "communications",
+      "supervisor"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Not applicable (no off-label ask); must not confirm causation, must not advise stopping/continuing the drug, must not admit fault — refer to treating physician/ER."
+  },
+  "correct_srl": "SRL-NEU-RASH",
+  "decoy_srl_ids": [
+    "SRL-NEU-TITR",
+    "SRL-DRM-APPLY",
+    "SRL-NEU-PREG"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "caregiver_contact",
+      "patient_identifier",
+      "product",
+      "inquiry_summary",
+      "ae_description",
+      "ae_onset",
+      "seriousness_flag",
+      "special_situation_flags",
+      "escalation_notes",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Caller opens hot with the legal/media threat: \"Your drug put my mother in the hospital with a horrible rash. I'm calling a lawyer and the news.\"",
+      "detail_withheld": "blistering rash, mucosal involvement, hospitalization, onset ~2 weeks after starting Neurovance",
+      "surfaces_when": "trainee de-escalates with empathy and control (acknowledges feelings, avoids fault/causation language, gives concrete next steps), after which the caller provides the clinical details",
+      "volunteers_cue": true
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s2",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Admits the drug caused the rash / apologizes for a product defect",
+        "expected_critical_fail": [
+          "S5.1",
+          "S4.2"
+        ]
+      },
+      {
+        "description": "Doesn't flag legal/media special situations",
+        "expected_critical_fail": [
+          "S5.2"
+        ]
+      },
+      {
+        "description": "De-escalation fails (cold/defensive)",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Routes AE to PV but omits Legal/Communications",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

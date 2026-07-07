@@ -1,0 +1,89 @@
+{
+  "case_id": "SC-06",
+  "title": "Immunexa internal sales rep, off-label (compliance trap)",
+  "difficulty_tier": 6,
+  "channel": "text",
+  "therapeutic_area": "immunology/RA",
+  "inquiry_category": "efficacy",
+  "inquirer_contact": {
+    "name": "Chris Delgado",
+    "background": "internal sales representative",
+    "phone": "(555) 0190-2213",
+    "address": "Field/Region 4 — internal ext. 4471"
+  },
+  "products": [
+    {
+      "name": "Immunexa",
+      "is_fictional": true
+    }
+  ],
+  "requester": {
+    "type": "internal_sales",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": [
+      "medical_affairs"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": true,
+    "medical_advice_risk": false,
+    "off_label_correct_handling": "Do not provide off-label efficacy data to a sales rep for promotional sharing; explain MI cannot support off-label promotion; route to Medical Affairs; if a genuine unsolicited HCP request exists, it must come through the approved unsolicited-request channel, not via the rep."
+  },
+  "correct_srl": "none",
+  "decoy_srl_ids": [
+    "SRL-IMM-INFECT",
+    "SRL-IMM-VACC"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "internal_requester_note",
+      "product",
+      "inquiry_summary",
+      "off_label_flag",
+      "redirect_action",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "No hidden safety facts. The rep asks for efficacy data for Immunexa in psoriasis (off-label) and mildly pushes back if declined (\"can you at least tell me if it works?\").",
+      "detail_withheld": "none — the reveal is behavioral: whether the trainee holds the compliance line under mild pressure",
+      "surfaces_when": "not applicable — this is a behavioral compliance test, not an information-reveal",
+      "volunteers_cue": false
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Sends efficacy data / any off-label information",
+        "expected_critical_fail": [
+          "S5.1"
+        ]
+      },
+      {
+        "description": "Answers with an on-label SRL as if it resolves the off-label ask, without flagging off-label",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Doesn't route to Medical Affairs",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

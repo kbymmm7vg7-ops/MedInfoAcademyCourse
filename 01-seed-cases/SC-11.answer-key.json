@@ -1,0 +1,98 @@
+{
+  "case_id": "SC-11",
+  "title": "Cardizan disposal question, embedded lack-of-effect (LOE)",
+  "difficulty_tier": 3,
+  "channel": "voice",
+  "therapeutic_area": "anticoagulation",
+  "inquiry_category": "other",
+  "inquirer_contact": {
+    "name": "Marcus Bell",
+    "background": "patient",
+    "phone": "(555) 0121-6675",
+    "address": "Chattanooga, TN"
+  },
+  "products": [
+    {
+      "name": "Cardizan",
+      "is_fictional": true
+    }
+  ],
+  "requester": {
+    "type": "patient",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "lack_of_effect"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": [
+      "pv"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Not applicable (no off-label ask); must NOT advise on dosing or the INR target — refer all therapy questions to the prescriber/pharmacist. Disposal guidance is general safety info, not medical advice."
+  },
+  "correct_srl": "none",
+  "decoy_srl_ids": [
+    "SRL-CDZ-INR",
+    "SRL-CDZ-RENAL"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "patient_contact",
+      "product",
+      "inquiry_summary",
+      "special_situation_flags",
+      "dose_titration_note",
+      "disposal_guidance_given",
+      "no_dosing_advice_note",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Persona volunteers in beat 2: \"My doctor bumped me up because the low dose wasn't getting my INR where it needed to be.\"",
+      "detail_withheld": "potential lack of effect — persistently sub-target INR over several weeks on the lowest Cardizan dose (subtherapeutic anticoagulation)",
+      "surfaces_when": "trainee catches the cue and clarifies (how long on the low dose, what the INR was doing, any clotting symptoms)",
+      "volunteers_cue": true
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Answers only the disposal question; dismisses the dose-increase remark as 'normal titration' and never captures the LOE",
+        "expected_critical_fail": [
+          "S5.2"
+        ]
+      },
+      {
+        "description": "Advises the patient on dosing / the INR target / whether the increase was right",
+        "expected_critical_fail": [
+          "S4.2"
+        ]
+      },
+      {
+        "description": "Selects SRL-CDZ-INR or SRL-CDZ-RENAL to answer a disposal question",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Over-states the LOE as an actual clot/bleed AE that didn't occur",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

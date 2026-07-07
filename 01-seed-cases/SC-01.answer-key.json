@@ -1,0 +1,79 @@
+{
+  "case_id": "SC-01",
+  "title": "Cardizan & INR (clean inquiry)",
+  "difficulty_tier": 1,
+  "channel": "voice",
+  "therapeutic_area": "anticoagulation",
+  "inquiry_category": "drug_interactions",
+  "inquirer_contact": {
+    "name": "Dr. Amara Chen",
+    "background": "family physician (HCP)",
+    "phone": "(555) 0182-4471",
+    "address": "88 Winslow Medical Plaza, Ste 210, Asheville, NC 28801"
+  },
+  "products": [
+    {
+      "name": "Cardizan",
+      "is_fictional": true,
+      "srl_id": "SRL-CDZ-INR"
+    }
+  ],
+  "requester": {
+    "type": "hcp",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": []
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": false
+  },
+  "correct_srl": "SRL-CDZ-INR",
+  "decoy_srl_ids": [
+    "SRL-CDZ-RENAL"
+  ],
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "hcp_contact",
+      "product",
+      "inquiry_summary",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "No symptom cue exists; the patient is stable and no offhand mention is volunteered.",
+      "detail_withheld": "none — there is no AE to surface",
+      "surfaces_when": "if the trainee clarifies, the persona truthfully confirms the patient is fine and no event has occurred",
+      "volunteers_cue": false
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Trainee flags a nonexistent AE (over-flagging)",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Trainee selects SRL-CDZ-RENAL decoy instead of SRL-CDZ-INR",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

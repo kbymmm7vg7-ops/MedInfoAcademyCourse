@@ -1,0 +1,91 @@
+{
+  "case_id": "SC-07",
+  "title": "Dermelia journalist inquiry (media edge case)",
+  "difficulty_tier": 6,
+  "channel": "voice",
+  "therapeutic_area": "dermatology",
+  "inquiry_category": "safety",
+  "inquirer_contact": {
+    "name": "Alex Reyes",
+    "background": "health journalist, The Meridian Health Desk",
+    "phone": "(555) 0166-7788",
+    "address": "1400 Press Row, Rm 12, Chicago, IL 60601"
+  },
+  "products": [
+    {
+      "name": "Dermelia",
+      "is_fictional": true
+    }
+  ],
+  "requester": {
+    "type": "journalist",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "media"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": [
+      "communications",
+      "supervisor"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": false
+  },
+  "correct_srl": "none",
+  "decoy_srl_ids": [
+    "SRL-DRM-MALIG",
+    "SRL-DRM-APPLY"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "journalist_contact",
+      "outlet",
+      "product",
+      "inquiry_summary",
+      "special_situation_flags",
+      "redirect_action",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Reporter opens asking MI to comment on Dermelia's cancer warning and presses for a quotable yes/no on causation.",
+      "detail_withheld": "none — the reveal is behavioral: whether the trainee avoids becoming an unauthorized spokesperson and avoids causation statements",
+      "surfaces_when": "not applicable — this is a behavioral compliance test, not an information-reveal",
+      "volunteers_cue": false
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Gives a substantive comment / confirms or denies causation",
+        "expected_critical_fail": [
+          "S5.2"
+        ]
+      },
+      {
+        "description": "Reads an SRL to the reporter as an official statement",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Doesn't capture outlet/contact or notify Communications",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

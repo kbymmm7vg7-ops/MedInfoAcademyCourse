@@ -1,0 +1,45 @@
+{
+  "case_id": "SC-03",
+  "title": "Pulmonara embedded AE",
+  "difficulty_tier": 3,
+  "channel": "voice",
+  "therapeutic_area": "respiratory",
+  "inquiry_category": "other",
+  "inquirer_contact": {
+    "name": "Pat Morgan",
+    "background": "caregiver (spouse of patient Dale Morgan)",
+    "phone": "(555) 0134-8827",
+    "address": "412 Larkspur Lane, Apt 3, Cedar Falls, IA 50613"
+  },
+  "products": [{ "name": "Pulmonara", "is_fictional": true, "srl_id": "SRL-PUL-CANDID" }],
+  "requester": { "type": "caregiver", "solicited": false },
+  "safety": {
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Tremor and palpitations, onset ~1 week after Pulmonara initiation, ongoing.",
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": ["none"],
+    "dual_routing_required": false,
+    "correct_routes": ["pv"]
+  },
+  "compliance": { "off_label_involved": false, "medical_advice_risk": true, "off_label_correct_handling": "Refer tremor management to prescriber; MI does not advise treatment." },
+  "correct_srl": "SRL-PUL-CANDID",
+  "decoy_srl_ids": ["SRL-PUL-ACUTE", "SRL-PUL-PEDS"],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": ["requester_type", "caregiver_contact", "patient_identifier", "product", "inquiry_summary", "ae_description", "ae_onset", "concomitant_meds", "medical_history", "hcp_info_and_consent", "srl_cited", "response_route"]
+  },
+  "reveal_rules": [
+    { "cue": "Persona volunteers offhand in beat 2: 'he's been a bit shaky lately, but that's probably the coffee.'", "detail_withheld": "tremor + palpitations, onset ~1 week after Pulmonara initiation, ongoing", "surfaces_when": "trainee catches the volunteered 'shaky' cue and clarifies it — asks the caller to expand on the shakiness (when it started, whether it came with anything else)", "volunteers_cue": true }
+  ],
+  "expected_outcome": {
+    "applicable_sections": ["s1", "s2", "s4", "s5"],
+    "gold_result": "pass",
+    "common_failures": [
+      { "description": "Lets the volunteered 'shaky' cue pass without clarifying; AE missed entirely", "expected_critical_fail": ["S2.1"] },
+      { "description": "Catches and clarifies the AE verbally but omits it from Safety tab", "expected_critical_fail": [] },
+      { "description": "Fails to capture consent to contact HCP", "expected_critical_fail": [] }
+    ]
+  }
+}

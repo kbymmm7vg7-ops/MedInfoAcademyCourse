@@ -1,0 +1,101 @@
+{
+  "case_id": "SC-08",
+  "title": "Dermelia embedded AE (volunteered cue, second therapeutic area)",
+  "difficulty_tier": 3,
+  "channel": "voice",
+  "therapeutic_area": "dermatology",
+  "inquiry_category": "other",
+  "inquirer_contact": {
+    "name": "Taylor Brooks",
+    "background": "patient",
+    "phone": "(555) 0129-5514",
+    "address": "Boise, ID"
+  },
+  "products": [
+    {
+      "name": "Dermelia",
+      "is_fictional": true,
+      "srl_id": "SRL-DRM-APPLY"
+    }
+  ],
+  "requester": {
+    "type": "patient",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Persistent application-site burning and a spreading rash beyond the treated area, ~5 days, worsening.",
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": [
+      "pv"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Refer to prescriber for the worsening rash; advise stopping only per prescriber — MI does not direct treatment."
+  },
+  "correct_srl": "SRL-DRM-APPLY",
+  "decoy_srl_ids": [
+    "SRL-DRM-MALIG",
+    "SRL-GAS-LONG"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "patient_contact",
+      "product",
+      "inquiry_summary",
+      "ae_description",
+      "ae_onset",
+      "ae_worsening",
+      "concomitant_meds",
+      "medical_history",
+      "hcp_referral_note",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Persona volunteers offhand in beat 2: \"It stings a bit when I put it on, but creams do that, right?\"",
+      "detail_withheld": "persistent application-site burning + spreading rash, worsening over ~5 days",
+      "surfaces_when": "trainee catches the volunteered 'stings' cue and clarifies it",
+      "volunteers_cue": true
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s2",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Lets the 'stings' cue pass without clarifying; AE missed entirely",
+        "expected_critical_fail": [
+          "S2.1"
+        ]
+      },
+      {
+        "description": "Advises patient to stop the drug on MI's own authority",
+        "expected_critical_fail": [
+          "S4.2"
+        ]
+      },
+      {
+        "description": "AE identified but not documented",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

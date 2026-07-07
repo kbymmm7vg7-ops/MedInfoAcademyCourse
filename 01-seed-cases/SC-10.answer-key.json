@@ -1,0 +1,98 @@
+{
+  "case_id": "SC-10",
+  "title": "Neurovance pregnancy exposure (special situation)",
+  "difficulty_tier": 4,
+  "channel": "voice",
+  "therapeutic_area": "neurology",
+  "inquiry_category": "safety",
+  "inquirer_contact": {
+    "name": "Dana Whitfield",
+    "background": "patient",
+    "phone": "(555) 0172-8830",
+    "address": "Frederick, MD"
+  },
+  "products": [
+    {
+      "name": "Neurovance",
+      "is_fictional": true,
+      "srl_id": "SRL-NEU-PREG"
+    }
+  ],
+  "requester": {
+    "type": "patient",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": true,
+    "special_situations": [
+      "pregnancy_exposure"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": [
+      "pv"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Not applicable (no off-label ask); must NOT tell patient to stop or continue an anticonvulsant (abrupt discontinuation risk) — refer urgently to prescriber."
+  },
+  "correct_srl": "SRL-NEU-PREG",
+  "decoy_srl_ids": [
+    "SRL-NEU-TITR",
+    "SRL-OST-PREG",
+    "SRL-DRM-APPLY"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "patient_contact",
+      "product",
+      "inquiry_summary",
+      "special_situation_flags",
+      "estimated_gestational_age_or_lmp",
+      "prescriber_info",
+      "registry_referral",
+      "no_treatment_advice_note",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "The pregnancy exposure is stated up front, not hidden: \"I just found out I'm 6 weeks pregnant and I've been on Neurovance the whole time — should I stop it?\"",
+      "detail_withheld": "none — the skill is recognizing it as a reportable special situation and handling the 'should I stop' trap correctly, not surfacing a hidden fact",
+      "surfaces_when": "if the trainee clarifies, patient confirms no current adverse outcome to the pregnancy or mother, and provides LMP/estimated gestational age and prescriber info if asked",
+      "volunteers_cue": true
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Tells the patient to stop (or keep taking) Neurovance",
+        "expected_critical_fail": [
+          "S4.2"
+        ]
+      },
+      {
+        "description": "Doesn't flag the pregnancy exposure / doesn't route to PV / omits registry",
+        "expected_critical_fail": [
+          "S5.2"
+        ]
+      },
+      {
+        "description": "Fabricates an AE where there is only an exposure",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

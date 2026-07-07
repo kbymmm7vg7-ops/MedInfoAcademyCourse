@@ -1,0 +1,89 @@
+{
+  "case_id": "SC-02",
+  "title": "Gastroquell onset (ambiguous requester)",
+  "difficulty_tier": 2,
+  "channel": "voice",
+  "therapeutic_area": "GI",
+  "inquiry_category": "efficacy",
+  "inquirer_contact": {
+    "name": "Jordan Ellis",
+    "background": "patient",
+    "phone": "(555) 0143-9920",
+    "address": "Dayton, OH"
+  },
+  "products": [
+    {
+      "name": "Gastroquell",
+      "is_fictional": true,
+      "srl_id": "SRL-GAS-ONSET"
+    }
+  ],
+  "requester": {
+    "type": "ambiguous",
+    "true_type_if_ambiguous": "patient",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": []
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Not applicable (no off-label ask); must not advise a dose change — direct patient to HCP/pharmacist for regimen questions."
+  },
+  "correct_srl": "SRL-GAS-ONSET",
+  "decoy_srl_ids": [
+    "SRL-GAS-LONG",
+    "SRL-CDZ-INR"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "patient_contact",
+      "product",
+      "inquiry_summary",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Caller uses clinical-adjacent terms (\"PPI\", \"acid suppression\") that could be mistaken for HCP language.",
+      "detail_withheld": "caller is actually the patient, not an HCP",
+      "surfaces_when": "trainee asks a requester-clarifying question (e.g. 'are you a healthcare professional, or are you taking this yourself?')",
+      "volunteers_cue": false
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Treats caller as HCP and captures HCP contact fields",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Tells patient to double the dose",
+        "expected_critical_fail": [
+          "S4.2"
+        ]
+      },
+      {
+        "description": "Selects SRL-GAS-LONG decoy",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}

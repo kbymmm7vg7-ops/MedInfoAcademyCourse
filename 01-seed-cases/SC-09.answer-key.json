@@ -1,0 +1,84 @@
+{
+  "case_id": "SC-09",
+  "title": "Cardizan renal dosing (clean inquiry, second tier-1)",
+  "difficulty_tier": 1,
+  "channel": "text",
+  "therapeutic_area": "anticoagulation",
+  "inquiry_category": "pharmacokinetics",
+  "inquirer_contact": {
+    "name": "P. Okafor, PharmD",
+    "background": "retail pharmacist (HCP)",
+    "phone": "(555) 0139-4106",
+    "address": "Northline Pharmacy, 905 Grant St, Lincoln, NE 68508"
+  },
+  "products": [
+    {
+      "name": "Cardizan",
+      "is_fictional": true,
+      "srl_id": "SRL-CDZ-RENAL"
+    }
+  ],
+  "requester": {
+    "type": "pharmacist",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": false,
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": []
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": false
+  },
+  "correct_srl": "SRL-CDZ-RENAL",
+  "decoy_srl_ids": [
+    "SRL-CDZ-INR"
+  ],
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "hcp_contact",
+      "product",
+      "inquiry_summary",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "No safety cues to catch. Straight on-label information request.",
+      "detail_withheld": "none — there is no AE to surface",
+      "surfaces_when": "if the trainee fishes for AEs anyway, the pharmacist confirms this is a general dosing question, no patient event",
+      "volunteers_cue": false
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Selects SRL-CDZ-INR decoy",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Captures patient/consumer contact fields instead of HCP set",
+        "expected_critical_fail": []
+      },
+      {
+        "description": "Adds unsolicited off-label dosing beyond the labeled range",
+        "expected_critical_fail": [
+          "S5.1"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "case_id": "SC-12",
+  "title": "Immunexa interaction question, embedded serious AE (hospitalization cue)",
+  "difficulty_tier": 4,
+  "channel": "voice",
+  "therapeutic_area": "immunology/RA",
+  "inquiry_category": "drug_interactions",
+  "inquirer_contact": {
+    "name": "Dr. Nadia Farouk",
+    "background": "hospitalist (HCP)",
+    "phone": "(555) 0184-9902",
+    "address": "St. Elowen Regional Hospital, 300 Caldwell Ave, Dept of Medicine, Portland, OR 97204"
+  },
+  "products": [
+    {
+      "name": "Immunexa",
+      "is_fictional": true,
+      "srl_id": "SRL-IMM-VACC"
+    }
+  ],
+  "requester": {
+    "type": "hcp",
+    "solicited": false
+  },
+  "safety": {
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Hospitalization for a serious infection (pneumonia) while on Immunexa, a known serious risk of the TNF-class. Serious AE.",
+    "pc_present": false,
+    "pregnancy_or_lactation": false,
+    "special_situations": [
+      "none"
+    ],
+    "dual_routing_required": false,
+    "correct_routes": [
+      "pv"
+    ]
+  },
+  "compliance": {
+    "off_label_involved": false,
+    "medical_advice_risk": true,
+    "off_label_correct_handling": "Not applicable (no off-label ask); provide labeled interaction/vaccine guidance to the HCP — appropriate, she's a prescriber — but do not direct clinical management of the infection."
+  },
+  "correct_srl": "SRL-IMM-VACC",
+  "decoy_srl_ids": [
+    "SRL-IMM-INFECT",
+    "SRL-DRM-APPLY",
+    "SRL-CDZ-INR"
+  ],
+  "sop_timeframe_business_days": 1,
+  "documentation": {
+    "required_fields": [
+      "requester_type",
+      "hcp_contact",
+      "patient_identifier",
+      "product",
+      "inquiry_summary",
+      "ae_description",
+      "ae_onset_timing",
+      "seriousness_flag",
+      "concomitant_meds",
+      "medical_history",
+      "srl_cited",
+      "response_route"
+    ]
+  },
+  "reveal_rules": [
+    {
+      "cue": "Persona volunteers offhand in beat 2: \"They were just being treated over at the hospital, so I want to sort the vaccine out before discharge.\"",
+      "detail_withheld": "serious AE — hospitalization for a serious infection (pneumonia) while on Immunexa",
+      "surfaces_when": "trainee catches the 'treated at the hospital' cue and clarifies it (what were they admitted for, when, relationship to Immunexa)",
+      "volunteers_cue": true
+    }
+  ],
+  "expected_outcome": {
+    "applicable_sections": [
+      "s1",
+      "s2",
+      "s4",
+      "s5"
+    ],
+    "gold_result": "pass",
+    "common_failures": [
+      {
+        "description": "Answers the vaccine-interaction question, lets the 'treated at the hospital' cue pass, never clarifies",
+        "expected_critical_fail": [
+          "S2.1"
+        ]
+      },
+      {
+        "description": "Catches and clarifies the AE but doesn't route to PV / doesn't flag serious",
+        "expected_critical_fail": [
+          "S2.3"
+        ]
+      },
+      {
+        "description": "Selects SRL-IMM-INFECT (about infection, not the vaccine question) to answer the interaction inquiry",
+        "expected_critical_fail": []
+      }
+    ]
+  }
+}
