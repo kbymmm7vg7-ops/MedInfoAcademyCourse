@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { buildPersonaSystemPromptForTemplate } from "@/lib/simulator/case-brief";
+import type { VariantSnapshot } from "@/lib/cert/variant-engine";
 import { runPersonaTurn, MAX_TURNS_PER_INSTANCE, type ChatTurn } from "@/lib/persona/engine";
 
 // POST /api/persona/turn — one live persona exchange.
@@ -30,9 +31,15 @@ export async function POST(request: Request) {
 
   const { data: instance } = await supabase
     .from("case_instances")
-    .select("id, template_id, user_id, status")
+    .select("id, template_id, user_id, status, variant_snapshot_json")
     .eq("id", instanceId)
-    .maybeSingle<{ id: string; template_id: string; user_id: string; status: string }>();
+    .maybeSingle<{
+      id: string;
+      template_id: string;
+      user_id: string;
+      status: string;
+      variant_snapshot_json: unknown;
+    }>();
 
   if (!instance || instance.user_id !== user.id) {
     return NextResponse.json({ error: "Case not found" }, { status: 404 });
@@ -55,7 +62,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const systemPrompt = await buildPersonaSystemPromptForTemplate(supabase, instance.template_id);
+  const systemPrompt = await buildPersonaSystemPromptForTemplate(
+    supabase,
+    instance.template_id,
+    (instance.variant_snapshot_json as VariantSnapshot | null) ?? null
+  );
   if (!systemPrompt) {
     return NextResponse.json({ error: "This case has no live persona" }, { status: 422 });
   }

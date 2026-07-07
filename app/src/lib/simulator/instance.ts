@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { buildCaseBrief } from "@/lib/simulator/case-brief";
+import type { VariantSnapshot } from "@/lib/cert/variant-engine";
 import {
   emptyFormState,
   mergeFormState,
@@ -13,6 +14,7 @@ type CaseInstanceRow = {
   template_id: string;
   user_id: string;
   status: string;
+  variant_snapshot_json: unknown;
 };
 
 type ConversationTurnRow = {
@@ -55,7 +57,7 @@ export async function loadCaseInstance(
 ): Promise<LoadedCaseInstance | null> {
   const { data: instance, error } = await supabase
     .from("case_instances")
-    .select("id, template_id, user_id, status")
+    .select("id, template_id, user_id, status, variant_snapshot_json")
     .eq("id", instanceId)
     .maybeSingle<CaseInstanceRow>();
 
@@ -65,6 +67,7 @@ export async function loadCaseInstance(
 
   const brief = await buildCaseBrief(supabase, instance.template_id, {
     openBook: options.openBook,
+    variant: (instance.variant_snapshot_json as VariantSnapshot | null) ?? null,
   });
 
   if (!brief) return null;

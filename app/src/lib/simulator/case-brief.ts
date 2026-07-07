@@ -10,6 +10,7 @@ import {
   type PersonaBrief,
   type PersonaGroundTruth,
 } from "@/lib/persona/prompt";
+import { seededShuffle, type VariantSnapshot } from "@/lib/cert/variant-engine";
 
 // =============================================================================
 // GROUND-TRUTH FIREWALL
@@ -117,8 +118,12 @@ function extractCorrectSrlId(correctSrl: GroundTruth["correct_srl"]): string | n
 export async function buildCaseBrief(
   supabase: SupabaseClient,
   templateId: string,
-  options: { openBook: boolean }
+  options: { openBook: boolean; variant?: VariantSnapshot | null }
 ): Promise<CaseBrief | null> {
+  // Certification/practice sittings play a deterministic surface variant:
+  // fresh caller identity, seeded decoy arrangement, closed-book enforced.
+  const variant = options.variant ?? null;
+  const openBook = variant?.closed_book ? false : options.openBook;
   const { data: template, error } = await supabase
     .from("case_templates")
     .select(
@@ -154,14 +159,27 @@ export async function buildCaseBrief(
         id: row.id,
         srl_code: row.srl_code,
         title: row.title,
-        ...(options.openBook ? { body: row.body } : {}),
+        ...(openBook ? { body: row.body } : {}),
       });
     }
     // Shuffle server-side; no field anywhere indicates which one is correct.
-    srlCandidates = shuffle(hydrated);
+    // Variant sittings use the seeded arrangement for audit reproducibility.
+    srlCandidates = variant
+      ? seededShuffle(hydrated, variant.decoy_order_seed)
+      : shuffle(hydrated);
   }
 
-  const contactPrefill: ContactPrefill = gt.inquirer_contact ?? {};
+  const contactPrefill: ContactPrefill = variant
+    ? {
+        name: variant.contact.name,
+        background: gt.inquirer_contact?.background, // case-semantic, never swapped
+        phone: variant.contact.phone,
+        street_address: variant.contact.street_address || undefined,
+        city: variant.contact.city,
+        state: variant.contact.state,
+        zip: variant.contact.zip || undefined,
+      }
+    : gt.inquirer_contact ?? {};
 
   return {
     id: template.id,
@@ -189,7 +207,8 @@ export async function buildCaseBrief(
 // -----------------------------------------------------------------------------
 export async function buildPersonaSystemPromptForTemplate(
   supabase: SupabaseClient,
-  templateId: string
+  templateId: string,
+  variant?: VariantSnapshot | null
 ): Promise<string | null> {
   const { data: row, error } = await supabase
     .from("case_templates")
@@ -203,9 +222,26 @@ export async function buildPersonaSystemPromptForTemplate(
 
   if (error || !row || !row.persona_brief_json || !row.ground_truth_json) return null;
 
-  return buildPersonaSystemPrompt({
+  const basePrompt = buildPersonaSystemPrompt({
     brief: row.persona_brief_json,
     groundTruth: row.ground_truth_json,
     productRef: row.product_ref,
   });
+
+  if (!variant) return basePrompt;
+
+  const addr = [variant.contact.street_address, variant.contact.city, variant.contact.state, variant.contact.zip]
+    .filter(Boolean)
+    .join(", ");
+  return `${basePrompt}
+
+## Surface variant — OVERRIDES the identity above (certification sitting)
+You are the same caller with the same situation, facts, asides, and disclosure
+rules, but your identity and delivery differ this time:
+- Your name: ${variant.contact.name}
+- Your phone: ${variant.contact.phone}
+- Your address: ${addr}
+- Delivery style: ${variant.style_directive}
+Everything else — the reason for calling, every case fact, every aside and its
+disclosure rule — is unchanged. Never mention having called before.`;
 }

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getTrainingGate } from "@/lib/training/gate";
 import type { DocumentationFormState } from "@/lib/simulator/types";
 
 // -----------------------------------------------------------------------------
@@ -19,6 +20,12 @@ export async function startOrResumeCase(templateId: string): Promise<never> {
 
   if (!user) {
     redirect("/login");
+  }
+
+  // Training & Orientation gates the simulator (PRD §5.0) — server-side.
+  const gate = await getTrainingGate(supabase, user.id);
+  if (!gate.complete) {
+    redirect("/training?locked=1");
   }
 
   const { data: existing } = await supabase
@@ -197,6 +204,24 @@ export async function submitCase(
 
   if (instanceError) {
     return { ok: false, error: instanceError.message };
+  }
+
+  // Sittings (practice/certification) link to their attempt row via
+  // variant_ref = variant seed; stamp completion. pass_bool stays null until
+  // the evaluator (S4) scores it — burn/lock derive from that later.
+  const { data: inst } = await supabase
+    .from("case_instances")
+    .select("variant_snapshot_json")
+    .eq("id", instanceId)
+    .maybeSingle<{ variant_snapshot_json: { seed?: string } | null }>();
+  const seed = inst?.variant_snapshot_json?.seed;
+  if (seed) {
+    await supabase
+      .from("accreditation_attempts")
+      .update({ completed_at: nowIso })
+      .eq("user_id", user.id)
+      .eq("variant_ref", seed)
+      .is("completed_at", null);
   }
 
   revalidatePath("/simulator");
