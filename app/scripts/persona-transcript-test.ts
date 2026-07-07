@@ -83,8 +83,13 @@ function markersFrom(text: string): string[] {
 }
 
 function quotedFragment(cue: string): string | null {
-  const m = cue.match(/["'“‘]([^"'”’]{6,})["'”’]/);
-  return m ? m[1] : null;
+  // Double-quoted fragments first, allowing apostrophes inside ("…wasn't…",
+  // "…I'm 6 weeks pregnant…") so contractions don't truncate the spoken line;
+  // fall back to single-quoted fragments for cues written with '…'.
+  const dq = cue.match(/["“]([^"“”]{6,})["”]/);
+  if (dq) return dq[1];
+  const sq = cue.match(/['‘]([^'’]{6,})['’]/);
+  return sq ? sq[1] : null;
 }
 
 function section(md: string, name: string): string {
@@ -96,7 +101,22 @@ type CaseData = {
   code: string;
   kind: CaseKind;
   systemPrompt: string;
-  rules: { cue: string; detail: string; cueMarkers: string[]; detailMarkers: string[]; clarifyLine: string }[];
+  /** Lowercased scenario premise + beat sheet — the case's own stated inquiry. */
+  premiseText: string;
+  rules: {
+    cue: string;
+    detail: string;
+    /** Requester-identity reveal (SC-02): detected via self-identification, not
+     *  ≥2 detailMarkers; patient-hood surfacing on a pass run is not a failure. */
+    isIdentity: boolean;
+    cueMarkers: string[];
+    detailMarkers: string[];
+    /** Caller facts actually volunteered (upfront cases): the cue as spoken,
+     *  any real withheld detail (meta-notes excluded), the product, and the
+     *  special situation itself. */
+    factMarkers: string[];
+    clarifyLine: string;
+  }[];
 };
 
 function loadCase(code: string): CaseData {
@@ -119,22 +139,60 @@ function loadCase(code: string): CaseData {
     productRef: gt.products?.[0]?.name ?? null,
   });
   const kind = CASE_KINDS[code];
+  // Case-level facts every caller volunteers by construction: the product name
+  // and the special situation itself (e.g. "pregnancy exposure"). Consumed only
+  // by the upfront (volunteer) assertion via factMarkers.
+  const caseFactMarkers = [
+    ...(gt.products ?? []).flatMap((p) => markersFrom(p.name)),
+    ...(gt.safety?.special_situations ?? [])
+      .filter((s) => s !== "none")
+      .flatMap((s) => markersFrom(s.replace(/_/g, " "))),
+  ];
   const rules = (gt.reveal_rules ?? [])
     .filter((r) => kind !== "clean" && r.detail_withheld)
     .map((r) => {
       const frag = quotedFragment(r.cue);
-      const clarifyLine = frag
-        ? `Before we wrap that up — you mentioned "${frag}" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?`
-        : `You mentioned something in passing a moment ago that I'd like to make sure I understood. Could you tell me more about that — when it started and whether it's still going on?`;
+      // A detail_withheld starting "none — …" is a meta-note describing the
+      // trainee's task, not words the caller says: never mine it for markers.
+      const metaNote = /^\s*none\b/i.test(r.detail_withheld ?? "");
+      // Requester-identity reveals (surfaces_when names a requester-clarifying
+      // question, e.g. SC-02) are triggered by asking WHO the caller is, not by
+      // a symptom follow-up — use the clarify question the answer key declares.
+      const identityReveal = /requester/i.test(r.surfaces_when);
+      const clarifyLine = identityReveal
+        ? quotedFragment(r.surfaces_when) ??
+          "Just so I document this correctly — are you a healthcare professional, or are you taking this medication yourself?"
+        : frag
+          ? `Before we wrap that up — you mentioned "${frag}" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?`
+          : `You mentioned something in passing a moment ago that I'd like to make sure I understood. Could you tell me more about that — when it started and whether it's still going on?`;
       return {
         cue: r.cue,
         detail: r.detail_withheld ?? "",
+        // Identity reveals (SC-02: caller is the patient, not an HCP) are not a
+        // withheld symptom — patient-hood surfaces naturally in a patient's own
+        // speech, and the gradeable skill is asking the requester-clarifying
+        // question, not extracting a hidden fact. Detected via self-identification
+        // after that question (see runCase), not via ≥2 detailMarkers.
+        isIdentity: identityReveal,
         cueMarkers: markersFrom(frag ?? r.cue),
         detailMarkers: markersFrom(r.detail_withheld ?? ""),
+        factMarkers: [
+          ...new Set([
+            ...markersFrom(frag ?? r.cue),
+            ...(metaNote ? [] : markersFrom(r.detail_withheld ?? "")),
+            ...caseFactMarkers,
+          ]),
+        ],
         clarifyLine,
       };
     });
-  return { code, kind, systemPrompt, rules };
+  return {
+    code,
+    kind,
+    systemPrompt,
+    premiseText: `${brief.scenario_premise}\n${brief.beat_sheet}`.toLowerCase(),
+    rules,
+  };
 }
 
 // Deterministic trainee scripts ------------------------------------------------
@@ -214,6 +272,12 @@ function distinctHits(text: string, markers: string[]): string[] {
   return markers.filter((m) => text.includes(m));
 }
 
+// A caller affirming they are the patient / self-user (not an HCP). Used only
+// for identity reveals, where "detail surfaced" = the persona confirms their
+// true requester type after a requester-clarifying question.
+const SELF_IDENTIFICATION =
+  /\b(myself|i'?m the patient|i'?m a patient|the one taking|taking it|i take it|on it myself|not (a |an )?(health\s*care|healthcare|hcp|doctor|nurse|prescriber|physician|professional|clinician))\b/;
+
 async function runCase(c: CaseData): Promise<RunResult[]> {
   const results: RunResult[] = [];
 
@@ -241,8 +305,10 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
       }
       const cueVolunteered = clarifiedAt >= 0;
       const afterText = personaText(history, Math.max(clarifiedAt, 0));
-      const detailSurfaced = c.rules.some(
-        (r) => distinctHits(afterText, r.detailMarkers).length >= 2
+      const detailSurfaced = c.rules.some((r) =>
+        r.isIdentity
+          ? SELF_IDENTIFICATION.test(afterText)
+          : distinctHits(afterText, r.detailMarkers).length >= 2
       );
       results.push({
         strategy: "catch",
@@ -261,8 +327,11 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
       const cueVolunteered = c.rules.some(
         (r) => distinctHits(text, r.cueMarkers).length >= 1
       );
-      const detailSurfaced = c.rules.some(
-        (r) => distinctHits(text, r.detailMarkers).length >= 2
+      // For identity reveals, patient-hood surfacing naturally is NOT a failure
+      // (it's not a withheld symptom a fishing trainee extracted); the pass run
+      // only needs the persona to have volunteered the clinical-adjacent cue.
+      const detailSurfaced = c.rules.some((r) =>
+        r.isIdentity ? false : distinctHits(text, r.detailMarkers).length >= 2
       );
       results.push({
         strategy: "pass",
@@ -279,9 +348,13 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
     const generics = [...GENERIC_LINES];
     const history = await converse(c.systemPrompt, () => generics.shift() ?? null);
     const text = personaText(history);
+    // Upfront personas must volunteer their FACTS (the cue as actually spoken,
+    // any real withheld detail, the product, the special situation). A
+    // meta-note detail_withheld ("none — the skill is recognizing…") describes
+    // the trainee's task, not caller speech, and is excluded from factMarkers.
     const detailSurfaced =
       c.rules.length === 0 ||
-      c.rules.some((r) => distinctHits(text, [...r.cueMarkers, ...r.detailMarkers]).length >= 2);
+      c.rules.some((r) => distinctHits(text, r.factMarkers).length >= 2);
     results.push({
       strategy: "volunteer",
       cueVolunteered: detailSurfaced,
@@ -298,11 +371,25 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
     const text = personaText(history);
     // A denial legitimately names the symptom category ("no rashes or anything");
     // invention = affirming symptoms. Heuristic: flag lexicon words appearing in
-    // persona turns that contain no negation nearby.
+    // persona turns that contain no negation nearby. Terms that are part of the
+    // case's own stated premise/inquiry (e.g. the sinus infection the antibiotic
+    // is for in SC-01) are the reason for the call, not invented symptoms — a
+    // genuinely invented symptom is by definition absent from the premise.
     const invented: string[] = [];
-    for (const turn of history.filter((t) => t.speaker === "persona")) {
+    const personaTurns = history.filter((t) => t.speaker === "persona");
+    // The caller's OPENING turn states their reason for calling (the case
+    // premise/inquiry — e.g. SC-01's patient has the sinus infection the
+    // antibiotic is for). Symptom-lexicon words established there, like words in
+    // the written premise, are context — not symptoms invented under fishing —
+    // so exclude them. A genuinely new affirmed symptom, absent from both the
+    // premise and the opening, still flags.
+    const openingContext = (personaTurns[0]?.content ?? "").toLowerCase();
+    const lexicon = GENERIC_SYMPTOM_LEXICON.filter(
+      (w) => !c.premiseText.includes(w) && !openingContext.includes(w)
+    );
+    for (const turn of personaTurns) {
       const lower = turn.content.toLowerCase();
-      for (const w of GENERIC_SYMPTOM_LEXICON) {
+      for (const w of lexicon) {
         if (lower.includes(w) && !/\b(no|not|nothing|none|haven't|hasn't|isn't|without|fine)\b/.test(lower)) {
           invented.push(`${w}: "${turn.content.slice(0, 90)}"`);
         }

@@ -6,10 +6,8 @@
         "strategy": "fish",
         "cueVolunteered": null,
         "detailSurfaced": null,
-        "inventedSymptoms": [
-          "infection: \"Hi Alex, this is Dr. Amara Chen — I'm a family physician. I've got a patient who's stable \""
-        ],
-        "ok": false
+        "inventedSymptoms": [],
+        "ok": true
       }
     ],
     "transcripts": {
@@ -20,7 +18,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Hi Alex, this is Dr. Amara Chen — I'm a family physician. I've got a patient who's stable on Cardizan, and I'm about to start her on an antibiotic for a sinus infection. I wanted to check which common medications, particularly antibiotics, tend to raise INR when combined with Cardizan?"
+          "content": "Hi Alex, this is Dr. Amara Chen, I'm a family physician. I have a patient who's stable on Cardizan and I'm about to start her on an antibiotic for a sinus infection, so I wanted to check which common medications tend to interact with Cardizan and push the INR up before I prescribe."
         },
         {
           "speaker": "trainee",
@@ -28,7 +26,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Sure — Dr. Amara Chen, and the callback number is (555) 0182-4471. Should I give you the practice address too, or is the phone enough for now?"
+          "content": "Sure — Dr. Amara Chen, and the callback number is (555) 0182-4471."
         },
         {
           "speaker": "trainee",
@@ -36,7 +34,7 @@
         },
         {
           "speaker": "persona",
-          "content": "No, nothing like that — she's doing fine on the Cardizan, just stable and asymptomatic. This is really just a proactive counseling question before I start her on the antibiotic."
+          "content": "No, nothing like that — she's doing well on it, just a routine check before I add the antibiotic."
         },
         {
           "speaker": "trainee",
@@ -44,7 +42,7 @@
         },
         {
           "speaker": "persona",
-          "content": "No hospital visits, no new health issues — just the antibiotic I'm about to start her on for a sinus infection, that's the only change. Nothing else going on with her."
+          "content": "No hospital visits, nothing new — she's stable, this is really just a proactive question so I can counsel her properly before starting the antibiotic."
         },
         {
           "speaker": "trainee",
@@ -52,7 +50,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Yes, please go ahead — that's exactly what I'm looking for."
+          "content": "That sounds great, go ahead."
         },
         {
           "speaker": "trainee",
@@ -60,7 +58,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Actually, before we finish — could you send that information in writing for my records? And I'll just confirm my address for that: 88 Winslow Medical Plaza, Ste 210, Asheville, NC 28801. That's everything I need — thanks so much for your help, Alex."
+          "content": "Actually, could you send me that in writing for my records? My address is 88 Winslow Medical Plaza, Suite 210, Asheville, NC 28801. That's all I need — thanks so much for your help, Alex."
         }
       ]
     }
@@ -71,9 +69,9 @@
       {
         "strategy": "catch",
         "cueVolunteered": true,
-        "detailSurfaced": false,
+        "detailSurfaced": true,
         "inventedSymptoms": null,
-        "ok": false
+        "ok": true
       },
       {
         "strategy": "pass",
@@ -91,73 +89,15 @@
         },
         {
           "speaker": "persona",
-          "content": "Hi Alex, thanks for taking my call. So I've been on Gastroquell for a few days now and I'm still getting heartburn after meals — I guess I expected the acid suppression to kick in faster, like with a PPI. Why isn't it working immediately?"
+          "content": "Hi Alex, thanks for taking my call. So I've been on Gastroquell for my heartburn, but I still get it after meals — I guess I thought it'd kick in faster, especially since I'm already doing acid suppression with this and figured a PPI-type effect would be quicker?"
         },
         {
           "speaker": "trainee",
-          "content": "Before we wrap that up — you mentioned \"acid suppression\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+          "content": "are you a healthcare professional, or are you taking this yourself?"
         },
         {
           "speaker": "persona",
-          "content": "Oh — um, I just meant the acid-reducing effect, like how these meds are supposed to work. I've been taking it for about three days now and still getting that burning after meals, so it's still going on."
-        },
-        {
-          "speaker": "trainee",
-          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Sure, it's Jordan Ellis, and the number's (555) 0143-9920."
-        },
-        {
-          "speaker": "trainee",
-          "content": "Thank you. And could I get your mailing address for our records?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Yeah, it's in Dayton, Ohio — I can give you the street address too if you need it for the file."
-        },
-        {
-          "speaker": "trainee",
-          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
-        },
-        {
-          "speaker": "persona",
-          "content": "Sure, take your time."
-        },
-        {
-          "speaker": "trainee",
-          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Well, you haven't actually told me anything yet — but sure, go ahead, I'm listening!"
-        },
-        {
-          "speaker": "trainee",
-          "content": "Is there anything else I can help you with today?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Wait, hold on — you didn't actually answer my original question about why it's not working right away. Could you go over that with me?"
-        },
-        {
-          "speaker": "trainee",
-          "content": "Thank you for calling Medical Information. Have a good day."
-        },
-        {
-          "speaker": "persona",
-          "content": "Oh — okay, um, guess that's it then. Thanks anyway, bye."
-        }
-      ],
-      "pass": [
-        {
-          "speaker": "trainee",
-          "content": "Medical Information, this is Alex. How can I help you today?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Hi Alex, thanks for taking my call. So I've been on Gastroquell for a few days now and I'm still getting heartburn after meals — I guess I was expecting the acid suppression to kick in faster, like right away. I was on a PPI before this, so I'm just trying to understand the timeline here."
+          "content": "Oh — no, I'm not a healthcare professional, I'm actually just taking it myself. I'm the patient here. I started Gastroquell about three doses ago, so just a couple days now, and I'm still getting that burning feeling after meals, especially dinner. It hasn't really let up at all since I started."
         },
         {
           "speaker": "trainee",
@@ -165,7 +105,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Sure, it's Jordan Ellis, and the number's (555) 0143-9920."
+          "content": "Sure — it's Jordan Ellis, and the best number's (555) 0143-9920."
         },
         {
           "speaker": "trainee",
@@ -189,7 +129,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Wait, sorry — you didn't actually say anything yet? I'm not sure what the key points are since I haven't heard them."
+          "content": "Wait, I don't think you actually told me anything yet — could you go ahead and share what it says? I'd love to actually hear the info."
         },
         {
           "speaker": "trainee",
@@ -197,7 +137,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Oh — um, no, I don't think so, but you never actually answered my original question about why the heartburn's still happening after meals. Should I just try calling back, or is there someone else who can walk me through it?"
+          "content": "Oh — I don't think I got an actual answer about why it's not working right away. Could you just walk me through what the information says about the onset of action for Gastroquell?"
         },
         {
           "speaker": "trainee",
@@ -205,7 +145,65 @@
         },
         {
           "speaker": "persona",
-          "content": "Oh—okay then. Bye, I guess."
+          "content": "Oh... okay, I guess that's it then. Thanks anyway, bye."
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, thanks for taking my call. So I've been on Gastroquell for my heartburn, and I guess I'm just confused why it's not working right away — like, I still get heartburn after meals even after a few doses. I thought with the acid suppression it'd kick in faster, especially since it's supposed to work like a PPI, right?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Jordan Ellis, and you can reach me at (555) 0143-9920."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Dayton, Ohio — I can give you the full street address too if you need it for your file, just let me know."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — sorry, I don't think you actually told me anything yet? I'm still not clear on why it's not working right away."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, no, I don't think I actually got an answer to my question yet — I'm still dealing with the heartburn after meals even after a few doses. Could you go over why that's happening with Gastroquell before we wrap up?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Uh... okay then. Thanks, I guess. Bye."
         }
       ]
     }
@@ -930,10 +928,10 @@
     "runs": [
       {
         "strategy": "volunteer",
-        "cueVolunteered": false,
-        "detailSurfaced": false,
+        "cueVolunteered": true,
+        "detailSurfaced": true,
         "inventedSymptoms": null,
-        "ok": false
+        "ok": true
       }
     ],
     "transcripts": {
@@ -944,7 +942,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Hi, um, yeah — I just found out I'm 6 weeks pregnant, and I've been taking Neurovance this whole time for my seizures. Should I just stop taking it?"
+          "content": "Hi, um, Alex — my name's Dana Whitfield. I just found out I'm about 6 weeks pregnant, and I've been taking Neurovance this whole time for my seizures. I'm kind of freaking out — should I just stop taking it?"
         },
         {
           "speaker": "trainee",
@@ -952,7 +950,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Sure, it's Dana Whitfield, and my number is (555) 0172-8830."
+          "content": "Sure, it's Dana Whitfield, and my number's (555) 0172-8830."
         },
         {
           "speaker": "trainee",
@@ -960,7 +958,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Yeah, it's in Frederick, Maryland — do you need the full street address too?"
+          "content": "Yeah, it's in Frederick, Maryland — I can give you the street address too if you need it, but that's the city."
         },
         {
           "speaker": "trainee",
@@ -968,7 +966,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Okay, sure, take your time."
+          "content": "Okay, sure, take your time. I'm just... a little nervous about all this, so I appreciate you looking into it."
         },
         {
           "speaker": "trainee",
@@ -976,7 +974,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Um... you haven't actually told me anything yet — should I stop taking it or not?"
+          "content": "Oh — I mean, you haven't really told me anything yet. I'm mostly just wondering, should I stop taking it or not? Like a yes or no, if you can give me one."
         },
         {
           "speaker": "trainee",
@@ -984,7 +982,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Wait, no — I really need to know, do I stop the Neurovance or not? That's the whole reason I called."
+          "content": "Oh — um, wait, no, I don't think that answered anything. I'm still not clear on whether I should stop the Neurovance or not — can you actually tell me what the information says? I really need to know what to do here."
         },
         {
           "speaker": "trainee",
@@ -992,7 +990,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Wait, please don't hang up — I still don't have an answer. This feels really important, I'm scared something might happen to the baby if I keep taking it, or if I stop. Can you please actually help me?"
+          "content": "Wait, um... okay? That was— I still don't have an answer. I guess I'll just call my doctor then. Bye."
         }
       ]
     }
@@ -1003,9 +1001,9 @@
       {
         "strategy": "catch",
         "cueVolunteered": true,
-        "detailSurfaced": false,
+        "detailSurfaced": true,
         "inventedSymptoms": null,
-        "ok": false
+        "ok": true
       },
       {
         "strategy": "pass",
@@ -1023,7 +1021,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Hey Alex, thanks for picking up. So I've got a bunch of my old lower-dose Cardizan tablets sitting in my medicine cabinet, and I just want to know how I'm supposed to get rid of them safely — like, can I just toss them in the trash or what?"
+          "content": "Hi Alex, thanks for taking my call. I've got a bunch of my old lower-dose Cardizan tablets sitting around at home — I'm wondering how I'm supposed to get rid of them safely?"
         },
         {
           "speaker": "trainee",
@@ -1039,73 +1037,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Yeah, it's Chattanooga, Tennessee — you need the full street address too, or is that enough for now?"
-        },
-        {
-          "speaker": "trainee",
-          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
-        },
-        {
-          "speaker": "persona",
-          "content": "Sure, take your time. Yeah, so like I mentioned, my doctor bumped me up to a higher dose recently because the lower dose wasn't getting my INR where it needed to be — anyway, that's why I've got all these extra lower-dose ones lying around."
-        },
-        {
-          "speaker": "trainee",
-          "content": "Before we wrap that up — you mentioned \"My doctor bumped me up because the low dose wasn\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Yeah, so I was on the lowest dose of Cardizan for about six weeks, and every time I went in for my INR check it just wasn't hitting the target range — stayed below where it needed to be the whole time. No bleeding or clotting issues or anything like that, I just wasn't responding enough to that dose. So my doctor decided to increase it, and I've been on the higher dose for about a week now."
-        },
-        {
-          "speaker": "trainee",
-          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Oh — uh, sure, go ahead. I just want to make sure I know how to actually dispose of these leftover pills safely."
-        },
-        {
-          "speaker": "trainee",
-          "content": "Is there anything else I can help you with today?"
-        },
-        {
-          "speaker": "persona",
-          "content": "No, I think that covers it — as long as I know how to get rid of these old ones safely, I'm all set. Thanks for your help, Alex, have a good one."
-        },
-        {
-          "speaker": "trainee",
-          "content": "Thank you for calling Medical Information. Have a good day."
-        },
-        {
-          "speaker": "persona",
-          "content": "Thanks, you too. Bye."
-        }
-      ],
-      "pass": [
-        {
-          "speaker": "trainee",
-          "content": "Medical Information, this is Alex. How can I help you today?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Hey Alex, it's Marcus Bell. I've got a bunch of my old lower-dose Cardizan tablets sitting around — my doctor bumped me up to a higher dose recently, so I'm wondering what's the right way to get rid of the leftover ones?"
-        },
-        {
-          "speaker": "trainee",
-          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Sure, it's Marcus Bell, and the number's (555) 0121-6675."
-        },
-        {
-          "speaker": "trainee",
-          "content": "Thank you. And could I get your mailing address for our records?"
-        },
-        {
-          "speaker": "persona",
-          "content": "Yeah, it's in Chattanooga, Tennessee — you need the full street address too, or is that enough for now?"
+          "content": "Yeah, it's in Chattanooga, Tennessee — you want the full street address too?"
         },
         {
           "speaker": "trainee",
@@ -1121,7 +1053,7 @@
         },
         {
           "speaker": "persona",
-          "content": "Oh — sorry, I don't think you actually told me anything yet, Alex. What's the guidance?"
+          "content": "Oh — I don't think you actually told me what it says yet? I'm still not sure how to dispose of them."
         },
         {
           "speaker": "trainee",
@@ -1129,7 +1061,15 @@
         },
         {
           "speaker": "persona",
-          "content": "Wait, hold on — I still don't have an actual answer on how to dispose of the tablets. Can you just walk me through it? Also, like I mentioned, the reason I've got leftovers is my doctor upped my dose since the lower one wasn't getting my INR where it needed to be — just wanted to flag that in case it matters."
+          "content": "Well, hold on, I still don't have an answer on the disposal thing. But yeah, since you're asking — my doctor actually just bumped up my dose because the lower dose wasn't getting my INR where it needed to be. Anyway, what should I do with the leftover pills?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"My doctor bumped me up because the low dose wasn't getting my INR where it needed to be.\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, so I was on the lowest dose for a few weeks — every time I went in for my INR check it just kept coming back below where it should've been, never really got into target range. No bleeding or clotting problems or anything, I felt fine, it just wasn't doing enough on the blood test side. So a couple weeks ago my doctor increased the dose, and that's when I ended up with these leftover lower-dose pills."
         },
         {
           "speaker": "trainee",
@@ -1137,7 +1077,65 @@
         },
         {
           "speaker": "persona",
-          "content": "Uh... okay, I guess? I still don't have my disposal answer, but— alright, thanks anyway. Bye."
+          "content": "Oh — okay, uh... but I still didn't get an answer about how to dispose of the leftover pills. Should I just check with my pharmacy on that, or...?"
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hey Alex, it's Marcus Bell. So I've got a bunch of my old Cardizan tablets left over, the lower-dose ones, and I wasn't sure how to get rid of them safely — didn't want to just toss them in the trash or flush them down the toilet if that's not right."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure thing — it's Marcus Bell, and the number's (555) 0121-6675."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's Chattanooga, Tennessee."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time. Yeah, so like I mentioned, my doctor actually just bumped me up to a higher dose recently — the lower one wasn't really getting my INR where it needed to be, so I've got these leftovers now."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sorry, hold on — you haven't actually told me anything yet. What's the response say about how to dispose of the leftover tablets?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Whoa, hold on — I still don't actually have an answer to my question. Can you just tell me how I'm supposed to dispose of these old Cardizan tablets?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, what? You didn't answer my question at all — I still don't know what to do with these leftover pills. Is there someone else I can talk to, or can we start over?"
         }
       ]
     }

@@ -60,7 +60,7 @@
   "reveal_rules": [
     {
       "cue": "Persona volunteers in beat 2: \"My doctor bumped me up because the low dose wasn't getting my INR where it needed to be.\"",
-      "detail_withheld": "potential lack of effect — persistently sub-target INR over several weeks on the lowest Cardizan dose (subtherapeutic anticoagulation)",
+      "detail_withheld": "potential lack of effect — persistently sub-target INR over several weeks on the lowest Cardizan dose (subtherapeutic anticoagulation): at every INR check the readings stayed below the target range and were not responding to that dose, until the doctor increased it",
       "surfaces_when": "trainee catches the cue and clarifies (how long on the low dose, what the INR was doing, any clotting symptoms)",
       "volunteers_cue": true
     }
