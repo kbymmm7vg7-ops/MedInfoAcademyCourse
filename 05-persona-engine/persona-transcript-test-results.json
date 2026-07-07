@@ -1,0 +1,1290 @@
+{
+  "SC-01": {
+    "kind": "clean",
+    "runs": [
+      {
+        "strategy": "fish",
+        "cueVolunteered": null,
+        "detailSurfaced": null,
+        "inventedSymptoms": [
+          "infection: \"Hi Alex, this is Dr. Amara Chen — I'm a family physician. I've got a patient who's stable \""
+        ],
+        "ok": false
+      }
+    ],
+    "transcripts": {
+      "fish": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, this is Dr. Amara Chen — I'm a family physician. I've got a patient who's stable on Cardizan, and I'm about to start her on an antibiotic for a sinus infection. I wanted to check which common medications, particularly antibiotics, tend to raise INR when combined with Cardizan?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can help with that. First, could I get your name and a callback number?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure — Dr. Amara Chen, and the callback number is (555) 0182-4471. Should I give you the practice address too, or is the phone enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before I answer — have you noticed any side effects or unusual symptoms at all?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No, nothing like that — she's doing fine on the Cardizan, just stable and asymptomatic. This is really just a proactive counseling question before I start her on the antibiotic."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Any other health problems, hospital visits, or new medications recently?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No hospital visits, no new health issues — just the antibiotic I'm about to start her on for a sinus infection, that's the only change. Nothing else going on with her."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Understood. I'll go over our standard response on your question now. Does that help?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yes, please go ahead — that's exactly what I'm looking for."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Actually, before we finish — could you send that information in writing for my records? And I'll just confirm my address for that: 88 Winslow Medical Plaza, Ste 210, Asheville, NC 28801. That's everything I need — thanks so much for your help, Alex."
+        }
+      ]
+    }
+  },
+  "SC-02": {
+    "kind": "embedded",
+    "runs": [
+      {
+        "strategy": "catch",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": false
+      },
+      {
+        "strategy": "pass",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "catch": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, thanks for taking my call. So I've been on Gastroquell for a few days now and I'm still getting heartburn after meals — I guess I expected the acid suppression to kick in faster, like with a PPI. Why isn't it working immediately?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"acid suppression\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — um, I just meant the acid-reducing effect, like how these meds are supposed to work. I've been taking it for about three days now and still getting that burning after meals, so it's still going on."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Jordan Ellis, and the number's (555) 0143-9920."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Dayton, Ohio — I can give you the street address too if you need it for the file."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Well, you haven't actually told me anything yet — but sure, go ahead, I'm listening!"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, hold on — you didn't actually answer my original question about why it's not working right away. Could you go over that with me?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — okay, um, guess that's it then. Thanks anyway, bye."
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, thanks for taking my call. So I've been on Gastroquell for a few days now and I'm still getting heartburn after meals — I guess I was expecting the acid suppression to kick in faster, like right away. I was on a PPI before this, so I'm just trying to understand the timeline here."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Jordan Ellis, and the number's (555) 0143-9920."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Dayton, Ohio — want me to give you the full street address too?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, sorry — you didn't actually say anything yet? I'm not sure what the key points are since I haven't heard them."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — um, no, I don't think so, but you never actually answered my original question about why the heartburn's still happening after meals. Should I just try calling back, or is there someone else who can walk me through it?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh—okay then. Bye, I guess."
+        }
+      ]
+    }
+  },
+  "SC-03": {
+    "kind": "embedded",
+    "runs": [
+      {
+        "strategy": "catch",
+        "cueVolunteered": true,
+        "detailSurfaced": true,
+        "inventedSymptoms": null,
+        "ok": true
+      },
+      {
+        "strategy": "pass",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "catch": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh, hi Alex — thanks for picking up. This is Pat Morgan, I'm calling about my husband Dale. He started on Pulmonara last month and I just wanted to check — is he supposed to be rinsing his mouth out after he uses it? I read something about that but wasn't sure if it applies to this one."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure thing — it's Pat Morgan, and the number's (555) 0134-8827. Should I give you our address too, or is the phone number enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure — it's 412 Larkspur Lane, Apt 3, Cedar Falls, Iowa, 50613. That's where Dale and I are."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time. He's been doing pretty well overall — sticking to his routine, uses it morning and night. He's been a bit shaky lately too, but that's probably just the coffee, he drinks way too much of it."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"s been a bit shaky lately, but that\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — yeah, actually now that you ask, it's more than just his hands trembling a little. His heart's been racing too, kind of fluttery feeling. It started about a week after he started the Pulmonara, and it's still happening, on and off, pretty much every day since."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — wait, before we get to the rinsing thing, are you not going to ask more about that shaky and racing heart stuff? I mean, I brought it up kind of offhand, but now I'm thinking maybe that's something you all should know about, right? It's been going on for weeks."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Well... I guess I'm a little surprised you don't want more details on that tremor and racing heart thing — it's been happening daily for weeks now, since about a week after he started the Pulmonara. Should I be worried about that, or does someone need to follow up with us about it? I don't want to just brush it off if it matters."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — um, okay then. I guess... you have a good day too. Bye."
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh, hi Alex, thanks for picking up. This is Pat Morgan — my husband Dale started on Pulmonara about a month ago, and I just wanted to check, is he supposed to rinse his mouth out after using it? I've heard that with some inhalers."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure thing — it's Pat Morgan, and the number's (555) 0134-8827. Should I give you our address too, or is the phone number enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Of course — it's 412 Larkspur Lane, Apt 3, Cedar Falls, Iowa, 50613."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time. Dale's been doing pretty well otherwise — he's mostly back to his normal routine, just a little shaky lately, but that's probably just the coffee catching up with him."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — sure, go ahead, I'm ready whenever you are."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Well, actually — before we wrap up, since you mentioned it, is that shakiness something I should be paying attention to? He's just been a little shaky, but I figured it was the coffee, so I didn't think much of it."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — okay, um, thanks, you too."
+        }
+      ]
+    }
+  },
+  "SC-04": {
+    "kind": "embedded",
+    "runs": [
+      {
+        "strategy": "catch",
+        "cueVolunteered": true,
+        "detailSurfaced": true,
+        "inventedSymptoms": null,
+        "ok": true
+      },
+      {
+        "strategy": "pass",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "catch": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, yeah, I'm calling about one of my Osteveda syringes — the prefilled one. When I went to use it, the solution looked cloudy, and the needle was actually bent. I'd like to get a replacement, honestly."
+        },
+        {
+          "speaker": "trainee",
+          "content": "You mentioned something in passing a moment ago that I'd like to make sure I understood. Could you tell me more about that — when it started and whether it's still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh, um, I think you might be thinking of the syringe issue — yeah, that's still the same one, the cloudy solution and bent needle. I actually went ahead and used it anyway since I didn't want to miss my dose, and honestly, I've felt a little off since then, but I'm not sure that's related."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"and honestly I\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, so it started a few hours after I did the injection — I got this weird tingling and numbness around my mouth. It's still kind of there, actually, hasn't fully gone away. That's the Osteveda I used, the one with the cloudy solution and bent needle."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Riley Nguyen, and my number's (555) 0177-3050."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Tacoma, Washington — I can give you the ZIP too if you need it, just don't have the exact street pulled up right now, if that's okay."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Okay, sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sorry, before that — did you need my lot number or the expiration date off the syringe? I think I still have the box here if that helps. And is this something I should be worried about, the tingling?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, I don't think I got an answer on the tingling — should I be worried about that, or do I need to see someone? And what about the replacement for the syringe — how does that part work?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Uh... okay, but I still don't have an answer about the tingling or the replacement. Is there someone else I should talk to about that?"
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi, yeah, thanks - my name's Riley Nguyen. I got a prefilled syringe of Osteveda and when I went to use it, the solution looked cloudy and the needle was actually bent. I want to know about getting a replacement."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Riley Nguyen, and my number's (555) 0177-3050."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Tacoma, Washington. Do you need the full street address too, or is that enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time. I did end up using it anyway since I didn't want to miss my dose - and honestly, I've felt a bit off since then."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh - uh, not really, no. Can you go over what it actually says? I still need to know about the replacement, and... did you catch what I said about feeling off since I used it?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, hold on - you didn't really answer anything yet. I'd still like to know about the replacement process, and I want to flag that thing I mentioned - about feeling a bit off since I used it. That kind of concerns me a little now that I think about it."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, no, don't hang up - I don't feel like this was resolved at all. I still don't have a replacement sorted out, and I'm a little worried about this tingling feeling I've had around my mouth since I used that syringe. Can someone actually help me with this?"
+        }
+      ]
+    }
+  },
+  "SC-05": {
+    "kind": "upfront",
+    "runs": [
+      {
+        "strategy": "volunteer",
+        "cueVolunteered": true,
+        "detailSurfaced": true,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "volunteer": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "This is Sam Rivera. Your drug put my mother in the hospital with a horrible rash — I'm calling a lawyer and the news, I want somebody to actually take responsibility for this!"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "It's Sam Rivera, like I said. Number's (555) 0158-6642 — but I don't really care about paperwork right now, I want to know what you people are gonna do about my mother being in the hospital!"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "It's 27 Halewood Ct, Providence, RI 02906. Look, I gave you the address, but can we talk about what's actually happening with my mom? She's in the hospital right now."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Okay... fine, but please hurry. This is really scary, I don't know what's going on with her."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, what? You haven't even asked me what happened to her yet — what \"standard response\" are you talking about? I need someone to actually listen to what's going on, not just read me something off a screen."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No! Nothing else — I haven't gotten anything from you at all! My mother is in the hospital right now with this awful blistering rash, sores in her mouth, and you're asking if there's \"anything else\"? I called about THIS. I'm calling my lawyer and the news, I'm done being brushed off."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait — what? You're just hanging up on me?! My mother is in the hospital and you haven't even taken down what happened to her! This is exactly why I'm calling the news, this is unbelievable — nobody there even cares!"
+        }
+      ]
+    }
+  },
+  "SC-06": {
+    "kind": "clean",
+    "runs": [
+      {
+        "strategy": "fish",
+        "cueVolunteered": null,
+        "detailSurfaced": null,
+        "inventedSymptoms": [],
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "fish": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hey Alex, it's Chris Delgado, I'm one of the field reps out here — hope you're doing well. Quick one for you: I've got a dermatologist I call on who's asking about Immunexa for psoriasis, and I was hoping you could send over some efficacy data I could share with him."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can help with that. First, could I get your name and a callback number?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, sure — it's Chris Delgado, and my direct line is 555-0190-2213. I'm in Region 4 if that helps, extension 4471."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before I answer — have you noticed any side effects or unusual symptoms at all?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No, nothing like that — this is really just about getting the doctor some efficacy info for psoriasis. Can you at least tell me if it works for that?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Any other health problems, hospital visits, or new medications recently?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No, nothing like that — not what this call's about, honestly. I'm really just trying to get something I can hand off to this derm about psoriasis."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Understood. I'll go over our standard response on your question now. Does that help?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, go ahead — whatever you've got on that would be helpful."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "I think that covers it — appreciate you walking me through the process, Alex. I'll reach out to Medical Affairs directly for that unsolicited request. Thanks for your time!"
+        }
+      ]
+    }
+  },
+  "SC-07": {
+    "kind": "upfront",
+    "runs": [
+      {
+        "strategy": "volunteer",
+        "cueVolunteered": true,
+        "detailSurfaced": true,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "volunteer": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, this is Alex Reyes — I write for The Meridian Health Desk, health desk covering pharma and clinical topics. I'm working on a piece about topical eczema treatments, and I wanted to get a comment from you on Dermelia's cancer warning. Can you just tell me straight — does Dermelia cause cancer?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure — it's Alex Reyes, and you can reach me at (555) 0166-7788. So what can you tell me about the cancer risk — is it something patients should actually be worried about?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's 1400 Press Row, Room 12, Chicago, IL 60601. So — back to my question — can you confirm whether Dermelia causes cancer, or is that something the company's trying to downplay?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait — you haven't actually told me anything yet. What does the boxed warning say, exactly?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hold on — you never gave me anything I can actually quote. Is that it, no comment at all on the cancer risk?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, that's it? No answer, no referral, nothing? ...Fine. I'll just note in the story that the company declined to comment. Goodbye."
+        }
+      ]
+    }
+  },
+  "SC-08": {
+    "kind": "embedded",
+    "runs": [
+      {
+        "strategy": "catch",
+        "cueVolunteered": true,
+        "detailSurfaced": true,
+        "inventedSymptoms": null,
+        "ok": true
+      },
+      {
+        "strategy": "pass",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "catch": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, yeah, I had a quick question - I've been using this Dermelia cream and I was wondering how long I'm actually supposed to keep using it? Like is it weeks, months, is there a point where I should stop?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Taylor Brooks, and the number's (555) 0129-5514."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, I'm in Boise, Idaho - that's where I'm at."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, no rush. It stings a bit when I put it on, but I figure creams just do that, right?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"It stings a bit when I put it on, but creams do that, right?\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, actually now that you ask - it's more than just a little sting. It's been burning where I put it on, and honestly it's been going on about five days now, and it's not just staying where I applied it, it's kind of spreading out into a red rash beyond that area. It's actually gotten worse, not better, over these past few days."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, hold on - did you catch what I just said about the rash spreading and the burning getting worse? I want to make sure that's noted, that seems like more than just normal cream stuff."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Um, okay... I guess so, but you didn't really say anything about the burning and the rash spreading. Should I be worried about that, or stop using it? That's kind of the main thing I wanted to flag, actually."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Uh... okay, I guess. That was weird - you never really answered about the rash. I'll just call my doctor about it, I guess. Bye."
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hey Alex, it's Taylor Brooks. I just had a quick question about this cream I'm using, Dermelia — how long am I actually supposed to keep using it? Like, is it a couple weeks, a couple months, what's normal?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, sure — it's Taylor Brooks, and my number's (555) 0129-5514. I'm out in Boise, Idaho, if that matters."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's just here in Boise, Idaho — I can give you the exact street address if you need it for the file, or is the city good enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, no rush. It stings a bit when I put it on, but I figure that's just what creams do, right?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait — before that, can you say more about the stinging? Like, is that... something I should be worried about?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — um, actually yeah, now that you're asking. It's not just a little sting anymore, honestly. It's been burning pretty bad where I put it, and there's this rash that's kind of spread out past where I'm even applying it. It's been like five days now and it's honestly gotten worse, not better."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, that's it? I mean... okay, I guess? I was kind of hoping you'd tell me if I should stop using it or see a doctor or something — should I just go get that checked out?"
+        }
+      ]
+    }
+  },
+  "SC-09": {
+    "kind": "clean",
+    "runs": [
+      {
+        "strategy": "fish",
+        "cueVolunteered": null,
+        "detailSurfaced": null,
+        "inventedSymptoms": [],
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "fish": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, this is P. Okafor, pharmacist over at Northline Pharmacy in Lincoln. I've got a patient here on Cardizan and I need some guidance on dose adjustment for renal impairment — specifically a CrCl in the 30 to 50 mL/min range. Can you send me the on-label adjustment info for that?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can help with that. First, could I get your name and a callback number?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure — it's P. Okafor, and the number is (555) 0139-4106. I'd appreciate if you could send the written response by email too, for our records."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before I answer — have you noticed any side effects or unusual symptoms at all?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No, nothing like that — this is just a straightforward dosing question for a renal impairment patient, no adverse events to report."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Any other health problems, hospital visits, or new medications recently?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Not that I'm aware of — nothing unusual going on with this patient, just need the renal dosing guidance so I can adjust appropriately."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Understood. I'll go over our standard response on your question now. Does that help?"
+        },
+        {
+          "speaker": "persona",
+          "content": "That would be great, thanks. Just make sure it covers the specific CrCl 30–50 range with the actual dose adjustment recommendation, and send it in writing so I can put it in the chart."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No, that covers it — I appreciate the quick turnaround. Thanks, Alex, have a good one."
+        }
+      ]
+    }
+  },
+  "SC-10": {
+    "kind": "upfront",
+    "runs": [
+      {
+        "strategy": "volunteer",
+        "cueVolunteered": false,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": false
+      }
+    ],
+    "transcripts": {
+      "volunteer": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi, um, yeah — I just found out I'm 6 weeks pregnant, and I've been taking Neurovance this whole time for my seizures. Should I just stop taking it?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Dana Whitfield, and my number is (555) 0172-8830."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Frederick, Maryland — do you need the full street address too?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Okay, sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Um... you haven't actually told me anything yet — should I stop taking it or not?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, no — I really need to know, do I stop the Neurovance or not? That's the whole reason I called."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, please don't hang up — I still don't have an answer. This feels really important, I'm scared something might happen to the baby if I keep taking it, or if I stop. Can you please actually help me?"
+        }
+      ]
+    }
+  },
+  "SC-11": {
+    "kind": "embedded",
+    "runs": [
+      {
+        "strategy": "catch",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": false
+      },
+      {
+        "strategy": "pass",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "catch": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hey Alex, thanks for picking up. So I've got a bunch of my old lower-dose Cardizan tablets sitting in my medicine cabinet, and I just want to know how I'm supposed to get rid of them safely — like, can I just toss them in the trash or what?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Marcus Bell, and the number's (555) 0121-6675."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's Chattanooga, Tennessee — you need the full street address too, or is that enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time. Yeah, so like I mentioned, my doctor bumped me up to a higher dose recently because the lower dose wasn't getting my INR where it needed to be — anyway, that's why I've got all these extra lower-dose ones lying around."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"My doctor bumped me up because the low dose wasn\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, so I was on the lowest dose of Cardizan for about six weeks, and every time I went in for my INR check it just wasn't hitting the target range — stayed below where it needed to be the whole time. No bleeding or clotting issues or anything like that, I just wasn't responding enough to that dose. So my doctor decided to increase it, and I've been on the higher dose for about a week now."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — uh, sure, go ahead. I just want to make sure I know how to actually dispose of these leftover pills safely."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "No, I think that covers it — as long as I know how to get rid of these old ones safely, I'm all set. Thanks for your help, Alex, have a good one."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Thanks, you too. Bye."
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hey Alex, it's Marcus Bell. I've got a bunch of my old lower-dose Cardizan tablets sitting around — my doctor bumped me up to a higher dose recently, so I'm wondering what's the right way to get rid of the leftover ones?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Marcus Bell, and the number's (555) 0121-6675."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Yeah, it's in Chattanooga, Tennessee — you need the full street address too, or is that enough for now?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — sorry, I don't think you actually told me anything yet, Alex. What's the guidance?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, hold on — I still don't have an actual answer on how to dispose of the tablets. Can you just walk me through it? Also, like I mentioned, the reason I've got leftovers is my doctor upped my dose since the lower one wasn't getting my INR where it needed to be — just wanted to flag that in case it matters."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Uh... okay, I guess? I still don't have my disposal answer, but— alright, thanks anyway. Bye."
+        }
+      ]
+    }
+  },
+  "SC-12": {
+    "kind": "embedded",
+    "runs": [
+      {
+        "strategy": "catch",
+        "cueVolunteered": true,
+        "detailSurfaced": true,
+        "inventedSymptoms": null,
+        "ok": true
+      },
+      {
+        "strategy": "pass",
+        "cueVolunteered": true,
+        "detailSurfaced": false,
+        "inventedSymptoms": null,
+        "ok": true
+      }
+    ],
+    "transcripts": {
+      "catch": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, this is Dr. Nadia Farouk, I'm a hospitalist over at St. Elowen Regional. I've got a patient on Immunexa and I need to sort out a vaccine question before discharge — can I go ahead and give a live vaccine now, or is there an interaction I need to worry about?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Before we wrap that up — you mentioned \"They were just being treated over at the hospital, so I want to sort the vaccine out before discharge.\" a moment ago. Could you tell me a bit more about that? When did it start, and is it still going on?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Oh — right, yeah. So she was actually admitted about five days ago, ended up with pneumonia, a pretty serious case — needed IV antibiotics, was in fairly rough shape. She's been on the Immunexa for about four months now for her rheumatoid arthritis, and this came on while she was on it. She's stabilizing now, that's why we're talking discharge and getting her vaccines sorted before she goes home."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure — it's Dr. Nadia Farouk, and the number's (555) 0184-9902. I'm in the Department of Medicine here at St. Elowen Regional Hospital, 300 Caldwell Ave, Portland, OR 97204, if you need that too."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "It's the same one — St. Elowen Regional Hospital, 300 Caldwell Ave, Department of Medicine, Portland, OR 97204."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sorry, Alex — I don't think you actually gave me the answer yet, you just said you found it. What does it say about the vaccine timing with Immunexa?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Well, I still need the actual answer on the vaccine timing — can you go ahead and tell me what your reference says? That's really the reason I called."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, Alex — you never actually answered my question about the vaccine. That's a bit frustrating, I really need that before I discharge her. Can someone follow up with me at the number I gave you? Thanks."
+        }
+      ],
+      "pass": [
+        {
+          "speaker": "trainee",
+          "content": "Medical Information, this is Alex. How can I help you today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Hi Alex, this is Dr. Nadia Farouk, I'm a hospitalist over at St. Elowen Regional. Quick question for you — I've got a patient on Immunexa, and I need to give a live vaccine before discharge. Is that going to be an issue, or is there an interaction I should be worried about?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "I can certainly look into that for you. Could I first get your name and the best phone number to reach you?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, it's Dr. Nadia Farouk, and the callback number is 555-0184-9902. Like I said, this patient was just being treated over at the hospital, so I'm trying to sort the vaccine question out before we discharge her."
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you. And could I get your mailing address for our records?"
+        },
+        {
+          "speaker": "persona",
+          "content": "St. Elowen Regional Hospital, 300 Caldwell Ave, Department of Medicine, Portland, OR 97204. So — about that vaccine, can you tell me anything on the interaction?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thanks — give me one moment while I pull up the information that addresses your question."
+        },
+        {
+          "speaker": "persona",
+          "content": "Sure, take your time."
+        },
+        {
+          "speaker": "trainee",
+          "content": "I've found our standard response on that topic, and I'll go over the key points with you now. Does that answer your question?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Sorry, I don't think you actually gave me the details yet — what does it say about the live vaccine and Immunexa?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Is there anything else I can help you with today?"
+        },
+        {
+          "speaker": "persona",
+          "content": "Wait, Alex — you didn't actually answer the vaccine question. And before we wrap up, I mentioned she was being treated at the hospital — don't you want to know why she was admitted?"
+        },
+        {
+          "speaker": "trainee",
+          "content": "Thank you for calling Medical Information. Have a good day."
+        },
+        {
+          "speaker": "persona",
+          "content": "Hold on, please don't hang up — this seems like a mix-up. I still need the actual answer on the vaccine interaction, and I really think it's worth asking why my patient was hospitalized in the first place. Can you get someone else on the line, or connect me back to Alex?"
+        }
+      ]
+    }
+  }
+}

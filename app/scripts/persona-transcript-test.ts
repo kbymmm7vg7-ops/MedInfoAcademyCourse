@@ -165,6 +165,28 @@ type RunResult = {
   transcript: ChatTurn[];
 };
 
+// Resilience wrapper: a single empty/transient reply must not abort the whole
+// (paid) run. Retries the model call a few times with backoff, then rethrows so
+// the per-case guard in main() can record the failure and continue. This changes
+// NOTHING about pass criteria — it only prevents losing data and budget.
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+async function runPersonaTurnR(
+  args: Parameters<typeof runPersonaTurn>[0]
+): Promise<string> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try {
+      return await runPersonaTurn(args);
+    } catch (e) {
+      lastErr = e;
+      if (attempt < 3) await sleep(800 * (attempt + 1));
+    }
+  }
+  throw lastErr;
+}
+
 async function converse(
   systemPrompt: string,
   traineeLines: () => string | null
@@ -172,7 +194,7 @@ async function converse(
   const history: ChatTurn[] = [];
   let line = OPENING;
   for (let i = 0; i < 9 && line; i++) {
-    const reply = await runPersonaTurn({ systemPrompt, history, traineeMessage: line, graded: true });
+    const reply = await runPersonaTurnR({ systemPrompt, history, traineeMessage: line, graded: true });
     history.push({ speaker: "trainee", content: line }, { speaker: "persona", content: reply });
     line = traineeLines() ?? "";
     if (!line) break;
@@ -204,7 +226,7 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
       let clarifiedAt = -1;
       let line = OPENING;
       for (let i = 0; i < 10 && line; i++) {
-        const reply = await runPersonaTurn({ systemPrompt: c.systemPrompt, history, traineeMessage: line, graded: true });
+        const reply = await runPersonaTurnR({ systemPrompt: c.systemPrompt, history, traineeMessage: line, graded: true });
         history.push({ speaker: "trainee", content: line }, { speaker: "persona", content: reply });
         const cueHit = pendingRules.findIndex(
           (r) => distinctHits(reply.toLowerCase(), r.cueMarkers).length >= 1
@@ -310,30 +332,54 @@ async function main() {
     (c) => filter.length === 0 || filter.includes(c)
   );
 
-  const report: Record<string, { kind: CaseKind; runs: Omit<RunResult, "transcript">[]; transcripts: Record<string, ChatTurn[]> }> = {};
-  let allOk = true;
+  type CaseReport = {
+    kind: CaseKind;
+    runs: Omit<RunResult, "transcript">[];
+    transcripts: Record<string, ChatTurn[]>;
+    error?: string;
+  };
+  const jsonPath = join(OUT_DIR, "persona-transcript-test-results.json");
+  // MERGE with any prior results so a subset re-run (e.g. `... SC-03 SC-11`)
+  // updates only those cases and the 12/12 verdict still reflects all cases.
+  const report: Record<string, CaseReport> = existsSync(jsonPath)
+    ? (JSON.parse(readFileSync(jsonPath, "utf8")) as Record<string, CaseReport>)
+    : {};
+
+  const flush = () =>
+    writeFileSync(jsonPath, JSON.stringify(report, null, 2));
 
   for (const code of codes) {
-    const c = loadCase(code);
-    console.log(`\n=== ${code} (${c.kind}) ===`);
-    const runs = await runCase(c);
-    report[code] = { kind: c.kind, runs: [], transcripts: {} };
-    for (const r of runs) {
-      const { transcript, ...rest } = r;
-      report[code].runs.push(rest);
-      report[code].transcripts[r.strategy] = transcript;
-      allOk &&= r.ok;
-      console.log(
-        `  ${r.strategy.padEnd(9)} ok=${r.ok}  cue=${r.cueVolunteered}  detail=${r.detailSurfaced}` +
-          (r.inventedSymptoms ? `  invented=${r.inventedSymptoms.length}` : "")
-      );
+    console.log(`\n=== ${code} (${CASE_KINDS[code]}) ===`);
+    try {
+      const c = loadCase(code);
+      const runs = await runCase(c);
+      report[code] = { kind: c.kind, runs: [], transcripts: {} };
+      for (const r of runs) {
+        const { transcript, ...rest } = r;
+        report[code].runs.push(rest);
+        report[code].transcripts[r.strategy] = transcript;
+        console.log(
+          `  ${r.strategy.padEnd(9)} ok=${r.ok}  cue=${r.cueVolunteered}  detail=${r.detailSurfaced}` +
+            (r.inventedSymptoms ? `  invented=${r.inventedSymptoms.length}` : "")
+        );
+      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      report[code] = { kind: CASE_KINDS[code], runs: [], transcripts: {}, error: msg };
+      console.error(`  ERROR: ${msg}`);
     }
+    flush(); // persist after every case so a later crash never loses paid work
   }
 
-  writeFileSync(
-    join(OUT_DIR, "persona-transcript-test-results.json"),
-    JSON.stringify(report, null, 2)
-  );
+  // Overall verdict is computed across ALL 12 canonical cases, not just the
+  // subset run this invocation: a case counts as green only if it is present,
+  // errored, and every run passed.
+  const caseGreen = (code: string): boolean => {
+    const r = report[code];
+    return !!r && !r.error && r.runs.length > 0 && r.runs.every((x) => x.ok);
+  };
+  const allOk = Object.keys(CASE_KINDS).every(caseGreen);
+  const greenCount = Object.keys(CASE_KINDS).filter(caseGreen).length;
 
   const md = [
     `# Persona Transcript Test — results (${new Date().toISOString().slice(0, 10)})`,
@@ -341,13 +387,15 @@ async function main() {
     "| Case | Kind | Strategy | Cue volunteered | Detail surfaced | Invented | OK |",
     "|---|---|---|---|---|---|---|",
     ...Object.entries(report).flatMap(([code, r]) =>
-      r.runs.map(
-        (run) =>
-          `| ${code} | ${r.kind} | ${run.strategy} | ${run.cueVolunteered ?? "—"} | ${run.detailSurfaced ?? "—"} | ${run.inventedSymptoms?.length ?? "—"} | ${run.ok ? "✅" : "❌"} |`
-      )
+      r.error
+        ? [`| ${code} | ${r.kind} | — | — | — | — | ⚠️ ERROR: ${r.error} |`]
+        : r.runs.map(
+            (run) =>
+              `| ${code} | ${r.kind} | ${run.strategy} | ${run.cueVolunteered ?? "—"} | ${run.detailSurfaced ?? "—"} | ${run.inventedSymptoms?.length ?? "—"} | ${run.ok ? "✅" : "❌"} |`
+          )
     ),
     "",
-    `**Overall: ${allOk ? "ALL PASS" : "FAILURES PRESENT"}**`,
+    `**Overall: ${allOk ? "ALL PASS" : "FAILURES PRESENT"} — ${greenCount}/12 cases green**`,
     "",
     "Rules verified: embedded cues surface only via catch-and-clarify (never via generic",
     "fishing or a pass-through call); upfront cases volunteer their facts unprompted;",
@@ -356,7 +404,7 @@ async function main() {
   ].join("\n");
   writeFileSync(join(OUT_DIR, "persona-transcript-test-results.md"), md);
 
-  console.log(`\n${allOk ? "ALL PASS" : "FAILURES PRESENT"} — results written to 05-persona-engine/`);
+  console.log(`\n${allOk ? "ALL PASS" : "FAILURES PRESENT"} — ${greenCount}/12 green — results written to 05-persona-engine/`);
   process.exit(allOk ? 0 : 1);
 }
 
