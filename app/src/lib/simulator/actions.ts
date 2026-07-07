@@ -1,0 +1,205 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+import type { DocumentationFormState } from "@/lib/simulator/types";
+
+// -----------------------------------------------------------------------------
+// startOrResumeCase
+// Creates a case_instance for the given template if the current user has no
+// active (non-submitted) instance for it, otherwise resumes the most recent
+// one. Redirects into the case workspace either way.
+// -----------------------------------------------------------------------------
+export async function startOrResumeCase(templateId: string): Promise<never> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const { data: existing } = await supabase
+    .from("case_instances")
+    .select("id, status")
+    .eq("user_id", user.id)
+    .eq("template_id", templateId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle<{ id: string; status: string }>();
+
+  if (existing && existing.status !== "submitted" && existing.status !== "evaluated" && existing.status !== "closed") {
+    redirect(`/simulator/case/${existing.id}`);
+  }
+
+  const { data: userRow } = await supabase
+    .from("users")
+    .select("org_id")
+    .eq("id", user.id)
+    .maybeSingle<{ org_id: string | null }>();
+
+  const { data: created, error } = await supabase
+    .from("case_instances")
+    .insert({
+      template_id: templateId,
+      user_id: user.id,
+      org_id: userRow?.org_id ?? null,
+      channel: "chat",
+      status: "in_progress",
+      started_at: new Date().toISOString(),
+    })
+    .select("id")
+    .single<{ id: string }>();
+
+  if (error || !created) {
+    throw new Error(`Could not start case: ${error?.message ?? "unknown error"}`);
+  }
+
+  revalidatePath("/simulator");
+  redirect(`/simulator/case/${created.id}`);
+}
+
+// -----------------------------------------------------------------------------
+// Ownership check shared by save/submit actions.
+// RLS also enforces this at the database level; this check exists purely to
+// produce a clean, actionable error instead of an opaque RLS rejection.
+// -----------------------------------------------------------------------------
+async function assertOwnsInstance(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  instanceId: string,
+  userId: string
+): Promise<void> {
+  const { data, error } = await supabase
+    .from("case_instances")
+    .select("id")
+    .eq("id", instanceId)
+    .eq("user_id", userId)
+    .maybeSingle<{ id: string }>();
+
+  if (error || !data) {
+    throw new Error("This case instance does not belong to you or could not be found.");
+  }
+}
+
+export type SaveDraftResult = { ok: true } | { ok: false; error: string };
+
+// -----------------------------------------------------------------------------
+// saveDraft — upserts the working form state into documentation_records.
+// Called on tab switch (autosave) and via an explicit "Save draft" button.
+// -----------------------------------------------------------------------------
+export async function saveDraft(
+  instanceId: string,
+  formState: DocumentationFormState
+): Promise<SaveDraftResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated." };
+  }
+
+  try {
+    await assertOwnsInstance(supabase, instanceId, user.id);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Not authorized." };
+  }
+
+  const { data: existing } = await supabase
+    .from("documentation_records")
+    .select("id")
+    .eq("case_instance_id", instanceId)
+    .maybeSingle<{ id: string }>();
+
+  const payload = {
+    case_instance_id: instanceId,
+    intake_json: formState.intake,
+    inquiry_json: formState.inquiry,
+    safety_json: formState.safety,
+    response_json: formState.response,
+    closure_json: formState.closure,
+  };
+
+  const { error } = existing
+    ? await supabase.from("documentation_records").update(payload).eq("id", existing.id)
+    : await supabase.from("documentation_records").insert(payload);
+
+  if (error) {
+    return { ok: false, error: error.message };
+  }
+
+  return { ok: true };
+}
+
+export type SubmitCaseResult = { ok: true } | { ok: false; error: string };
+
+// -----------------------------------------------------------------------------
+// submitCase — final upsert + status transition. Redirects to the submitted
+// stub on success. Blocked (defense in depth) unless qc_self_check is true;
+// the Closure tab UI already enforces this, this is the server-side backstop.
+// -----------------------------------------------------------------------------
+export async function submitCase(
+  instanceId: string,
+  formState: DocumentationFormState
+): Promise<SubmitCaseResult | never> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, error: "Not authenticated." };
+  }
+
+  if (!formState.closure.qc_self_check) {
+    return { ok: false, error: "Complete the QC self-check before submitting." };
+  }
+
+  try {
+    await assertOwnsInstance(supabase, instanceId, user.id);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Not authorized." };
+  }
+
+  const nowIso = new Date().toISOString();
+
+  const { data: existing } = await supabase
+    .from("documentation_records")
+    .select("id")
+    .eq("case_instance_id", instanceId)
+    .maybeSingle<{ id: string }>();
+
+  const payload = {
+    case_instance_id: instanceId,
+    intake_json: formState.intake,
+    inquiry_json: formState.inquiry,
+    safety_json: formState.safety,
+    response_json: formState.response,
+    closure_json: formState.closure,
+    submitted_at: nowIso,
+  };
+
+  const { error: docError } = existing
+    ? await supabase.from("documentation_records").update(payload).eq("id", existing.id)
+    : await supabase.from("documentation_records").insert(payload);
+
+  if (docError) {
+    return { ok: false, error: docError.message };
+  }
+
+  const { error: instanceError } = await supabase
+    .from("case_instances")
+    .update({ status: "submitted", closed_at: nowIso })
+    .eq("id", instanceId);
+
+  if (instanceError) {
+    return { ok: false, error: instanceError.message };
+  }
+
+  revalidatePath("/simulator");
+  revalidatePath("/history");
+  redirect(`/simulator/case/${instanceId}/submitted`);
+}
