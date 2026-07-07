@@ -71,6 +71,12 @@ writes the post-48h punch list into `BLOCKERS.md`. This is the last scheduled us
 ---
 
 ## Session S7 — Admin area (Opus; screens → Sonnet) ⟨ADDED by Fable 2026-07-07⟩
+> ⟨SUPERSEDED 2026-07-07 (later)⟩ **Full spec now at `10-dashboard/spec_admin-dashboard.md`; session
+> startup at `00-build/NEXT-SESSION-S7.md` — use those.** Nathan's scope decisions: SEC-1/SEC-2 fix is
+> S7 **step 0**; scope adds the SEC-4 pending-evaluations view + **Cohort Lite** (Manager Dashboard
+> stays V2); SEC-7 cert expiry = **void, don't burn, 24h**. S7 runs **after S4 calibration**. The
+> prompt below is retained as the original outline only.
+
 **Attach**: `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md` (state + invariants), stage folders `04`, `09`.
 **Prompt**:
 > Build the Admin area (PRD §4 admin, role-gated: platform_admin + org admin) as `/admin/*` routes with a server-side role check in the layout (NOT just nav hiding). Five modules, in priority order:

@@ -10,6 +10,10 @@ Everything Fable produced in this window (deepest-reasoning artifacts only). Opu
 | F4 | Design specs: certification logic, tenant-isolation RLS, voice pipeline | `08-…/spec_certification-logic.md`, `09-…/spec_tenant-isolation-rls.md`, `06-…/spec_voice-pipeline.md` | Review |
 | F5 | Session-by-session runbook | `RUNBOOK.md` | — |
 | F6 | Review checkpoints — **Fable runs A & B** | in `RUNBOOK.md` (Checkpoint A / B) | Nathan runs in Fable sessions |
+| F7 | Admin dashboard (S7) spec + startup ⟨2026-07-07⟩ | `10-dashboard/spec_admin-dashboard.md`, `00-build/NEXT-SESSION-S7.md` | Decisions recorded (spec §0) |
+| F8 | **Survivor Handbook** — final Fable artifact ⟨2026-07-07⟩: end-to-end overview, security register SEC-1…14, job aid, session ritual, improvements roadmap | `00-build/SURVIVOR-HANDBOOK.md` | Read once, keep attached |
+
+*Checkpoint B note: Fable access ended 2026-07-07 — Nathan runs Checkpoint B directly using `SURVIVOR-HANDBOOK.md` §5/§10 + `HANDOFF-OPUS.md` §3/§4 as the review lens.*
 
 ## Seed-case coverage (difficulty ladder ×2 + 2 embedded-safety cases; all 7 fictional products)
 | Case | Tier | Skill focus | Product | Channel |

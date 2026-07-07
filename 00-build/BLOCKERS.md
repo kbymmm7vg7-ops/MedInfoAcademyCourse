@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-07-07 (later) · Checkpoint A quick re-verification (Fable) + S7 admin-dashboard decisions
+
+**Checkpoint A re-verified — GO stands.** Artifacts consistent: transcript test 12/12 green
+(`05-persona-engine/persona-transcript-test-results.md`, commit `023c3f9`); SC-11 answer-key
+sign-off recorded (`9f5b6fe`) and the approved lay wording confirmed present in
+`01-seed-cases/SC-11.answer-key.json`; RLS side covered by the S1 two-org test (9/9). Fresh vitest
+this session: **37/37**. Open thread unchanged: **SC-11 DB `case_templates` row still needs
+re-seeding** — captured as S4 step 0 (`NEXT-SESSION-S4.md`).
+
+**Admin dashboard plan is in place** (Nathan's four decisions, recorded in
+`10-dashboard/spec_admin-dashboard.md` §0): S4 runs next, S7 after; SEC-1/SEC-2 bundled as S7
+step 0; scope = Admin UI + Cohort Lite + pending-evaluations view (Manager Dashboard stays V2);
+SEC-7 cert expiry = void-don't-burn, 24h, lazy enforcement. Opus startup doc:
+`00-build/NEXT-SESSION-S7.md`. RUNBOOK S7 paragraph marked superseded.
+
+---
+
 ## 2026-07-07 · CHECKPOINT A — Persona engine (S3) · go/no-go
 
 > ### ✅ UPDATE (later 2026-07-07) — RESOLVED · 12/12 green · Checkpoint A = **GO**

@@ -1,6 +1,11 @@
 # HANDOFF — Project Overview & Opus Orchestration Guide
 *Written by Fable, 2026-07-07. This is the post-Fable operating document. Attach it (plus RUNBOOK.md) to every Opus session. Where this document and the code disagree, read the code; where it and RUNBOOK.md disagree, this is newer.*
 
+> ⟨2026-07-07, later⟩ **See also `00-build/SURVIVOR-HANDBOOK.md`** — Fable's final artifact: end-to-end
+> overview, expanded security register (SEC-1…SEC-14, incl. new persona/evaluator prompt-injection
+> items), symptom→fix job aid, session ritual, and the future-improvements roadmap. It sits above
+> this doc in precedence for anything both cover.
+
 Opus: you are the orchestrator now. Dispatch routine, well-specified work (screens, forms, seed scripts, content tailoring) to Sonnet subagents; do complex judgment work (evaluator calibration loops, security fixes, cert logic, voice pipeline) yourself. Standing rules from RUNBOOK.md all still apply — especially: **no vendor/employer names anywhere**, **never invent medical content or answer keys** (stop and write BLOCKERS.md), and **Nathan personally signs off rubric changes, answer keys, and evaluator calibration**.
 
 ---
