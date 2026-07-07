@@ -162,6 +162,8 @@ export type CaseBrief = {
   therapeutic_area: string | null;
   channel: "chat" | "voice";
   hasScriptedTranscript: boolean;
+  /** true when the case has a live persona (S3+); chat pane replaces the scripted transcript */
+  hasLivePersona: boolean;
   transcript: TranscriptTurn[];
   srl_candidates: SrlCandidate[];
   contact_prefill: ContactPrefill;
@@ -175,6 +177,8 @@ export type IntakeData = {
   requester_type: RequesterType | "";
   solicited: "solicited" | "unsolicited" | "";
   contact_channel: ContactChannel | "";
+  /** YYYY-MM-DD; validator checks it against the instance's started_at (S4.8) */
+  received_date: string;
   product: string;
   inquiry_category: InquiryCategory | "";
   contact: {
@@ -258,6 +262,7 @@ export function emptyFormState(contactPrefill: ContactPrefill): DocumentationFor
       requester_type: "",
       solicited: "",
       contact_channel: "",
+      received_date: "",
       product: "",
       inquiry_category: "",
       contact: {

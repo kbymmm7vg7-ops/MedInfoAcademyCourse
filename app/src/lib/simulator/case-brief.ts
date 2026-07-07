@@ -5,6 +5,11 @@ import type {
   SrlCandidate,
   TranscriptTurn,
 } from "@/lib/simulator/types";
+import {
+  buildPersonaSystemPrompt,
+  type PersonaBrief,
+  type PersonaGroundTruth,
+} from "@/lib/persona/prompt";
 
 // =============================================================================
 // GROUND-TRUTH FIREWALL
@@ -56,6 +61,7 @@ type CaseTemplateRow = {
   therapeutic_area: string | null;
   scripted_transcript_json: unknown;
   ground_truth_json: GroundTruth | null;
+  persona_brief_json: unknown;
 };
 
 type SrdDocumentRow = {
@@ -116,7 +122,7 @@ export async function buildCaseBrief(
   const { data: template, error } = await supabase
     .from("case_templates")
     .select(
-      "id, case_code, title, difficulty, product_ref, therapeutic_area, scripted_transcript_json, ground_truth_json"
+      "id, case_code, title, difficulty, product_ref, therapeutic_area, scripted_transcript_json, ground_truth_json, persona_brief_json"
     )
     .eq("id", templateId)
     .maybeSingle<CaseTemplateRow>();
@@ -166,9 +172,40 @@ export async function buildCaseBrief(
     therapeutic_area: template.therapeutic_area,
     channel: gt.channel === "voice" ? "voice" : "chat",
     hasScriptedTranscript: parseTranscript(template.scripted_transcript_json).length > 0,
+    hasLivePersona: template.persona_brief_json != null,
     transcript: parseTranscript(template.scripted_transcript_json),
     srl_candidates: srlCandidates,
     contact_prefill: contactPrefill,
     sop_timeframe_business_days: gt.sop_timeframe_business_days ?? null,
   };
+}
+
+// -----------------------------------------------------------------------------
+// Persona context — SERVER-ONLY, part of the ground-truth firewall.
+// The persona engine legitimately needs ground truth (reveal rules, safety
+// facts) to direct the caller. That read stays inside this file to preserve
+// the single-reader invariant; only the finished system prompt leaves, and it
+// goes to the model API, never to the browser.
+// -----------------------------------------------------------------------------
+export async function buildPersonaSystemPromptForTemplate(
+  supabase: SupabaseClient,
+  templateId: string
+): Promise<string | null> {
+  const { data: row, error } = await supabase
+    .from("case_templates")
+    .select("product_ref, ground_truth_json, persona_brief_json")
+    .eq("id", templateId)
+    .maybeSingle<{
+      product_ref: string | null;
+      ground_truth_json: PersonaGroundTruth | null;
+      persona_brief_json: PersonaBrief | null;
+    }>();
+
+  if (error || !row || !row.persona_brief_json || !row.ground_truth_json) return null;
+
+  return buildPersonaSystemPrompt({
+    brief: row.persona_brief_json,
+    groundTruth: row.ground_truth_json,
+    productRef: row.product_ref,
+  });
 }

@@ -15,6 +15,8 @@ export type QueueRow = {
   difficulty: number;
   productRef: string | null;
   hasScriptedTranscript: boolean;
+  /** true when the case has a live persona; queue shows a "Live persona" chip */
+  hasLivePersona: boolean;
   sopTimeframeBusinessDays: number | null;
   status: QueueCaseStatus;
   instanceId: string | null;
@@ -27,6 +29,7 @@ type CaseTemplateQueueRow = {
   difficulty: number;
   product_ref: string | null;
   scripted_transcript_json: unknown;
+  persona_brief_json: unknown;
   ground_truth_json: { sop_timeframe_business_days?: number } | null;
 };
 
@@ -60,7 +63,7 @@ export async function loadQueueRows(
   const { data: templates, error: templatesError } = await supabase
     .from("case_templates")
     .select(
-      "id, case_code, title, difficulty, product_ref, scripted_transcript_json, ground_truth_json"
+      "id, case_code, title, difficulty, product_ref, scripted_transcript_json, persona_brief_json, ground_truth_json"
     )
     .is("org_id", null)
     .order("case_code", { ascending: true });
@@ -92,6 +95,7 @@ export async function loadQueueRows(
       difficulty: row.difficulty,
       productRef: row.product_ref,
       hasScriptedTranscript: parseTranscript(row.scripted_transcript_json).length > 0,
+      hasLivePersona: row.persona_brief_json != null,
       sopTimeframeBusinessDays: row.ground_truth_json?.sop_timeframe_business_days ?? null,
       status: instance ? mapInstanceStatus(instance.status) : "not_started",
       instanceId: instance ? instance.id : null,

@@ -1,12 +1,23 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { buildCaseBrief } from "@/lib/simulator/case-brief";
-import { emptyFormState, mergeFormState, type CaseBrief, type DocumentationFormState } from "@/lib/simulator/types";
+import {
+  emptyFormState,
+  mergeFormState,
+  type CaseBrief,
+  type DocumentationFormState,
+  type TranscriptTurn,
+} from "@/lib/simulator/types";
 
 type CaseInstanceRow = {
   id: string;
   template_id: string;
   user_id: string;
   status: string;
+};
+
+type ConversationTurnRow = {
+  speaker: "persona" | "trainee";
+  content: string;
 };
 
 type DocumentationRecordRow = {
@@ -25,6 +36,8 @@ export type LoadedCaseInstance = {
   brief: CaseBrief;
   formState: DocumentationFormState;
   submittedAt: string | null;
+  /** Saved live-persona chat history for this instance, oldest first. */
+  conversationTurns: TranscriptTurn[];
 };
 
 /**
@@ -62,6 +75,19 @@ export async function loadCaseInstance(
     .eq("case_instance_id", instanceId)
     .maybeSingle<DocumentationRecordRow>();
 
+  let conversationTurns: TranscriptTurn[] = [];
+  if (brief.hasLivePersona) {
+    const { data: turnRows } = await supabase
+      .from("conversation_turns")
+      .select("speaker, content")
+      .eq("case_instance_id", instanceId)
+      .order("ts", { ascending: true });
+    conversationTurns = ((turnRows ?? []) as ConversationTurnRow[]).map((r) => ({
+      speaker: r.speaker,
+      content: r.content,
+    }));
+  }
+
   const base = emptyFormState(brief.contact_prefill);
   const formState = docRecord
     ? mergeFormState(base, {
@@ -80,5 +106,6 @@ export async function loadCaseInstance(
     brief,
     formState,
     submittedAt: docRecord?.submitted_at ?? null,
+    conversationTurns,
   };
 }

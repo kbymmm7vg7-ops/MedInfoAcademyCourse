@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import type { CaseBrief, DocumentationFormState } from "@/lib/simulator/types";
+import type { CaseBrief, DocumentationFormState, TranscriptTurn } from "@/lib/simulator/types";
 import { saveDraft, submitCase } from "@/lib/simulator/actions";
 import { TranscriptPane } from "@/components/simulator/transcript-pane";
 import { IntakeTab } from "@/components/simulator/intake-tab";
@@ -17,11 +17,13 @@ export function CaseWorkspace({
   instanceId,
   brief,
   initialFormState,
+  initialConversationTurns = [],
   readOnly = false,
 }: {
   instanceId: string;
   brief: CaseBrief;
   initialFormState: DocumentationFormState;
+  initialConversationTurns?: TranscriptTurn[];
   readOnly?: boolean;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("Intake");
@@ -81,10 +83,15 @@ export function CaseWorkspace({
   return (
     <div className="grid h-[calc(100vh-3.5rem)] grid-cols-2">
       <TranscriptPane
+        instanceId={instanceId}
         transcript={brief.transcript}
         hasScriptedTranscript={brief.hasScriptedTranscript}
+        hasLivePersona={brief.hasLivePersona}
+        conversationTurns={initialConversationTurns}
+        productLabel={brief.product_ref}
         openBook={openBook}
         onToggleOpenBook={() => setOpenBook((v) => !v)}
+        readOnly={readOnly}
       />
 
       <div className="flex h-full flex-col overflow-hidden">

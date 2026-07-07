@@ -37,6 +37,7 @@ export default async function HistoryDetailPage({
         instanceId={loaded.instanceId}
         brief={loaded.brief}
         initialFormState={loaded.formState}
+        initialConversationTurns={loaded.conversationTurns}
         readOnly
       />
     </div>

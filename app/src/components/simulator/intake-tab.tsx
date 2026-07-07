@@ -66,6 +66,16 @@ export function IntakeTab({
             ))}
           </Select>
         </Field>
+
+        <Field label="Received date" required>
+          <input
+            type="date"
+            disabled={disabled}
+            value={intake.received_date}
+            onChange={(e) => onChange({ received_date: e.target.value })}
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none disabled:bg-slate-50 disabled:text-slate-500"
+          />
+        </Field>
       </div>
 
       <Field label="Solicited or unsolicited" required>

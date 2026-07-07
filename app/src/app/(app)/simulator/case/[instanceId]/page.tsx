@@ -45,6 +45,7 @@ export default async function CaseInstancePage({
         instanceId={loaded.instanceId}
         brief={loaded.brief}
         initialFormState={loaded.formState}
+        initialConversationTurns={loaded.conversationTurns}
       />
     </div>
   );
