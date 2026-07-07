@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://medinfoacademy.example/schemas/rubric-score-record.v1.json",
+  "title": "MI Scorecard Result Record",
+  "description": "A completed evaluation of one case instance against rubric-scorecard-v1. Produced by the AI evaluator (or a human QA reviewer). Scoring semantics are defined in scoring-contract.md. [VENDORED COPY \u2014 source of truth: 02-rubric-schema/rubric.schema.json; keep in sync.]",
+  "type": "object",
+  "required": [
+    "rubric_version",
+    "case_instance_id",
+    "evaluator",
+    "channel",
+    "sections",
+    "overall"
+  ],
+  "properties": {
+    "rubric_version": {
+      "const": "1.0"
+    },
+    "case_instance_id": {
+      "type": "string"
+    },
+    "case_template_id": {
+      "type": "string"
+    },
+    "variant_ref": {
+      "type": "string",
+      "description": "Generated-variant identifier actually played (audit/replay)"
+    },
+    "evaluator": {
+      "type": "object",
+      "required": [
+        "kind",
+        "version"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "ai",
+            "human"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "description": "Evaluator prompt/model version, or reviewer name"
+        },
+        "model": {
+          "type": "string"
+        }
+      }
+    },
+    "channel": {
+      "enum": [
+        "voice",
+        "text"
+      ]
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sections": {
+      "type": "object",
+      "required": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "properties": {
+        "s1": {
+          "$ref": "#/definitions/scaledSection"
+        },
+        "s2": {
+          "$ref": "#/definitions/weightedSection"
+        },
+        "s3": {
+          "$ref": "#/definitions/weightedSection"
+        },
+        "s4": {
+          "$ref": "#/definitions/weightedSection"
+        },
+        "s5": {
+          "$ref": "#/definitions/weightedSection"
+        }
+      }
+    },
+    "missed_counts": {
+      "type": "object",
+      "description": "Per weighted section: count of failed criteria by category",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "critical": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "major": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "minor": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "overall": {
+      "type": "object",
+      "required": [
+        "result"
+      ],
+      "properties": {
+        "result": {
+          "enum": [
+            "pass",
+            "fail"
+          ]
+        },
+        "constructive_feedback": {
+          "type": "string",
+          "description": "Required when any section triggers the feedback rule"
+        },
+        "coaching_summary": {
+          "type": "string",
+          "description": "Plain-language rationale mapped to PRD \u00a710 coaching dimensions"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "criterionResult": {
+      "type": "object",
+      "required": [
+        "id",
+        "result"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^S[1-5]\\.[0-9]{1,2}$"
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fail",
+            "na"
+          ]
+        },
+        "score": {
+          "type": "number",
+          "description": "Points awarded: full value on pass, 0 on fail, omitted on na. For S1 criteria this is the 1-4 rating instead."
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Verbatim transcript/documentation excerpt grounding the result. REQUIRED for every fail."
+        },
+        "rationale": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result": {
+                "const": "fail"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "evidence",
+              "rationale"
+            ]
+          }
+        }
+      ]
+    },
+    "scaledSection": {
+      "type": "object",
+      "required": [
+        "applicable",
+        "criteria"
+      ],
+      "properties": {
+        "applicable": {
+          "type": "boolean"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/criterionResult"
+          }
+        },
+        "average": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 4
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fail",
+            "na"
+          ]
+        }
+      }
+    },
+    "weightedSection": {
+      "type": "object",
+      "required": [
+        "applicable",
+        "criteria"
+      ],
+      "properties": {
+        "applicable": {
+          "type": "boolean"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/criterionResult"
+          }
+        },
+        "subtotal": {
+          "type": "number"
+        },
+        "available_points": {
+          "type": "number",
+          "description": "Sum of Val over non-NA criteria"
+        },
+        "min_passing": {
+          "type": "number",
+          "description": "Prorated per scoring-contract.md when any criterion is NA"
+        },
+        "critical_failure": {
+          "type": "boolean"
+        },
+        "result": {
+          "enum": [
+            "pass",
+            "fail",
+            "na"
+          ]
+        }
+      }
+    }
+  }
+}

@@ -229,6 +229,10 @@ export async function buildPersonaSystemPromptForTemplate(
   });
 
   if (!variant) return basePrompt;
+  return withVariantOverlay(basePrompt, variant);
+}
+
+function withVariantOverlay(basePrompt: string, variant: VariantSnapshot): string {
 
   const addr = [variant.contact.street_address, variant.contact.city, variant.contact.state, variant.contact.zip]
     .filter(Boolean)
@@ -244,4 +248,44 @@ rules, but your identity and delivery differ this time:
 - Delivery style: ${variant.style_directive}
 Everything else — the reason for calling, every case fact, every aside and its
 disclosure rule — is unchanged. Never mention having called before.`;
+}
+
+// -----------------------------------------------------------------------------
+// Evaluation inputs — SERVER-ONLY, same single-reader firewall rationale as the
+// persona context: the evaluator legitimately needs the answer key; the read
+// stays in this file and the assembled inputs go to the evaluator, never to
+// the browser.
+// -----------------------------------------------------------------------------
+export type EvaluationCaseData = {
+  caseTemplateId: string;
+  variantRef: string | null;
+  groundTruthJson: Record<string, unknown>;
+  sopTimeframeBusinessDays: number | null;
+};
+
+export async function loadEvaluationCaseData(
+  supabase: SupabaseClient,
+  instanceId: string
+): Promise<EvaluationCaseData | null> {
+  const { data: instance } = await supabase
+    .from("case_instances")
+    .select("template_id, variant_snapshot_json")
+    .eq("id", instanceId)
+    .maybeSingle<{ template_id: string; variant_snapshot_json: { seed?: string } | null }>();
+  if (!instance) return null;
+
+  const { data: template } = await supabase
+    .from("case_templates")
+    .select("id, ground_truth_json")
+    .eq("id", instance.template_id)
+    .maybeSingle<{ id: string; ground_truth_json: Record<string, unknown> | null }>();
+  if (!template?.ground_truth_json) return null;
+
+  const gt = template.ground_truth_json as { sop_timeframe_business_days?: number };
+  return {
+    caseTemplateId: template.id,
+    variantRef: instance.variant_snapshot_json?.seed ?? null,
+    groundTruthJson: template.ground_truth_json,
+    sopTimeframeBusinessDays: gt.sop_timeframe_business_days ?? null,
+  };
 }

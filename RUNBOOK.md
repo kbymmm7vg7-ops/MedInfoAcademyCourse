@@ -70,6 +70,18 @@ writes the post-48h punch list into `BLOCKERS.md`. This is the last scheduled us
 
 ---
 
+## Session S7 — Admin area (Opus; screens → Sonnet) ⟨ADDED by Fable 2026-07-07⟩
+**Attach**: `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md` (state + invariants), stage folders `04`, `09`.
+**Prompt**:
+> Build the Admin area (PRD §4 admin, role-gated: platform_admin + org admin) as `/admin/*` routes with a server-side role check in the layout (NOT just nav hiding). Five modules, in priority order:
+> 1. **Training module management**: list/edit the shared (`org_id IS NULL`) `training_modules` — edit `content_md` in a textarea with live preview through the existing XSS-safe renderer (`src/lib/training/markdown.ts` — do NOT introduce a raw-HTML editor), reorder (`order_index`), toggle `required`, create new modules, per-org tailored copies (duplicate row with `org_id` set; org rows shadow shared ones by slug for that org's trainees — implement the shadowing in the training loaders). Platform_admin edits shared rows; org admin edits only their org's rows (RLS already enforces; surface clean errors).
+> 2. **Scenario adjustment (case bank)**: list `case_templates` with the content-status board columns (`outline_status`, `stt_tts_verified`, `rubric_approved`); edit SURFACE fields freely (title, difficulty, therapeutic_area, product_ref). **Ground-truth (`ground_truth_json`) edits are gated**: editing it flips `rubric_approved` to false and writes an `audit_log` row — answer keys are Nathan-sign-off artifacts (RUNBOOK standing rule); the UI must say so. Validate any edited key against `01-seed-cases/answer-key.schema.json` (vendor a copy) before save.
+> 3. **Custom scenario intake (enterprise)**: create org-scoped `case_templates` (`org_id` set, `is_fictional_product` false allowed) via a guided form: case brief fields, answer-key builder matching the schema, persona brief (premise/profile/beat sheet), org SRLs (`srd_documents` with `org_id`). New custom cases start `outline_status='drafted'`, `rubric_approved=false`, and are EXCLUDED from trainee queues until approved (extend the queue/accreditation loaders to filter on `rubric_approved` — currently they don't; see HANDOFF known-gaps).
+> 4. **User/roster management**: org admin lists/deactivates users in their org, assigns roles trainee|trainer|qa (never admin+ — the `users_no_self_escalation` trigger backstops); platform_admin manages orgs + `org_case_access` (which shared cases each org sees).
+> 5. **Confidentiality tier config** per org (`organizations.confidentiality_tier`), platform_admin only.
+> Dispatch all screens to Sonnet; Opus owns the role-gating layout, the ground-truth edit gate + audit write, and the queue-filter change. Every admin mutation writes an `audit_log` row (actor, action, target) — the table exists and is currently unused (HANDOFF gap #7).
+**Definition of done**: org admin can tailor a training module and draft a custom scenario that stays invisible to trainees until `rubric_approved`; platform_admin can reorder/edit shared modules, flip org case access, and see every change in `audit_log`; unauthorized roles get 404s on `/admin/*`.
+
 ## Post-48h punch list (Opus/Sonnet, before public launch)
 - Voice hardening + **certification-via-voice** end-to-end (MVP cert can validate on text; voice cert before launch).
 - **Production TTS decision** + commercial license; **Supabase free → Pro** (backups, no auto-pause).

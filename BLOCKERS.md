@@ -1,5 +1,17 @@
 # BLOCKERS
 
+## S4 — two keys needed in `app/.env.local` (Nathan adding ~$40 API credit EOD 2026-07-07)
+- `ANTHROPIC_API_KEY=sk-ant-...` — persona runtime, S3 transcript test, evaluator runs.
+- `SUPABASE_SERVICE_ROLE_KEY=...` — from the Supabase dashboard (Project Settings →
+  API keys → service_role). The evaluator persists scores/locks with it because RLS
+  intentionally blocks trainees from writing their own `evaluation_scores` /
+  `certification_locks`. Server-only var — never prefix with NEXT_PUBLIC.
+- When both are present:
+  1. `cd app && npx tsx scripts/persona-transcript-test.ts` (S3 DoD → Checkpoint A)
+  2. `cd app && npx tsx scripts/evaluator-calibration.ts` (S4 DoD → calibration report
+     for Nathan's blind-scoring gate)
+  3. In-app: submitting a case evaluates it inline (falls back to "pending" without keys).
+
 ## S3 — ANTHROPIC_API_KEY required (blocking the live persona test)
 - **What**: The persona engine (S3) and its 12-case transcript test are built and
   ready, but running them requires an Anthropic API key at runtime.

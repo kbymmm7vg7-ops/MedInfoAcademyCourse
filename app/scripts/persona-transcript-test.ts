@@ -23,8 +23,17 @@
 // Output: ../05-persona-engine/persona-transcript-test-results.{json,md}
 // =============================================================================
 
-import { readFileSync, writeFileSync, readdirSync } from "fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { join } from "path";
+
+// tsx does not auto-load Next's .env.local — load it so ANTHROPIC_API_KEY works.
+const envPath = join(__dirname, "../.env.local");
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].trim();
+  }
+}
 import { buildPersonaSystemPrompt, type PersonaGroundTruth, type PersonaBrief } from "../src/lib/persona/prompt";
 import { runPersonaTurn, type ChatTurn } from "../src/lib/persona/engine";
 

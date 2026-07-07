@@ -206,6 +206,44 @@ export async function submitCase(
     return { ok: false, error: instanceError.message };
   }
 
+  // Evaluate inline when configured; otherwise the case stays 'submitted'
+  // (pending) until keys exist. Evaluation failure must never lose a submit.
+  try {
+    const { loadEvaluationCaseData } = await import("@/lib/simulator/case-brief");
+    const { evaluateCase, persistEvaluation } = await import("@/lib/evaluator/evaluate");
+    const caseData = await loadEvaluationCaseData(supabase, instanceId);
+    const { data: instRow } = await supabase
+      .from("case_instances")
+      .select("started_at")
+      .eq("id", instanceId)
+      .maybeSingle<{ started_at: string | null }>();
+    const { data: turnRows } = await supabase
+      .from("conversation_turns")
+      .select("speaker, content")
+      .eq("case_instance_id", instanceId)
+      .order("ts", { ascending: true });
+    if (caseData) {
+      const { record } = await evaluateCase({
+        caseInstanceId: instanceId,
+        caseTemplateId: caseData.caseTemplateId,
+        variantRef: caseData.variantRef,
+        channel: "text",
+        groundTruthJson: caseData.groundTruthJson,
+        transcript: (turnRows ?? []) as { speaker: "persona" | "trainee"; content: string }[],
+        doc: formState,
+        receivedAt: instRow?.started_at ?? nowIso,
+        sopTimeframeBusinessDays: caseData.sopTimeframeBusinessDays,
+      });
+      await persistEvaluation({
+        record: record as Parameters<typeof persistEvaluation>[0]["record"],
+        userId: user.id,
+      });
+    }
+  } catch {
+    // missing ANTHROPIC_API_KEY / SUPABASE_SERVICE_ROLE_KEY or transient LLM
+    // failure: submission stands, evaluation stays pending.
+  }
+
   // Sittings (practice/certification) link to their attempt row via
   // variant_ref = variant seed; stamp completion. pass_bool stays null until
   // the evaluator (S4) scores it — burn/lock derive from that later.
