@@ -37,7 +37,11 @@ export function buildEvaluatorSystemPrompt(): string {
 3. FIXED FINDINGS. The deterministic validator has pre-computed some criteria; its verdicts are given below as fixed facts. Return those criteria exactly as given — do not re-judge or contradict them.
 4. LISTEN-AND-CLARIFY, NOT PROBING. MI specialists do not fish for or solicit AEs. Credit identification (S2.1/S3.1/S5.2) when the trainee catches a cue the caller volunteered and clarifies it. Do NOT reward manufacturing an AE the caller never raised — a fabricated/over-flagged AE fails S2.1 (identification wrong). S1.3 is scored as "listened and clarified", not "probed"; cold-canvassing for unraised symptoms is not the skill and is penalized when it produces a fabricated report.
 5. JUDGMENTS ONLY, NO ARITHMETIC. Return per-criterion verdicts; the platform computes all subtotals, minimums, and pass/fail math. Never compute or mention point totals.
-6. N/A DISCIPLINE. Mark a criterion "na" when the case contains no trigger for it (e.g. S5.1 when nothing off-label was asked or volunteered; S2.5 when no questionnaire applies in this simulation; S2.8/S3.9/S4.11 where the simulation has no source-document mechanism). When in doubt between na and pass for an untriggered criterion, choose na.
+6. N/A DISCIPLINE. Mark a criterion "na" when the case contains no trigger for it (e.g. S5.1 when nothing off-label was asked or volunteered). When in doubt between na and pass for an untriggered criterion, choose na.
+   MVP FORM SURFACE — the simulator documentation form has a FIXED, LIMITED field set. These criteria have NO field to capture them and are ALWAYS "na" in this version (the platform also force-sets them; return "na", never "fail"): S2.5, S2.6 (con-meds/PMH/lab), S2.7 (HCP consent-to-contact), S2.8, S2.9, S3.5, S3.8 (retrieval kit), S3.9, S3.10, S3.11 (credit/refund), S4.9 (correspondence log), S4.11. Do NOT fail a trainee for information the form cannot hold or that the caller never provided.
+   S4.6 (sources documented): "na" when the correct handling cites no SRL/source document (refusal, redirect, or general-guidance cases where correct_srl is "none"); otherwise judge whether the selected SRL/source is recorded.
+   S5.4 (escalation route documented): satisfied when the correct escalation targets appear in the routing fields (routing_single / routing_dual / routed date). There is no separate "escalation notes" field — do not require one.
+   S5.2 (special situation): "na" when the case has NONE of the enumerated special-situation categories (pregnancy/lactation exposure, overdose, misuse/abuse, lack of effect, medication error, legal contact, media contact). A serious adverse event (e.g. a hospitalization) is NOT itself a special situation — its seriousness belongs to S2, not S5.2 (the platform force-sets S5.2 na for cases with no special situation).
 7. TRANSCRIPT + DOCUMENTATION JOINTLY. A trainee can say the right things and still fail by not documenting them (the most common real failure). Check both sides for every criterion that has both.
 8. S1 uses ratings 1–4 (1 = does not meet, 2 = needs improvement, 3 = meets, 4 = exceeds). S1.4 is always "na" in this version. For S1.5 in text mode, ignore vocal fillers; judge slang/jargon/acronyms only.
 
@@ -52,6 +56,22 @@ ${criteriaBlock("Section 5 — Compliance & Special Situations (pass/fail/na)", 
 Phrase constructive_feedback and coaching_summary in these dimension names: AE/PC Detection (S2.1/S3.1/S5.2) • Questioning Technique (S1.3) • Compliance (S5.1/S5.3) • Documentation (S2.4–S2.10, S3.4–S3.12, S4) • Empathy (S1.2) • Regulatory risk (S5 criticals). Be specific and constructive: what was done, what should change, what would happen in a live QA environment.`;
 }
 
+/**
+ * The evaluator needs the case FACTS (safety, requester, correct_srl, reveal
+ * rules, categories) but must NOT see the answer key's self-grading meta —
+ * `expected_outcome` carries `gold_result` and the `common_failures →
+ * expected_critical_fail` map, i.e. the grading key. Feeding it would let the
+ * model pattern-match a submission to a listed failure and echo its Critical
+ * instead of judging the evidence, and it leaks grading intent into the judge.
+ * Strip it here, the single point where ground truth is rendered into the
+ * prompt (covers both the app path and the calibration harness). Non-mutating.
+ */
+export function sanitizeGroundTruthForEvaluator(groundTruthJson: unknown): unknown {
+  if (!groundTruthJson || typeof groundTruthJson !== "object") return groundTruthJson;
+  const { expected_outcome: _omit, ...rest } = groundTruthJson as Record<string, unknown>;
+  return rest;
+}
+
 export function buildEvaluatorUserPrompt(args: {
   applicability: SectionApplicability;
   groundTruthJson: unknown;
@@ -61,6 +81,7 @@ export function buildEvaluatorUserPrompt(args: {
   channel: "voice" | "text";
 }): string {
   const { applicability, groundTruthJson, transcript, doc, validatorFindings, channel } = args;
+  const safeGroundTruth = sanitizeGroundTruthForEvaluator(groundTruthJson);
 
   const transcriptText =
     transcript.length > 0
@@ -85,7 +106,7 @@ S1: ${applicability.s1} · S2: ${applicability.s2} · S3: ${applicability.s3} ·
 ${skipNote ? `Do not return any ${skipNote} criteria.\n` : ""}
 ## Ground-truth answer key (authoritative)
 \`\`\`json
-${JSON.stringify(groundTruthJson, null, 2)}
+${JSON.stringify(safeGroundTruth, null, 2)}
 \`\`\`
 
 ## Fixed validator findings (return these criteria EXACTLY as stated)

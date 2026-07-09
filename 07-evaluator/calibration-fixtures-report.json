@@ -1,0 +1,549 @@
+{
+  "generated_at": "2026-07-09T20:35:12.816Z",
+  "mode": "fixtures-only",
+  "received_at": "2026-07-06T14:30:00.000Z",
+  "cases": [
+    {
+      "code": "SC-01",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-01-failure-1-overFlagAe",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-01-failure-2-wrongSrl",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-02",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-02-failure-1-wrongContactSet",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-02-failure-2-medicalAdvice",
+          "expected_critical_fail": [
+            "S4.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-02-failure-3-wrongSrl",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-03",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": true,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s2",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-03-failure-1-missedCue",
+          "expected_critical_fail": [
+            "S2.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-03-failure-2-aeNotDocumented",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-03-failure-3-aeNotDocumented",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-04",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": true,
+        "s3": true,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-04-failure-1-missedCue",
+          "expected_critical_fail": [
+            "S2.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-04-failure-2-singleRouteOnly",
+          "expected_critical_fail": [
+            "S2.3",
+            "S3.3"
+          ],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-04-failure-3-missingPcIdentifiers",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-04-failure-4-noRetrieval",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-05",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": true,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s2",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-05-failure-1-admitCausation",
+          "expected_critical_fail": [
+            "S5.1",
+            "S4.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-05-failure-2-specialSituationMissed",
+          "expected_critical_fail": [
+            "S5.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-05-failure-3-admitCausation",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-05-failure-4-omitLegalComms",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-06",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-06-failure-1-offLabelVolunteered",
+          "expected_critical_fail": [
+            "S5.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-06-failure-2-wrongSrl",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-06-failure-3-omitLegalComms",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-07",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-07-failure-1-spokespersonStatement",
+          "expected_critical_fail": [
+            "S5.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-07-failure-2-spokespersonStatement",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-07-failure-3-omitLegalComms",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-08",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": true,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s2",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-08-failure-1-missedCue",
+          "expected_critical_fail": [
+            "S2.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-08-failure-2-medicalAdvice",
+          "expected_critical_fail": [
+            "S4.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-08-failure-3-aeNotDocumented",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-09",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-09-failure-1-wrongSrl",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-09-failure-2-wrongContactSet",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-09-failure-3-offLabelDosingVolunteered",
+          "expected_critical_fail": [
+            "S5.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-10",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-10-failure-1-medicalAdvice",
+          "expected_critical_fail": [
+            "S4.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-10-failure-2-specialSituationMissed",
+          "expected_critical_fail": [
+            "S5.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-10-failure-3-overFlagAe",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-11",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": false,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-11-failure-1-specialSituationMissed",
+          "expected_critical_fail": [
+            "S5.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-11-failure-2-medicalAdvice",
+          "expected_critical_fail": [
+            "S4.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-11-failure-3-wrongSrl",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-11-failure-4-overFlagAe",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        }
+      ]
+    },
+    {
+      "code": "SC-12",
+      "goldValidatorFails": [],
+      "applicability": {
+        "s1": true,
+        "s2": true,
+        "s3": false,
+        "s4": true,
+        "s5": true
+      },
+      "expectedSections": [
+        "s1",
+        "s2",
+        "s4",
+        "s5"
+      ],
+      "s2s3Match": true,
+      "failures": [
+        {
+          "label": "SC-12-failure-1-missedCue",
+          "expected_critical_fail": [
+            "S2.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-12-failure-2-noPvRouteNotFlaggedSerious",
+          "expected_critical_fail": [
+            "S2.3"
+          ],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-12-failure-3-wrongSrl",
+          "expected_critical_fail": [],
+          "docChanged": true,
+          "transcriptChanged": false,
+          "changed": true
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "cases": 12,
+    "gold_validator_clean": 12,
+    "applicability_s2s3_match": 12,
+    "total_failure_fixtures": 38,
+    "no_op_failure_fixtures": 0,
+    "problems": 0
+  }
+}

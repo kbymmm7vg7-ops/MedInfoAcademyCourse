@@ -143,13 +143,15 @@ export function scoreS1(applicable: boolean, verdicts: CriterionVerdict[]): Scal
     }
     const rating = Math.min(4, Math.max(1, v.rating));
     ratings.push(rating);
-    criteria.push({
-      id: c.id,
-      result: rating >= S1_PASS_THRESHOLD ? "pass" : "fail",
-      score: rating,
-      evidence: v.evidence,
-      rationale: v.rationale,
-    });
+    const result = rating >= S1_PASS_THRESHOLD ? "pass" : "fail";
+    // A failed S1 criterion must carry evidence+rationale (rubric.schema.json);
+    // the LLM sometimes omits them for low ratings. Backfill so the record
+    // never fails ajv (an unhandled throw leaves a real case silently pending).
+    const evidence =
+      result === "fail" ? v.evidence ?? v.rationale ?? `S1 rating ${rating}/4 (below the 2.5 pass threshold)` : v.evidence;
+    const rationale =
+      result === "fail" ? v.rationale ?? v.evidence ?? `Rated ${rating}/4, below the 2.5 pass threshold` : v.rationale;
+    criteria.push({ id: c.id, result, score: rating, evidence, rationale });
   }
 
   if (ratings.length === 0) {

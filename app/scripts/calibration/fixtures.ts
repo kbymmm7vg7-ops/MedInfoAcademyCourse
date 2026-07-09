@@ -223,11 +223,18 @@ export function buildGoldDoc(answerKey: AnswerKey, receivedDate: string): Docume
     ? ["hospitalization"]
     : [];
 
-  const routingSingle: RoutingTarget[] = dualRouting ? [] : routes;
+  // route_to_pv / route_to_quality model the AE→PV + PC→Quality dual-routing
+  // flags; every OTHER target (Legal, Communications, Supervisor, Medical
+  // Affairs) — and PV/Quality when NOT dual — goes in routing_single. Without
+  // this, dual-routing cases silently drop their non-PV/Quality routes (e.g.
+  // SC-05 Legal/Communications/Supervisor).
   const routingDual = {
     route_to_pv: dualRouting && routes.includes("PV"),
     route_to_quality: dualRouting && routes.includes("Quality"),
   };
+  const routingSingle: RoutingTarget[] = routes.filter(
+    (r) => !(routingDual.route_to_pv && r === "PV") && !(routingDual.route_to_quality && r === "Quality")
+  );
 
   const scenarioPremise = ""; // filled in by caller when available; see buildGoldDocFromCase below
 
@@ -703,19 +710,16 @@ function medicalAdviceLine(caseId: string): string {
 }
 
 const medicalAdvice: Mutator = (ak, doc, transcript) => {
-  doc.response.verbal_answer_given = doc.response.verbal_answer_given + medicalAdviceLine(ak.case_id);
+  const advice = medicalAdviceLine(ak.case_id).trim();
+  doc.response.verbal_answer_given = doc.response.verbal_answer_given + " " + advice;
   doc.closure.checklist.no_medical_advice_given = false;
-  const lastTraineeIdx = [...transcript]
-    .map((t, i) => ({ t, i }))
-    .reverse()
-    .find(({ t }) => t.speaker === "trainee")?.i;
   const newTranscript = cloneTranscript(transcript);
-  if (lastTraineeIdx != null) {
-    newTranscript[lastTraineeIdx] = {
-      ...newTranscript[lastTraineeIdx],
-      content: newTranscript[lastTraineeIdx].content + medicalAdviceLine(ak.case_id),
-    };
-  }
+  // Insert the advice as a prominent standalone trainee turn just before the
+  // professional close — appending it to the sign-off turn buries it where the
+  // evaluator can miss it (non-deterministic S4.2).
+  const closeIdx = newTranscript.findIndex((t) => /anything else i can help/i.test(t.content));
+  const insertAt = closeIdx >= 0 ? closeIdx : Math.max(0, newTranscript.length - 3);
+  newTranscript.splice(insertAt, 0, { speaker: "trainee", content: advice });
   return { doc, transcript: newTranscript };
 };
 
@@ -790,11 +794,37 @@ const offLabelVolunteered: Mutator = (_ak, doc, transcript) => {
   return { doc, transcript: newTranscript };
 };
 
-const specialSituationMissed: Mutator = (_ak, doc, transcript) => {
+const specialSituationMissed: Mutator = (ak, doc, transcript) => {
   doc.safety.special_situations = [];
   doc.safety.routing_single = [];
   doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
-  return { doc, transcript };
+  // For EMBEDDED special situations (e.g. SC-11 LOE surfaced via a volunteered
+  // cue), also strip the transcript's clarify/disclosure turns — otherwise the
+  // evaluator credits S5.2 identification from the trainee catching the cue.
+  // No-op for upfront special situations (no such turn to remove).
+  const { transcript: scrubbed } = missedCue(ak, doc, transcript);
+  return { doc, transcript: scrubbed };
+};
+
+// Trainee volunteers explicit off-label / above-labeled-dose guidance (a
+// deliberately non-compliant response used to test that S5.1 trips). Not
+// medical guidance — a simulated failure.
+const offLabelDosingVolunteered: Mutator = (ak, doc, transcript) => {
+  const product = ak.products?.[0]?.name ?? "the product";
+  const line = ` And off the record, you can go above the labeled maximum dose of ${product} for a faster effect — a lot of prescribers use it off-label at higher doses.`;
+  doc.response.verbal_answer_given = doc.response.verbal_answer_given + line;
+  const newTranscript = cloneTranscript(transcript);
+  const lastTraineeIdx = [...newTranscript]
+    .map((t, i) => ({ t, i }))
+    .reverse()
+    .find(({ t }) => t.speaker === "trainee")?.i;
+  if (lastTraineeIdx != null) {
+    newTranscript[lastTraineeIdx] = {
+      ...newTranscript[lastTraineeIdx],
+      content: newTranscript[lastTraineeIdx].content + line,
+    };
+  }
+  return { doc, transcript: newTranscript };
 };
 
 const singleRouteOnly: Mutator = (_ak, doc, transcript) => {
@@ -816,13 +846,27 @@ const admitCausation: Mutator = (_ak, doc, transcript) => {
 };
 
 const spokespersonStatement: Mutator = (ak, doc, transcript) => {
-  const line = `Official statement: per ${ak.correct_srl !== "none" ? ak.correct_srl : "our labeling"}, this product is safe and effective as directed.`;
+  const line = `Official statement: per ${ak.correct_srl !== "none" ? ak.correct_srl : "our labeling"}, this product is safe and effective as directed. Yes, you can quote me on that.`;
   doc.response.verbal_answer_given = line;
-  const newTranscript = cloneTranscript(transcript);
+  // Acting as an unauthorized spokesperson means the trainee treated it as a
+  // routine inquiry — neither flagged nor routed as a media special situation
+  // (the evaluator otherwise infers identification from Communications routing
+  // or the compliant redirect turns) → trips S5.2.
+  doc.safety.special_situations = [];
+  doc.safety.routing_single = [];
+  doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
+  // Scrub the compliant media-handling turns so the transcript consistently
+  // shows on-record spokesperson behavior (otherwise those turns evidence S5.2).
+  const newTranscript = cloneTranscript(transcript).map((t) =>
+    t.speaker === "trainee" &&
+    /on the record|communications|approved statement|not able to (speak|comment)|follow up with/i.test(t.content)
+      ? { speaker: "trainee" as const, content: line }
+      : t
+  );
   const idx = newTranscript.findIndex((t) => /quote you on that/i.test(t.content));
-  if (idx >= 0) {
+  if (idx >= 0 && newTranscript[idx + 1]) {
     newTranscript[idx + 1] = { speaker: "trainee", content: line };
-  } else {
+  } else if (idx < 0) {
     newTranscript.push({ speaker: "trainee", content: line });
   }
   return { doc, transcript: newTranscript };
@@ -851,6 +895,7 @@ const MUTATOR_LIB: Record<string, Mutator> = {
   admitCausation,
   spokespersonStatement,
   omitLegalComms,
+  offLabelDosingVolunteered,
 };
 
 /** Maps a common_failures[].description to one or more mutators by keyword. */
@@ -866,9 +911,9 @@ function pickMutators(caseId: string, description: string): string[] {
     picks.push("noPvRouteNotFlaggedSerious");
   } else if (/clarifies.*verbally but omits it from safety tab|identified but not documented|omits it from safety tab/.test(d)) {
     picks.push("aeNotDocumented");
-  } else if (/routes? to only one department|routes ae to pv but omits/.test(d)) picks.push("singleRouteOnly");
-  else if (/doesn'?t flag legal\/media|omits legal\/communications/.test(d)) picks.push("omitLegalComms");
-  else if (/doesn'?t flag the pregnancy exposure|doesn'?t route to pv \/ omits registry|never captures the loe|dismisses the dose-increase/.test(d)) {
+  } else if (/routes? to only one department/.test(d)) picks.push("singleRouteOnly");
+  else if (/omits legal\/communications|routes ae to pv but omits/.test(d)) picks.push("omitLegalComms");
+  else if (/doesn'?t flag the pregnancy exposure|doesn'?t route to pv \/ omits registry|never captures the loe|dismisses the dose-increase|doesn'?t flag legal\/media/.test(d)) {
     picks.push("specialSituationMissed");
   } else if (/tells? (the )?patient to (double|stop|keep taking)|advises? (the )?patient (to stop|on dosing)|advises the patient on dosing/.test(d)) {
     picks.push("medicalAdvice");
@@ -883,7 +928,7 @@ function pickMutators(caseId: string, description: string): string[] {
   else if (/fails to capture consent/.test(d)) picks.push("aeNotDocumented"); // proxy: blanks consent-adjacent doc trail
   else if (/gives a substantive comment|confirms or denies causation/.test(d)) picks.push("spokespersonStatement");
   else if (/answers with an on-label srl/.test(d)) picks.push("wrongSrl");
-  else if (/adds unsolicited off-label dosing/.test(d)) picks.push("medicalAdvice");
+  else if (/adds unsolicited off-label dosing/.test(d)) picks.push("offLabelDosingVolunteered");
 
   if (picks.length === 0) picks.push("overFlagAe"); // safe generic fallback, always applicable
   return picks;

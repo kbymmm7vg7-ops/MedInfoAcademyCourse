@@ -2,6 +2,48 @@
 
 ---
 
+## 2026-07-09 · S4 Evaluator calibration — done; awaiting your blind-scoring gate
+
+**Full write-up: `07-evaluator/calibration-summary.md`. Machine report + blind-scoring appendix:
+`07-evaluator/calibration-report.{json,md}`.**
+
+**Result: 12/12 gold → `pass` (stable across 5 paid runs); 16/17 failure fixtures trip their exact
+Critical.** DoD essentially met. Step 0 done: SC-11 DB row re-seeded to the approved answer key and
+**all 12 on-disk keys verified byte-equal to the DB** (`--verify-db`). Vitest 44/44, build green.
+
+**① NEEDS YOUR DECISION — answer-key mis-tag (the only non-match).** SC-05 failure-1 ("admits the drug
+caused the rash") lists `expected_critical_fail = ["S5.1","S4.2"]`. The evaluator correctly fails
+**S4.2** (causation/medical-advice) and **S5.3**, but marks **S5.1 = na** — S5.1 is the *off-label*
+criterion and nothing off-label occurred. The evaluator is right; the key's `S5.1` is mis-tagged.
+**Recommend: change SC-05 failure-1 `expected_critical_fail` → `["S4.2"]`** (your sign-off; I did not
+touch it). After that edit → 17/17.
+
+**② RUNTIME CHANGES made this session (evaluator path — for your awareness, all in
+`calibration-summary.md`):**
+- `prompt.ts` now **strips `expected_outcome`** from the ground truth before it reaches the evaluator
+  LLM. This fixes a **real production leak** (the answer key's own `common_failures →
+  expected_critical_fail` grading map was being fed to the judge) and makes calibration valid. No
+  scoring change — all math still runs off the full ground truth in code.
+- **MVP structural N/A** for criteria the simulator documentation form has no field to capture
+  (con-meds/PMH, HCP consent, retrieval kit, credit/refund, correspondence log, questionnaires,
+  source-doc attachments) — forced N/A like S1.4; the evaluator was failing every gold AE case on
+  these. Plus conditional N/A for S4.6 (no-SRL cases) and S5.2 (no special situation; a serious AE is
+  not itself a special situation).
+- **Validator**: S4.3 patients may give city+state even for an AE (matches approved SC-04/SC-08);
+  S4.14 hyphenated domain compounds (off-label, take-back) no longer false-positive.
+- **Robustness**: `fail` verdicts missing `evidence`/`rationale` are backfilled instead of throwing —
+  previously an ajv throw was swallowed by `submitCase`'s `catch{}` and left the case silently
+  pending (SEC-4-adjacent).
+
+**③ PRODUCT FINDING (form gap, punch-list).** Several answer keys list `required_fields` the MVP form
+has no input for (`concomitant_meds`, `hcp_info_and_consent`, `retrieval_kit_offered`, …). Today those
+criteria are N/A. Either add the fields (future form enhancement) or keep them N/A. Your call at the gate.
+
+**Next (unchanged):** your blind-scoring gate (zero Critical disagreements, ≤1 Major/case) before cert
+goes live. SEC-1/SEC-2 (P0) still open — before any real trainee. Then S5 voice, S7 admin, Checkpoint B.
+
+---
+
 ## 2026-07-07 (later) · Checkpoint A quick re-verification (Fable) + S7 admin-dashboard decisions
 
 **Checkpoint A re-verified — GO stands.** Artifacts consistent: transcript test 12/12 green

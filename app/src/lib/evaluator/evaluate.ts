@@ -17,9 +17,10 @@ import { MODEL_POLICY } from "@/lib/config/models";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { runValidator, type ValidatorFinding } from "@/lib/validator/validator";
 import { getSpellChecker } from "@/lib/validator/spelling";
+import type { SpellCheckFn } from "@/lib/validator/validator";
 import { computeApplicability } from "./applicability";
 import { scoreAll, type CriterionVerdict } from "./scoring";
-import { RUBRIC_VERSION } from "./criteria";
+import { RUBRIC_VERSION, MVP_FORCED_NA } from "./criteria";
 import {
   buildEvaluatorSystemPrompt,
   buildEvaluatorUserPrompt,
@@ -86,6 +87,9 @@ export type EvaluationInputs = {
   doc: DocumentationFormState;
   receivedAt: string;
   sopTimeframeBusinessDays: number | null;
+  /** Injectable for tooling (calibration harness) that cannot load the default
+   *  dictionary loader; production omits it and uses getSpellChecker(). */
+  spellCheck?: SpellCheckFn;
 };
 
 type LlmOutput = {
@@ -129,7 +133,7 @@ async function callEvaluatorLlm(system: string, user: string): Promise<LlmOutput
  * below does that for app flows; the calibration harness skips persistence).
  */
 export async function evaluateCase(inputs: EvaluationInputs) {
-  const spellCheck = await getSpellChecker();
+  const spellCheck = inputs.spellCheck ?? (await getSpellChecker());
   const validatorFindings = runValidator({
     doc: inputs.doc,
     transcript: inputs.transcript,
@@ -157,7 +161,44 @@ export async function evaluateCase(inputs: EvaluationInputs) {
     })
   );
 
-  const verdicts = pinValidatorVerdicts(llm.verdicts, validatorFindings, applicability);
+  const pinned = pinValidatorVerdicts(llm.verdicts, validatorFindings, applicability);
+
+  // Force MVP-structural-N/A criteria (no field exists in the simulator form)
+  // and two conditional N/As, deterministic like S1.4 — never left to the LLM:
+  //   S4.6 — no source document when the correct response cites no SRL.
+  //   S5.2 — no special situation exists in the case (ground-truth
+  //          special_situations empty/["none"] and no pregnancy/lactation).
+  //          The LLM otherwise non-deterministically fails S5.2 on serious AEs,
+  //          which are NOT one of the enumerated special-situation categories.
+  const gt = inputs.groundTruthJson as {
+    correct_srl?: string;
+    safety?: { special_situations?: string[]; pregnancy_or_lactation?: boolean };
+  };
+  const noSourceExpected = !gt.correct_srl || gt.correct_srl === "none";
+  const specials = (gt.safety?.special_situations ?? []).filter((s) => s && s !== "none");
+  const noSpecialSituation = specials.length === 0 && gt.safety?.pregnancy_or_lactation !== true;
+  const scoped = pinned.map((v) =>
+    MVP_FORCED_NA.has(v.id) ||
+    (v.id === "S4.6" && noSourceExpected) ||
+    (v.id === "S5.2" && noSpecialSituation)
+      ? {
+          id: v.id,
+          result: "na" as const,
+          rationale: "MVP documentation form has no field for this criterion (S4 calibration).",
+        }
+      : v
+  );
+
+  // Robustness: rubric.schema.json requires BOTH evidence and rationale on a
+  // fail, but the LLM sometimes returns only one. Backfill from the other so a
+  // valid judgment is never rejected by ajv — an unhandled throw here is
+  // swallowed by submitCase's catch{} and leaves the case silently pending
+  // (SEC-4). A fail with neither field is left as-is (binding rule 2 forbids it).
+  const verdicts = scoped.map((v) =>
+    v.result === "fail" && (v.evidence == null || v.rationale == null) && (v.evidence ?? v.rationale) != null
+      ? { ...v, evidence: v.evidence ?? v.rationale, rationale: v.rationale ?? v.evidence }
+      : v
+  );
   const scored = scoreAll({ applicability, verdicts });
 
   const record = {

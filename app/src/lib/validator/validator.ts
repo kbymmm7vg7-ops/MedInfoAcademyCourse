@@ -148,11 +148,18 @@ export function runValidator(input: ValidatorInput): ValidatorFinding[] {
   // --- S4.3 contact set per case type -------------------------------------
   {
     const c = doc.intake.contact;
+    // Patients/consumers may give city+state or a postal code even when
+    // reporting an AE/PC (scorecard S4.3 patient clause; the approved seeds
+    // SC-04 & SC-08 are patient AE reports with city+state only). Every other
+    // requester in an AE/PC or HCP/MI context provides a full address.
+    // (S4 calibration — see 07-evaluator/calibration-report.md.)
+    const isPatientReporter = doc.intake.requester_type === "patient";
     const fullSetRequired =
-      aeDocumented ||
-      pcDocumented ||
-      doc.intake.requester_type === "hcp" ||
-      doc.intake.requester_type === "pharmacist";
+      !isPatientReporter &&
+      (aeDocumented ||
+        pcDocumented ||
+        doc.intake.requester_type === "hcp" ||
+        doc.intake.requester_type === "pharmacist");
     const missing: string[] = [];
     if (!c.name.trim()) missing.push("name");
     if (!c.background.trim()) missing.push("background");
@@ -184,7 +191,13 @@ export function runValidator(input: ValidatorInput): ValidatorFinding[] {
         // Skip capitalized tokens (proper nouns / sentence starts) and short
         // acronyms — deterministic false-positive control, documented choice.
         if (/^[A-Z]/.test(token)) continue;
-        if (!spellCheck(token)) misspelled.push(`${token} (${field})`);
+        // Hyphenated compounds (off-label, take-back, creatinine-clearance) are
+        // checked component-by-component: flag only when a real (≥3-char,
+        // non-capitalized) part is misspelled, so common domain compounds don't
+        // false-positive. (S4 calibration — documented false-positive control.)
+        const parts = token.includes("-") ? token.split("-") : [token];
+        const bad = parts.some((p) => p.length >= 3 && !/^[A-Z]/.test(p) && !spellCheck(p));
+        if (bad) misspelled.push(`${token} (${field})`);
       }
     }
     findings.push({

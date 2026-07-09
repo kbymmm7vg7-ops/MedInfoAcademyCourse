@@ -131,6 +131,31 @@ describe("documentation validator", () => {
     expect(f.status).toBe("pass");
   });
 
+  it("S4.3 accepts city+state for a PATIENT reporting an AE (SC-04/SC-08 shape)", () => {
+    // Patients get the city+state allowance even when an AE is documented —
+    // the approved seeds SC-04 & SC-08 have city+state-only patient contacts.
+    const doc = goldDoc();
+    doc.intake.requester_type = "patient";
+    doc.intake.contact.street_address = ""; // patient gave city+state only
+    const f = byCriterion(runValidator(base({ doc })), "S4.3"); // AE still documented
+    expect(f.status).toBe("pass");
+  });
+
+  it("S4.14 does not flag common hyphenated domain compounds", () => {
+    const doc = goldDoc();
+    doc.inquiry.summary =
+      "Off-label take-back question about creatinine-clearance and co-administered meds.";
+    const f = byCriterion(runValidator(base({ doc })), "S4.14");
+    expect(f.status, f.evidence).toBe("pass");
+  });
+
+  it("S4.14 still catches a genuinely misspelled hyphen component", () => {
+    const doc = goldDoc();
+    doc.inquiry.summary = "the wrongg-word and anotherr-thingg and thirdd-oops here"; // 3 bad parts
+    const f = byCriterion(runValidator(base({ doc })), "S4.14");
+    expect(f.status).toBe("fail");
+  });
+
   it("S4.14 tolerates ≤2 misspellings and fails on 3+", () => {
     const doc = goldDoc();
     doc.inquiry.summary = "the pateint has an inhaller and a palpitaton problem"; // 3 misspellings

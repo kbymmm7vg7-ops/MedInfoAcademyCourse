@@ -99,3 +99,28 @@ export const WEIGHTED_SECTIONS = {
 export type WeightedSectionKey = keyof typeof WEIGHTED_SECTIONS;
 
 export const S1_PASS_THRESHOLD = 2.5;
+
+/**
+ * MVP structural N/A — criteria the MVP documentation form has NO field to
+ * capture, so no trainee can ever satisfy (or fail) them in this version. They
+ * are forced N/A in code (evaluate.ts), deterministically, exactly as S1.4
+ * (vocal skills) already is — not left to the LLM. The scorecard targets a full
+ * commercial QMS; the simulator form is a subset. Discovered at S4 calibration:
+ * the evaluator was failing every gold AE case on these absent fields.
+ *
+ * Covered: AE/PC questionnaires (S2.5/S3.5); past-med-history / con-meds / lab
+ * (S2.6); HCP info + consent-to-contact (S2.7); source-document attachment
+ * (S2.8/S3.9/S4.11); AE/PC resolution narrative (S2.9/S3.10); retrieval kit
+ * (S3.8); credit/refund/replacement (S3.11); correspondence log (S4.9).
+ *
+ * NOTE for Nathan (S4 gate): the answer keys list these as `required_fields`
+ * (con-meds, hcp_info_and_consent, retrieval_kit_offered, …) — the MVP form
+ * lacks them. Either the form grows these fields (future enhancement) or they
+ * stay N/A. Ratify at the blind-scoring gate. S4.6 is handled separately
+ * (conditional: N/A only when the correct response cites no SRL/source).
+ */
+export const MVP_FORCED_NA: ReadonlySet<string> = new Set([
+  "S2.5", "S2.6", "S2.7", "S2.8", "S2.9",
+  "S3.5", "S3.8", "S3.9", "S3.10", "S3.11",
+  "S4.9", "S4.11",
+]);
