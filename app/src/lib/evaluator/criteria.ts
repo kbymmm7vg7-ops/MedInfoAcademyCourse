@@ -110,7 +110,9 @@ export const S1_PASS_THRESHOLD = 2.5;
  *
  * Covered: AE/PC questionnaires (S2.5/S3.5); past-med-history / con-meds / lab
  * (S2.6); HCP info + consent-to-contact (S2.7); source-document attachment
- * (S2.8/S3.9/S4.11); AE/PC resolution narrative (S2.9/S3.10); retrieval kit
+ * (S2.8/S3.9/S4.11); AE/PC resolution narrative (S2.9/S3.10); PC Description
+ * narrative field (S3.4 — safety tab has lot/expiry/NDC/sample only, no PC
+ * narrative input; the PC story lands in inquiry.summary); retrieval kit
  * (S3.8); credit/refund/replacement (S3.11); correspondence log (S4.9).
  *
  * NOTE for Nathan (S4 gate): the answer keys list these as `required_fields`
@@ -121,6 +123,6 @@ export const S1_PASS_THRESHOLD = 2.5;
  */
 export const MVP_FORCED_NA: ReadonlySet<string> = new Set([
   "S2.5", "S2.6", "S2.7", "S2.8", "S2.9",
-  "S3.5", "S3.8", "S3.9", "S3.10", "S3.11",
+  "S3.4", "S3.5", "S3.8", "S3.9", "S3.10", "S3.11",
   "S4.9", "S4.11",
 ]);

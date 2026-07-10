@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-07-10 · S4 CLOSED at 12/12 + 17/17 — blind-scoring gate is the only S4 item left (Fable)
+
+- **① SC-05 failure-1 key edit applied** per your approval: `["S5.1","S4.2"]` → `["S4.2"]` in the
+  on-disk key, `seed_s2.sql`, and the DB row; `--verify-db` green (all 12 keys == DB). Resolves the
+  ①-decision below.
+- **② One new calibration decision to ratify: S3.4 → MVP structural N/A.** The confirmation run
+  flipped SC-04 gold on S3.4 (PC Description narrative) — the MVP safety tab has no PC-narrative
+  input, so it's the same structurally-impossible class as the eight S4 forced-N/As. Earlier passes
+  were judge leniency, i.e. exactly the run-to-run flip the summary warned about, now removed
+  deterministically. Missing PC-description field added to the form-gap punch list (③ below).
+- **Final full paid run: 12/12 gold pass · 17/17 Criticals · 0 errors.** Vitest 44/44.
+  `07-evaluator/calibration-report.{json,md}` regenerated — **blind-score from this version.**
+- Merged to `main`. **Your gate (unchanged): blind-score ≥10 outputs from calibration-report.md
+  Part A; ship cert only on zero Critical disagreements, ≤1 Major/case.** Cert stays offline until then.
+
+---
+
 ## 2026-07-09 · S4 Evaluator calibration — done; awaiting your blind-scoring gate
 
 **Full write-up: `07-evaluator/calibration-summary.md`. Machine report + blind-scoring appendix:

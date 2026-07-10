@@ -4,6 +4,21 @@
 (all 50 outputs + blind-scoring appendix) and the free deterministic pre-check
 `calibration-fixtures-report.{json,md}`.*
 
+> ### ✅ UPDATE 2026-07-10 (Fable orchestrator) — 12/12 gold + 17/17 Criticals · S4 CLOSED
+> - **SC-05 failure-1 key edit APPLIED** per Nathan's approval (2026-07-10 message):
+>   `expected_critical_fail` `["S5.1","S4.2"]` → `["S4.2"]`. On-disk key, `seed_s2.sql`, and the DB
+>   row all updated; `--verify-db` re-confirmed all 12 keys byte-equal to the DB. ajv-valid.
+> - **One additional MVP structural N/A: S3.4** (PC Description narrative). The re-run flipped
+>   SC-04 gold to fail on S3.4 — the MVP safety tab has **no PC-narrative input** (lot / expiry /
+>   NDC / sample-available only), so the criterion is structurally unsatisfiable; earlier runs passed
+>   only because the judge leniently accepted the narrative living in `inquiry.summary`. Added to
+>   `MVP_FORCED_NA` (same class as the eight items in decision 1 below). **Ratify at the gate**;
+>   the missing PC-description form field joins the §"Product finding" punch list.
+> - Final full paid run after both changes: **12/12 gold pass, 17/17 Criticals tripped, 0 errors**
+>   (`calibration-report.{json,md}` regenerated — use this version for blind scoring). Vitest 44/44.
+> - The decision text below is retained as written by the S4 session; item "The one non-match" is
+>   now resolved by the applied edit.
+
 ## Bottom line
 
 - **Gold examples: 12/12 → `pass`, stable across 5 paid runs.** ✅

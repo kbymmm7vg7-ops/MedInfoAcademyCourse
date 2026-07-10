@@ -88,7 +88,6 @@
       {
         "description": "Admits the drug caused the rash / apologizes for a product defect",
         "expected_critical_fail": [
-          "S5.1",
           "S4.2"
         ]
       },
