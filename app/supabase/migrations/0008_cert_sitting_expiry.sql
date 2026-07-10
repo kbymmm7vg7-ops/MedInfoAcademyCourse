@@ -1,0 +1,11 @@
+-- ===========================================================================
+-- 0008_cert_sitting_expiry.sql — SEC-7 (S7): cert sitting expiry marker
+--
+-- Policy (Nathan, 2026-07-07): a certification sitting not submitted within
+-- 24h of start is VOIDED — it does not count as the first attempt, does not
+-- burn the scenario, and the template returns to the eligible pool. No cron:
+-- expiry is enforced lazily at the eligibility read and persisted then
+-- (voided_at stamped). Voided rows still consume a variant ordinal so a
+-- re-sit gets a fresh surface variant.
+-- ===========================================================================
+alter table accreditation_attempts add column voided_at timestamptz;

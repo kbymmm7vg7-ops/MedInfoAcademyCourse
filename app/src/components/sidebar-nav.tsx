@@ -4,10 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/nav-items";
 
-export function SidebarNav({ showManagerNav }: { showManagerNav: boolean }) {
+export function SidebarNav({
+  showManagerNav,
+  showAdminNav = false,
+}: {
+  showManagerNav: boolean;
+  showAdminNav?: boolean;
+}) {
   const pathname = usePathname();
 
-  const items = NAV_ITEMS.filter((item) => !item.managerOnly || showManagerNav);
+  const items = NAV_ITEMS.filter(
+    (item) => (!item.managerOnly || showManagerNav) && (!item.adminOnly || showAdminNav)
+  );
 
   return (
     <nav className="flex-1 space-y-1 px-3 py-4">

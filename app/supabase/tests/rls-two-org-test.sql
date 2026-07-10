@@ -32,9 +32,14 @@ insert into case_templates (id, org_id, case_code, title, difficulty, requester_
   ('66666666-6666-4666-8666-666666666666', '33333333-3333-4333-8333-333333333333', 'TT-A1', 'Org A custom case', 2, 'hcp')
 on conflict (id) do nothing;
 
-insert into srd_documents (id, org_id, srl_code, title, body) values
-  ('77777777-7777-4777-8777-777777777777', '33333333-3333-4333-8333-333333333333', 'SRL-A-001', 'Org A private SRD', 'org A confidential body')
+-- body moved to srd_document_bodies by migration 0007 (SEC-2)
+insert into srd_documents (id, org_id, srl_code, title) values
+  ('77777777-7777-4777-8777-777777777777', '33333333-3333-4333-8333-333333333333', 'SRL-A-001', 'Org A private SRD')
 on conflict (id) do nothing;
+
+insert into srd_document_bodies (document_id, body) values
+  ('77777777-7777-4777-8777-777777777777', 'org A confidential body')
+on conflict (document_id) do nothing;
 
 insert into case_instances (id, template_id, user_id, org_id, status) values
   ('88888888-8888-4888-8888-888888888888', '66666666-6666-4666-8666-666666666666', '11111111-1111-4111-8111-111111111111', '33333333-3333-4333-8333-333333333333', 'in_progress')
@@ -114,6 +119,26 @@ select '5 org_case_access subset limits shared bank', '1 (only TT-01)',
        count(*)::text || ' (' || coalesce(string_agg(case_code, ','), 'none') || ')',
        count(*) = 1 and min(case_code) = 'TT-01'
 from case_templates where org_id is null and case_code like 'TT-%';
+
+-- SEC-1/SEC-2 (migration 0007): answer keys and SRL bodies must be
+-- unreachable for ANY authenticated user — even the org's own admin. Still
+-- running as Org B trainee here; org A admin is re-checked implicitly since
+-- both tables have no authenticated grants at all.
+do $$
+begin
+  perform count(*) from case_answer_keys;
+  insert into _rls_test_results values ('7a authenticated reads case_answer_keys', 'permission denied', 'ALLOWED', false);
+exception when others then
+  insert into _rls_test_results values ('7a authenticated reads case_answer_keys', 'permission denied', 'denied: ' || sqlerrm, true);
+end $$;
+
+do $$
+begin
+  perform count(*) from srd_document_bodies;
+  insert into _rls_test_results values ('7b authenticated reads srd_document_bodies', 'permission denied', 'ALLOWED', false);
+exception when others then
+  insert into _rls_test_results values ('7b authenticated reads srd_document_bodies', 'permission denied', 'denied: ' || sqlerrm, true);
+end $$;
 
 -- As Org A admin: audit export
 reset role;

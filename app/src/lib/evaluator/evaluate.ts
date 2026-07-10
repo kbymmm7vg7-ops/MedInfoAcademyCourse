@@ -281,7 +281,8 @@ export async function persistEvaluation(args: {
       .from("accreditation_attempts")
       .update({ pass_bool: pass, score: pass ? 1 : 0 })
       .eq("user_id", userId)
-      .eq("variant_ref", variantRef);
+      .eq("variant_ref", variantRef)
+      .is("voided_at", null); // SEC-7: a voided sitting never receives a result
 
     const { data: attemptRows } = await admin
       .from("accreditation_attempts")
@@ -293,11 +294,20 @@ export async function persistEvaluation(args: {
       const packet = buildEvidencePacket(attempts, RUBRIC_VERSION, new Date().toISOString());
       if (packet) {
         // insert-only: the PK + absence of an update path keep the lock immutable
-        await admin
+        const { data: lockRow } = await admin
           .from("certification_locks")
           .insert({ user_id: userId, evidence_packet_json: packet, rubric_version: RUBRIC_VERSION })
           .select()
           .maybeSingle();
+        if (lockRow) {
+          const { writeAuditLog } = await import("@/lib/audit/log");
+          await writeAuditLog({
+            actorId: userId,
+            action: "cert.lock",
+            targetType: "certification_locks",
+            targetId: userId,
+          });
+        }
       }
     }
   }

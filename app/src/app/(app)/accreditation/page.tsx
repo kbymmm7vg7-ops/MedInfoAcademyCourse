@@ -63,6 +63,7 @@ export default async function AccreditationPage({
     .from("case_templates")
     .select("id, case_code, title, difficulty")
     .is("org_id", null)
+    .eq("rubric_approved", true) // unapproved cases are never certifiable (spec §4.3)
     .order("case_code", { ascending: true });
   const templates = (data ?? []) as TemplateRow[];
   const passes = 3 - overview.progress.passesRemaining;

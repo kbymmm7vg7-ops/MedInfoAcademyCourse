@@ -11,21 +11,31 @@ import {
   type PersonaGroundTruth,
 } from "@/lib/persona/prompt";
 import { seededShuffle, type VariantSnapshot } from "@/lib/cert/variant-engine";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 // =============================================================================
 // GROUND-TRUTH FIREWALL
 // =============================================================================
-// case_templates.ground_truth_json is the answer key for a case: it contains
+// case_answer_keys.ground_truth_json is the answer key for a case: it contains
 // requester.type, safety.* (ae_present, seriousness, etc.), reveal_rules,
 // correct_srl, inquiry_category, expected_outcome, and any other "what the
 // trainee is supposed to arrive at" data.
 //
-// THIS FILE IS THE ONLY PLACE ALLOWED TO READ ground_truth_json. Every other
-// server component / server action that needs case data MUST go through
+// Since migration 0007 (SEC-1/SEC-2) the answer key lives in the
+// service-role-only `case_answer_keys` table (and SRL bodies in
+// `srd_document_bodies`) — RLS with no authenticated policies, so the DB
+// itself now enforces what used to be app-layer convention. Reads go through
+// the service client; every function here FIRST verifies the caller can see
+// the case via an RLS-scoped read of case_templates surface columns, so
+// tenant scoping is preserved.
+//
+// THIS FILE IS THE ONLY PLACE ALLOWED TO READ ground_truth_json (plus the
+// admin ground-truth editor, migrations, and seeds). Every other server
+// component / server action that needs case data MUST go through
 // buildCaseBrief() below and pass the resulting CaseBrief (or a subset of it)
-// to client components. Never `select("*")` or `select("ground_truth_json")`
-// on case_templates outside this file, and never forward the raw row to a
-// client component or client-invoked server action response.
+// to client components. Never select answer-key columns elsewhere, and never
+// forward the raw row to a client component or client-invoked server action
+// response.
 //
 // What crosses to the client from this projection:
 //   id, case_code, title, difficulty, product_ref, therapeutic_area, channel,
@@ -60,17 +70,36 @@ type CaseTemplateRow = {
   difficulty: number;
   product_ref: string | null;
   therapeutic_area: string | null;
-  scripted_transcript_json: unknown;
+};
+
+type AnswerKeyRow = {
+  template_id: string;
   ground_truth_json: GroundTruth | null;
   persona_brief_json: unknown;
+  scripted_transcript_json: unknown;
 };
 
 type SrdDocumentRow = {
   id: string;
   srl_code: string | null;
   title: string;
-  body: string;
 };
+
+/**
+ * Service-role read of one case's answer key. Callers in this file MUST have
+ * already confirmed the current user can see the template via an RLS-scoped
+ * case_templates read — this helper deliberately bypasses RLS.
+ */
+async function loadAnswerKey(templateId: string): Promise<AnswerKeyRow | null> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("case_answer_keys")
+    .select("template_id, ground_truth_json, persona_brief_json, scripted_transcript_json")
+    .eq("template_id", templateId)
+    .maybeSingle<AnswerKeyRow>();
+  if (error || !data) return null;
+  return data;
+}
 
 /** Fisher-Yates, server-side only, seeded from Math.random per request. */
 function shuffle<T>(arr: T[]): T[] {
@@ -124,17 +153,20 @@ export async function buildCaseBrief(
   // fresh caller identity, seeded decoy arrangement, closed-book enforced.
   const variant = options.variant ?? null;
   const openBook = variant?.closed_book ? false : options.openBook;
+  // RLS-scoped surface read — this is the access check: if the current user
+  // can't see the template (org scoping / org_case_access), we return null
+  // before any service-role read happens.
   const { data: template, error } = await supabase
     .from("case_templates")
-    .select(
-      "id, case_code, title, difficulty, product_ref, therapeutic_area, scripted_transcript_json, ground_truth_json, persona_brief_json"
-    )
+    .select("id, case_code, title, difficulty, product_ref, therapeutic_area")
     .eq("id", templateId)
     .maybeSingle<CaseTemplateRow>();
 
   if (error || !template) return null;
 
-  const gt = template.ground_truth_json ?? {};
+  const key = await loadAnswerKey(templateId);
+  if (!key) return null;
+  const gt = key.ground_truth_json ?? {};
 
   const correctId = extractCorrectSrlId(gt.correct_srl);
   const decoyIds = Array.isArray(gt.decoy_srl_ids) ? gt.decoy_srl_ids : [];
@@ -142,24 +174,40 @@ export async function buildCaseBrief(
 
   let srlCandidates: SrlCandidate[] = [];
   if (allSrlIds.length > 0) {
-    // ground truth references SRLs by srl_code (e.g. "SRL-PUL-CANDID"), not uuid
+    // ground truth references SRLs by srl_code (e.g. "SRL-PUL-CANDID"), not uuid.
+    // Titles come through the RLS-scoped client (preserves org scoping of
+    // decoys); bodies live in service-role-only srd_document_bodies (SEC-2)
+    // and are fetched only for open-book briefs.
     const { data: srdRows } = await supabase
       .from("srd_documents")
-      .select("id, srl_code, title, body")
+      .select("id, srl_code, title")
       .in("srl_code", allSrlIds);
 
     const rows = (srdRows ?? []) as SrdDocumentRow[];
     const byCode = new Map(rows.map((r) => [r.srl_code, r]));
 
+    let bodyById = new Map<string, string>();
+    if (openBook && rows.length > 0) {
+      const admin = createAdminClient();
+      const { data: bodyRows } = await admin
+        .from("srd_document_bodies")
+        .select("document_id, body")
+        .in("document_id", rows.map((r) => r.id));
+      bodyById = new Map(
+        ((bodyRows ?? []) as { document_id: string; body: string }[]).map((b) => [b.document_id, b.body])
+      );
+    }
+
     const hydrated: SrlCandidate[] = [];
     for (const code of allSrlIds) {
       const row = byCode.get(code);
       if (!row) continue; // skip codes that don't resolve; never leak the code alone
+      const body = bodyById.get(row.id);
       hydrated.push({
         id: row.id,
         srl_code: row.srl_code,
         title: row.title,
-        ...(openBook ? { body: row.body } : {}),
+        ...(openBook && body !== undefined ? { body } : {}),
       });
     }
     // Shuffle server-side; no field anywhere indicates which one is correct.
@@ -189,9 +237,9 @@ export async function buildCaseBrief(
     product_ref: template.product_ref,
     therapeutic_area: template.therapeutic_area,
     channel: gt.channel === "voice" ? "voice" : "chat",
-    hasScriptedTranscript: parseTranscript(template.scripted_transcript_json).length > 0,
-    hasLivePersona: template.persona_brief_json != null,
-    transcript: parseTranscript(template.scripted_transcript_json),
+    hasScriptedTranscript: parseTranscript(key.scripted_transcript_json).length > 0,
+    hasLivePersona: key.persona_brief_json != null,
+    transcript: parseTranscript(key.scripted_transcript_json),
     srl_candidates: srlCandidates,
     contact_prefill: contactPrefill,
     sop_timeframe_business_days: gt.sop_timeframe_business_days ?? null,
@@ -210,21 +258,21 @@ export async function buildPersonaSystemPromptForTemplate(
   templateId: string,
   variant?: VariantSnapshot | null
 ): Promise<string | null> {
+  // RLS-scoped access check before the service-role answer-key read.
   const { data: row, error } = await supabase
     .from("case_templates")
-    .select("product_ref, ground_truth_json, persona_brief_json")
+    .select("id, product_ref")
     .eq("id", templateId)
-    .maybeSingle<{
-      product_ref: string | null;
-      ground_truth_json: PersonaGroundTruth | null;
-      persona_brief_json: PersonaBrief | null;
-    }>();
+    .maybeSingle<{ id: string; product_ref: string | null }>();
 
-  if (error || !row || !row.persona_brief_json || !row.ground_truth_json) return null;
+  if (error || !row) return null;
+
+  const key = await loadAnswerKey(templateId);
+  if (!key?.persona_brief_json || !key.ground_truth_json) return null;
 
   const basePrompt = buildPersonaSystemPrompt({
-    brief: row.persona_brief_json,
-    groundTruth: row.ground_truth_json,
+    brief: key.persona_brief_json as PersonaBrief,
+    groundTruth: key.ground_truth_json as PersonaGroundTruth,
     productRef: row.product_ref,
   });
 
@@ -267,6 +315,7 @@ export async function loadEvaluationCaseData(
   supabase: SupabaseClient,
   instanceId: string
 ): Promise<EvaluationCaseData | null> {
+  // Instance ownership/visibility stays on the caller's RLS-scoped client.
   const { data: instance } = await supabase
     .from("case_instances")
     .select("template_id, variant_snapshot_json")
@@ -274,18 +323,14 @@ export async function loadEvaluationCaseData(
     .maybeSingle<{ template_id: string; variant_snapshot_json: { seed?: string } | null }>();
   if (!instance) return null;
 
-  const { data: template } = await supabase
-    .from("case_templates")
-    .select("id, ground_truth_json")
-    .eq("id", instance.template_id)
-    .maybeSingle<{ id: string; ground_truth_json: Record<string, unknown> | null }>();
-  if (!template?.ground_truth_json) return null;
+  const key = await loadAnswerKey(instance.template_id);
+  if (!key?.ground_truth_json) return null;
 
-  const gt = template.ground_truth_json as { sop_timeframe_business_days?: number };
+  const gt = key.ground_truth_json as { sop_timeframe_business_days?: number };
   return {
-    caseTemplateId: template.id,
+    caseTemplateId: instance.template_id,
     variantRef: instance.variant_snapshot_json?.seed ?? null,
-    groundTruthJson: template.ground_truth_json,
+    groundTruthJson: key.ground_truth_json as unknown as Record<string, unknown>,
     sopTimeframeBusinessDays: gt.sop_timeframe_business_days ?? null,
   };
 }

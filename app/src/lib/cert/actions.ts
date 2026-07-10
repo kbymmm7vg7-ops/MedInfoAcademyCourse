@@ -6,14 +6,17 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getTrainingGate } from "@/lib/training/gate";
 import { generateVariant } from "@/lib/cert/variant-engine";
 import {
   canStartCertAttempt,
   nextVariantOrdinal,
   certProgress,
+  isExpiredPendingSitting,
   type AttemptRow,
 } from "@/lib/cert/logic";
+import { writeAuditLog } from "@/lib/audit/log";
 
 export type SittingType = "practice" | "certification";
 
@@ -23,9 +26,37 @@ async function loadAttempts(
 ): Promise<AttemptRow[]> {
   const { data } = await supabase
     .from("accreditation_attempts")
-    .select("case_template_id, attempt_type, is_first_attempt_on_case, pass_bool, variant_ref, completed_at")
+    .select(
+      "id, case_template_id, attempt_type, is_first_attempt_on_case, pass_bool, variant_ref, completed_at, created_at, voided_at"
+    )
     .eq("user_id", userId);
-  return (data ?? []) as AttemptRow[];
+  const rows = (data ?? []) as (AttemptRow & { id: string })[];
+
+  // SEC-7 lazy expiry: cert sittings started >24h ago and never submitted are
+  // voided here, at the eligibility read (no cron). The pure logic already
+  // ignores expired-pending rows even before this write lands, so this is
+  // persistence + audit, not the enforcement itself.
+  const nowIso = new Date().toISOString();
+  const toVoid = rows.filter((a) => isExpiredPendingSitting(a, nowIso));
+  if (toVoid.length > 0) {
+    const admin = createAdminClient();
+    await admin
+      .from("accreditation_attempts")
+      .update({ voided_at: nowIso })
+      .in("id", toVoid.map((a) => a.id))
+      .is("voided_at", null)
+      .is("completed_at", null);
+    for (const a of toVoid) {
+      a.voided_at = nowIso;
+      await writeAuditLog({
+        actorId: null, // system action (lazy expiry), not the trainee
+        action: "cert.sitting.void",
+        targetType: "accreditation_attempts",
+        targetId: a.id,
+      });
+    }
+  }
+  return rows;
 }
 
 export async function startSitting(templateId: string, type: SittingType): Promise<never> {
@@ -49,16 +80,19 @@ export async function startSitting(templateId: string, type: SittingType): Promi
     .from("case_templates")
     .select("id")
     .eq("id", templateId)
+    .eq("rubric_approved", true) // backstop: unapproved cases can't be sat even by direct POST
     .maybeSingle<{ id: string }>();
   if (!template) redirect("/accreditation?blocked=Case%20not%20found");
 
   // Requester type steers the variant's address format; read it server-side
-  // via the queue-safe path (ground truth requester type never reaches the
-  // client — here it stays server-side inside the variant generator inputs).
-  const { data: gtRow } = await supabase
-    .from("case_templates")
+  // from the service-role-only answer-key store (SEC-1). The RLS-scoped
+  // template check above is the access gate; the requester type never reaches
+  // the client — it stays server-side inside the variant generator inputs.
+  const admin = createAdminClient();
+  const { data: gtRow } = await admin
+    .from("case_answer_keys")
     .select("ground_truth_json")
-    .eq("id", templateId)
+    .eq("template_id", templateId)
     .maybeSingle<{ ground_truth_json: { requester?: { type?: string } } | null }>();
   const requesterType = gtRow?.ground_truth_json?.requester?.type;
 

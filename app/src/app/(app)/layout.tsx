@@ -24,6 +24,7 @@ export default async function AppLayout({
 
   const role = await getUserRole();
   const showManagerNav = isManagerRole(role);
+  const showAdminNav = role === "admin" || role === "platform_admin";
 
   return (
     <div className="flex min-h-screen">
@@ -38,7 +39,7 @@ export default async function AppLayout({
           <ResumeCaseButton />
         </div>
 
-        <SidebarNav showManagerNav={showManagerNav} />
+        <SidebarNav showManagerNav={showManagerNav} showAdminNav={showAdminNav} />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">

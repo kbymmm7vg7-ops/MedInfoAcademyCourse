@@ -189,16 +189,22 @@ function flattenCriteria(record: {
 async function runVerifyDb(cases: LoadedCase[]): Promise<number> {
   const { createAdminClient } = await import("../src/lib/supabase/admin");
   const admin = createAdminClient();
+  // Since migration 0007 (SEC-1) the answer key lives in service-role-only
+  // case_answer_keys, joined back to case_templates for the case_code.
   const { data, error } = await admin
-    .from("case_templates")
-    .select("case_code, ground_truth_json")
-    .in("case_code", cases.map((c) => c.code));
+    .from("case_answer_keys")
+    .select("ground_truth_json, case_templates!inner(case_code)")
+    .in("case_templates.case_code", cases.map((c) => c.code));
   if (error) {
     console.error(`DB read failed: ${error.message}`);
     return 1;
   }
+  type VerifyRow = { ground_truth_json: unknown; case_templates: { case_code: string } | { case_code: string }[] };
   const dbByCode = new Map(
-    (data ?? []).map((r: { case_code: string; ground_truth_json: unknown }) => [r.case_code, r.ground_truth_json])
+    ((data ?? []) as VerifyRow[]).map((r) => {
+      const t = Array.isArray(r.case_templates) ? r.case_templates[0] : r.case_templates;
+      return [t?.case_code, r.ground_truth_json] as const;
+    })
   );
   let mismatches = 0;
   for (const c of cases) {

@@ -239,9 +239,15 @@ export async function submitCase(
         userId: user.id,
       });
     }
-  } catch {
+  } catch (err) {
     // missing ANTHROPIC_API_KEY / SUPABASE_SERVICE_ROLE_KEY or transient LLM
-    // failure: submission stands, evaluation stays pending.
+    // failure: submission stands, evaluation stays pending. SEC-4: log it
+    // structured so outages are visible; the admin pending-evaluations view
+    // lists these instances and offers retry.
+    console.error("[evaluation] inline evaluation failed; case stays pending", {
+      instanceId,
+      err: err instanceof Error ? err.message : String(err),
+    });
   }
 
   // Sittings (practice/certification) link to their attempt row via
@@ -254,12 +260,39 @@ export async function submitCase(
     .maybeSingle<{ variant_snapshot_json: { seed?: string } | null }>();
   const seed = inst?.variant_snapshot_json?.seed;
   if (seed) {
-    await supabase
+    // SEC-7: a certification sitting submitted past the 24h window is voided
+    // (not completed) — it never counts as the first attempt and never burns.
+    const { data: attemptRow } = await supabase
       .from("accreditation_attempts")
-      .update({ completed_at: nowIso })
+      .select("id, case_template_id, attempt_type, is_first_attempt_on_case, pass_bool, variant_ref, completed_at, created_at, voided_at")
       .eq("user_id", user.id)
       .eq("variant_ref", seed)
-      .is("completed_at", null);
+      .is("completed_at", null)
+      .maybeSingle<{ id: string } & import("@/lib/cert/logic").AttemptRow>();
+    if (attemptRow) {
+      const { isExpiredPendingSitting } = await import("@/lib/cert/logic");
+      if (isExpiredPendingSitting(attemptRow, nowIso)) {
+        const { createAdminClient } = await import("@/lib/supabase/admin");
+        const { writeAuditLog } = await import("@/lib/audit/log");
+        await createAdminClient()
+          .from("accreditation_attempts")
+          .update({ voided_at: nowIso })
+          .eq("id", attemptRow.id)
+          .is("voided_at", null);
+        await writeAuditLog({
+          actorId: user.id,
+          action: "cert.sitting.void",
+          targetType: "accreditation_attempts",
+          targetId: attemptRow.id,
+        });
+      } else {
+        await supabase
+          .from("accreditation_attempts")
+          .update({ completed_at: nowIso })
+          .eq("id", attemptRow.id)
+          .is("completed_at", null);
+      }
+    }
   }
 
   revalidatePath("/simulator");

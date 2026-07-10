@@ -5,6 +5,7 @@ import {
   templateCertState,
   canStartCertAttempt,
   nextVariantOrdinal,
+  isExpiredPendingSitting,
   buildEvidencePacket,
   type AttemptRow,
 } from "./logic";
@@ -136,5 +137,68 @@ describe("first-attempt / burn / lock (spec tests)", () => {
     const attempts = [attempt({ case_template_id: T1 }), attempt({ case_template_id: T2 })];
     expect(certProgress(attempts).locked).toBe(false);
     expect(buildEvidencePacket(attempts, "rubric-v1", "now")).toBeNull();
+  });
+});
+
+describe("SEC-7 cert sitting expiry (void, don't burn, 24h, lazy)", () => {
+  const NOW = "2026-07-10T12:00:00Z";
+  const STARTED_25H_AGO = "2026-07-09T11:00:00Z";
+  const STARTED_1H_AGO = "2026-07-10T11:00:00Z";
+
+  const pendingSitting = (over: Partial<AttemptRow>) =>
+    attempt({ pass_bool: null, completed_at: null, created_at: STARTED_25H_AGO, ...over });
+
+  it("expired pending cert sitting is detected", () => {
+    expect(isExpiredPendingSitting(pendingSitting({}), NOW)).toBe(true);
+  });
+
+  it("fresh pending sitting is NOT expired", () => {
+    expect(isExpiredPendingSitting(pendingSitting({ created_at: STARTED_1H_AGO }), NOW)).toBe(false);
+  });
+
+  it("completed, scored, practice, and already-voided rows never expire", () => {
+    expect(isExpiredPendingSitting(pendingSitting({ completed_at: NOW }), NOW)).toBe(false);
+    expect(isExpiredPendingSitting(pendingSitting({ pass_bool: false }), NOW)).toBe(false);
+    expect(isExpiredPendingSitting(pendingSitting({ attempt_type: "practice" }), NOW)).toBe(false);
+    expect(isExpiredPendingSitting(pendingSitting({ voided_at: NOW }), NOW)).toBe(false);
+  });
+
+  it("void does NOT count as first attempt: template returns to the eligible pool", () => {
+    // Expired-pending but not yet persisted-void: still available (lazy logic)
+    expect(templateCertState([pendingSitting({})], T1, NOW)).toBe("available");
+    expect(canStartCertAttempt([pendingSitting({})], T1, NOW).ok).toBe(true);
+    // Explicitly voided: same
+    expect(templateCertState([pendingSitting({ voided_at: NOW })], T1, NOW)).toBe("available");
+    expect(canStartCertAttempt([pendingSitting({ voided_at: NOW })], T1, NOW).ok).toBe(true);
+  });
+
+  it("void does NOT burn: a failed void never blocks certification", () => {
+    const voided = pendingSitting({ voided_at: NOW });
+    expect(certProgress([voided], NOW).burnedTemplateIds).toEqual([]);
+    expect(certProgress([voided], NOW).pendingTemplateIds).toEqual([]);
+  });
+
+  it("a fresh pending sitting still blocks a new attempt on the same template", () => {
+    const fresh = pendingSitting({ created_at: STARTED_1H_AGO });
+    expect(templateCertState([fresh], T1, NOW)).toBe("pending");
+    expect(canStartCertAttempt([fresh], T1, NOW).ok).toBe(false);
+  });
+
+  it("voided sittings STILL consume a variant ordinal (fresh variant on re-sit)", () => {
+    const voided = pendingSitting({ voided_at: NOW });
+    expect(nextVariantOrdinal([voided], T1)).toBe(2);
+  });
+
+  it("cert progress/lock unaffected by void rows mixed in", () => {
+    const attempts = [
+      attempt({ case_template_id: T1 }),
+      attempt({ case_template_id: T2, variant_ref: "v2" }),
+      attempt({ case_template_id: T3, variant_ref: "v3" }),
+      pendingSitting({ case_template_id: T4, voided_at: NOW, variant_ref: "v4" }),
+    ];
+    const progress = certProgress(attempts, NOW);
+    expect(progress.locked).toBe(true);
+    expect(progress.passedTemplateIds).toEqual([T1, T2, T3].sort());
+    expect(buildEvidencePacket(attempts, "rubric-v1", NOW)?.passes).toHaveLength(3);
   });
 });
