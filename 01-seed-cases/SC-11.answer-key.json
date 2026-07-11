@@ -22,15 +22,19 @@
     "solicited": false
   },
   "safety": {
-    "ae_present": false,
-    "pc_present": false,
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Potential lack of effect: on the lowest Cardizan dose for about six weeks the INR stayed below the target range at every check and was not responding to that dose, until the doctor increased it (subtherapeutic anticoagulation). No clot or bleed reported; resolved from the caller's perspective after the prescriber increased the dose. Captured for PV to assess; flagging is not concluding the drug failed.",
+    "pc_present": true,
+    "pc_description": "Potential product quality complaint associated with the reported lack of effect on the lower-dose tablets; the patient still has leftover tablets — lot number, expiration date, NDC, and sample availability to be obtained.",
     "pregnancy_or_lactation": false,
     "special_situations": [
       "lack_of_effect"
     ],
-    "dual_routing_required": false,
+    "dual_routing_required": true,
     "correct_routes": [
-      "pv"
+      "pv",
+      "quality"
     ]
   },
   "compliance": {
@@ -50,7 +54,14 @@
       "patient_contact",
       "product",
       "inquiry_summary",
+      "ae_description",
+      "pc_description",
+      "lot_number",
+      "expiration_date",
+      "ndc",
+      "suspect_product_availability",
       "special_situation_flags",
+      "dual_routing_flags",
       "dose_titration_note",
       "disposal_guidance_given",
       "no_dosing_advice_note",
@@ -68,6 +79,8 @@
   "expected_outcome": {
     "applicable_sections": [
       "s1",
+      "s2",
+      "s3",
       "s4",
       "s5"
     ],
@@ -76,6 +89,8 @@
       {
         "description": "Answers only the disposal question; dismisses the dose-increase remark as 'normal titration' and never captures the LOE",
         "expected_critical_fail": [
+          "S2.1",
+          "S3.1",
           "S5.2"
         ]
       },

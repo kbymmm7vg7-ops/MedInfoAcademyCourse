@@ -26,14 +26,16 @@
     "ae_present": true,
     "ae_four_elements_met": true,
     "ae_description": "Persistent application-site burning and a spreading rash beyond the treated area, ~5 days, worsening.",
-    "pc_present": false,
+    "pc_present": true,
+    "pc_description": "Potential product quality complaint: persistent application-site burning with a rash spreading beyond the treated area on product use — possible product issue; lot number, expiration date, NDC, and sample availability to be obtained.",
     "pregnancy_or_lactation": false,
     "special_situations": [
       "none"
     ],
-    "dual_routing_required": false,
+    "dual_routing_required": true,
     "correct_routes": [
-      "pv"
+      "pv",
+      "quality"
     ]
   },
   "compliance": {
@@ -59,6 +61,12 @@
       "concomitant_meds",
       "medical_history",
       "hcp_referral_note",
+      "pc_description",
+      "lot_number",
+      "expiration_date",
+      "ndc",
+      "suspect_product_availability",
+      "dual_routing_flags",
       "srl_cited",
       "response_route"
     ]
@@ -75,6 +83,7 @@
     "applicable_sections": [
       "s1",
       "s2",
+      "s3",
       "s4",
       "s5"
     ],
@@ -83,7 +92,8 @@
       {
         "description": "Lets the 'stings' cue pass without clarifying; AE missed entirely",
         "expected_critical_fail": [
-          "S2.1"
+          "S2.1",
+          "S3.1"
         ]
       },
       {

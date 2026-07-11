@@ -24,14 +24,20 @@
     "solicited": false
   },
   "safety": {
-    "ae_present": false,
-    "pc_present": false,
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Potential lack of effect: patient reports Gastroquell isn't working right away for their heartburn — no symptom relief yet on the current regimen, and the lack of relief is ongoing at the time of the call. Captured for PV to assess; flagging is not concluding the drug failed.",
+    "pc_present": true,
+    "pc_description": "Potential product quality complaint associated with the reported lack of effect (product not delivering the expected effect); lot number, expiration date, NDC, and sample availability to be obtained.",
     "pregnancy_or_lactation": false,
     "special_situations": [
-      "none"
+      "lack_of_effect"
     ],
-    "dual_routing_required": false,
-    "correct_routes": []
+    "dual_routing_required": true,
+    "correct_routes": [
+      "pv",
+      "quality"
+    ]
   },
   "compliance": {
     "off_label_involved": false,
@@ -50,6 +56,14 @@
       "patient_contact",
       "product",
       "inquiry_summary",
+      "ae_description",
+      "pc_description",
+      "lot_number",
+      "expiration_date",
+      "ndc",
+      "suspect_product_availability",
+      "special_situation_flags",
+      "dual_routing_flags",
       "srl_cited",
       "response_route"
     ]
@@ -65,6 +79,8 @@
   "expected_outcome": {
     "applicable_sections": [
       "s1",
+      "s2",
+      "s3",
       "s4",
       "s5"
     ],
@@ -83,6 +99,14 @@
       {
         "description": "Selects SRL-GAS-LONG decoy",
         "expected_critical_fail": []
+      },
+      {
+        "description": "Answers the onset/efficacy question but never captures the reported lack of effect (no AE/PC captured, no routing)",
+        "expected_critical_fail": [
+          "S2.1",
+          "S3.1",
+          "S5.2"
+        ]
       }
     ]
   }

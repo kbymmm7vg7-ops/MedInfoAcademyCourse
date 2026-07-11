@@ -1,6 +1,6 @@
 # Evaluator calibration — fixtures-only (deterministic, no API)
 
-_Generated 2026-07-09T20:35:12.816Z_
+_Generated 2026-07-11T18:09:55.766Z_
 
 Verifies the fixtures before any paid run: gold docs are validator-clean,
 AE/PC applicability matches the answer key, and every injected failure
@@ -13,7 +13,7 @@ actually mutates the gold fixture.
 | Cases | 12 |
 | Gold validator-clean | 12/12 |
 | Applicability s2/s3 match | 12/12 |
-| Failure fixtures | 38 |
+| Failure fixtures | 40 |
 | No-op failure fixtures | 0 |
 | **Problems** | **0** |
 
@@ -21,16 +21,18 @@ actually mutates the gold fixture.
 
 ### SC-01
 - Gold validator: CLEAN ✓
-- Applicability s2/s3 vs key (s1/s4/s5): match ✓
-  - ✓ `SC-01-failure-1-overFlagAe` → expects — (deduction only)
-  - ✓ `SC-01-failure-2-wrongSrl` → expects — (deduction only)
+- Applicability s2/s3 vs key (s1/s2/s4/s5): match ✓
+  - ✓ `SC-01-failure-1-missedCue` → expects S2.1
+  - ✓ `SC-01-failure-2-overFlagAe` → expects — (deduction only)
+  - ✓ `SC-01-failure-3-wrongSrl` → expects — (deduction only)
 
 ### SC-02
 - Gold validator: CLEAN ✓
-- Applicability s2/s3 vs key (s1/s4/s5): match ✓
+- Applicability s2/s3 vs key (s1/s2/s3/s4/s5): match ✓
   - ✓ `SC-02-failure-1-wrongContactSet` → expects — (deduction only)
   - ✓ `SC-02-failure-2-medicalAdvice` → expects S4.2
   - ✓ `SC-02-failure-3-wrongSrl` → expects — (deduction only)
+  - ✓ `SC-02-failure-4-specialSituationMissed+pcMissedEntirely` → expects S2.1, S3.1, S5.2
 
 ### SC-03
 - Gold validator: CLEAN ✓
@@ -50,7 +52,7 @@ actually mutates the gold fixture.
 ### SC-05
 - Gold validator: CLEAN ✓
 - Applicability s2/s3 vs key (s1/s2/s4/s5): match ✓
-  - ✓ `SC-05-failure-1-admitCausation` → expects S5.1, S4.2
+  - ✓ `SC-05-failure-1-admitCausation` → expects S4.2
   - ✓ `SC-05-failure-2-specialSituationMissed` → expects S5.2
   - ✓ `SC-05-failure-3-admitCausation` → expects — (deduction only)
   - ✓ `SC-05-failure-4-omitLegalComms` → expects — (deduction only)
@@ -71,8 +73,8 @@ actually mutates the gold fixture.
 
 ### SC-08
 - Gold validator: CLEAN ✓
-- Applicability s2/s3 vs key (s1/s2/s4/s5): match ✓
-  - ✓ `SC-08-failure-1-missedCue` → expects S2.1
+- Applicability s2/s3 vs key (s1/s2/s3/s4/s5): match ✓
+  - ✓ `SC-08-failure-1-missedCue+pcMissedEntirely` → expects S2.1, S3.1
   - ✓ `SC-08-failure-2-medicalAdvice` → expects S4.2
   - ✓ `SC-08-failure-3-aeNotDocumented` → expects — (deduction only)
 
@@ -85,15 +87,15 @@ actually mutates the gold fixture.
 
 ### SC-10
 - Gold validator: CLEAN ✓
-- Applicability s2/s3 vs key (s1/s4/s5): match ✓
+- Applicability s2/s3 vs key (s1/s2/s4/s5): match ✓
   - ✓ `SC-10-failure-1-medicalAdvice` → expects S4.2
-  - ✓ `SC-10-failure-2-specialSituationMissed` → expects S5.2
+  - ✓ `SC-10-failure-2-specialSituationMissed` → expects S2.1, S5.2
   - ✓ `SC-10-failure-3-overFlagAe` → expects — (deduction only)
 
 ### SC-11
 - Gold validator: CLEAN ✓
-- Applicability s2/s3 vs key (s1/s4/s5): match ✓
-  - ✓ `SC-11-failure-1-specialSituationMissed` → expects S5.2
+- Applicability s2/s3 vs key (s1/s2/s3/s4/s5): match ✓
+  - ✓ `SC-11-failure-1-specialSituationMissed+pcMissedEntirely` → expects S2.1, S3.1, S5.2
   - ✓ `SC-11-failure-2-medicalAdvice` → expects S4.2
   - ✓ `SC-11-failure-3-wrongSrl` → expects — (deduction only)
   - ✓ `SC-11-failure-4-overFlagAe` → expects — (deduction only)

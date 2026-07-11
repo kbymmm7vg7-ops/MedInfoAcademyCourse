@@ -23,7 +23,9 @@
     "solicited": false
   },
   "safety": {
-    "ae_present": false,
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Pregnancy exposure (reportable special situation entered as a safety report): patient approximately 6 weeks pregnant by last menstrual period with Neurovance exposure throughout; no adverse outcome reported. Exposure ongoing at the time of the call.",
     "pc_present": false,
     "pregnancy_or_lactation": true,
     "special_situations": [
@@ -52,6 +54,7 @@
       "patient_contact",
       "product",
       "inquiry_summary",
+      "ae_description",
       "special_situation_flags",
       "estimated_gestational_age_or_lmp",
       "prescriber_info",
@@ -72,6 +75,7 @@
   "expected_outcome": {
     "applicable_sections": [
       "s1",
+      "s2",
       "s4",
       "s5"
     ],
@@ -86,6 +90,7 @@
       {
         "description": "Doesn't flag the pregnancy exposure / doesn't route to PV / omits registry",
         "expected_critical_fail": [
+          "S2.1",
           "S5.2"
         ]
       },

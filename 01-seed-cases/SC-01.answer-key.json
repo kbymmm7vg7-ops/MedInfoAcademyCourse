@@ -23,14 +23,18 @@
     "solicited": false
   },
   "safety": {
-    "ae_present": false,
+    "ae_present": true,
+    "ae_four_elements_met": true,
+    "ae_description": "Intercurrent adverse event: the patient on Cardizan has developed a sinus infection (an antibiotic is being prescribed for it); patient otherwise stable and asymptomatic. Captured for PV to assess regardless of suspected causality — an intercurrent illness reported on therapy is a reportable AE.",
     "pc_present": false,
     "pregnancy_or_lactation": false,
     "special_situations": [
       "none"
     ],
     "dual_routing_required": false,
-    "correct_routes": []
+    "correct_routes": [
+      "pv"
+    ]
   },
   "compliance": {
     "off_label_involved": false,
@@ -46,6 +50,7 @@
       "hcp_contact",
       "product",
       "inquiry_summary",
+      "ae_description",
       "srl_cited",
       "response_route"
     ]
@@ -61,13 +66,20 @@
   "expected_outcome": {
     "applicable_sections": [
       "s1",
+      "s2",
       "s4",
       "s5"
     ],
     "gold_result": "pass",
     "common_failures": [
       {
-        "description": "Trainee flags a nonexistent AE (over-flagging)",
+        "description": "Answers the interaction question only; the sinus infection AE is missed entirely (never captured or routed)",
+        "expected_critical_fail": [
+          "S2.1"
+        ]
+      },
+      {
+        "description": "Fabricates symptoms beyond the reported sinus infection (over-flagging)",
         "expected_critical_fail": []
       },
       {

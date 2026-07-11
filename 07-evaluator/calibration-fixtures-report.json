@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-09T20:35:12.816Z",
+  "generated_at": "2026-07-11T18:09:55.766Z",
   "mode": "fixtures-only",
   "received_at": "2026-07-06T14:30:00.000Z",
   "cases": [
@@ -8,27 +8,37 @@
       "goldValidatorFails": [],
       "applicability": {
         "s1": true,
-        "s2": false,
+        "s2": true,
         "s3": false,
         "s4": true,
         "s5": true
       },
       "expectedSections": [
         "s1",
+        "s2",
         "s4",
         "s5"
       ],
       "s2s3Match": true,
       "failures": [
         {
-          "label": "SC-01-failure-1-overFlagAe",
+          "label": "SC-01-failure-1-missedCue",
+          "expected_critical_fail": [
+            "S2.1"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
+          "changed": true
+        },
+        {
+          "label": "SC-01-failure-2-overFlagAe",
           "expected_critical_fail": [],
           "docChanged": true,
           "transcriptChanged": true,
           "changed": true
         },
         {
-          "label": "SC-01-failure-2-wrongSrl",
+          "label": "SC-01-failure-3-wrongSrl",
           "expected_critical_fail": [],
           "docChanged": true,
           "transcriptChanged": false,
@@ -41,13 +51,15 @@
       "goldValidatorFails": [],
       "applicability": {
         "s1": true,
-        "s2": false,
-        "s3": false,
+        "s2": true,
+        "s3": true,
         "s4": true,
         "s5": true
       },
       "expectedSections": [
         "s1",
+        "s2",
+        "s3",
         "s4",
         "s5"
       ],
@@ -74,6 +86,17 @@
           "expected_critical_fail": [],
           "docChanged": true,
           "transcriptChanged": false,
+          "changed": true
+        },
+        {
+          "label": "SC-02-failure-4-specialSituationMissed+pcMissedEntirely",
+          "expected_critical_fail": [
+            "S2.1",
+            "S3.1",
+            "S5.2"
+          ],
+          "docChanged": true,
+          "transcriptChanged": true,
           "changed": true
         }
       ]
@@ -196,7 +219,6 @@
         {
           "label": "SC-05-failure-1-admitCausation",
           "expected_critical_fail": [
-            "S5.1",
             "S4.2"
           ],
           "docChanged": true,
@@ -317,22 +339,24 @@
       "applicability": {
         "s1": true,
         "s2": true,
-        "s3": false,
+        "s3": true,
         "s4": true,
         "s5": true
       },
       "expectedSections": [
         "s1",
         "s2",
+        "s3",
         "s4",
         "s5"
       ],
       "s2s3Match": true,
       "failures": [
         {
-          "label": "SC-08-failure-1-missedCue",
+          "label": "SC-08-failure-1-missedCue+pcMissedEntirely",
           "expected_critical_fail": [
-            "S2.1"
+            "S2.1",
+            "S3.1"
           ],
           "docChanged": true,
           "transcriptChanged": true,
@@ -402,13 +426,14 @@
       "goldValidatorFails": [],
       "applicability": {
         "s1": true,
-        "s2": false,
+        "s2": true,
         "s3": false,
         "s4": true,
         "s5": true
       },
       "expectedSections": [
         "s1",
+        "s2",
         "s4",
         "s5"
       ],
@@ -426,10 +451,11 @@
         {
           "label": "SC-10-failure-2-specialSituationMissed",
           "expected_critical_fail": [
+            "S2.1",
             "S5.2"
           ],
           "docChanged": true,
-          "transcriptChanged": false,
+          "transcriptChanged": true,
           "changed": true
         },
         {
@@ -446,21 +472,25 @@
       "goldValidatorFails": [],
       "applicability": {
         "s1": true,
-        "s2": false,
-        "s3": false,
+        "s2": true,
+        "s3": true,
         "s4": true,
         "s5": true
       },
       "expectedSections": [
         "s1",
+        "s2",
+        "s3",
         "s4",
         "s5"
       ],
       "s2s3Match": true,
       "failures": [
         {
-          "label": "SC-11-failure-1-specialSituationMissed",
+          "label": "SC-11-failure-1-specialSituationMissed+pcMissedEntirely",
           "expected_critical_fail": [
+            "S2.1",
+            "S3.1",
             "S5.2"
           ],
           "docChanged": true,
@@ -542,7 +572,7 @@
     "cases": 12,
     "gold_validator_clean": 12,
     "applicability_s2s3_match": 12,
-    "total_failure_fixtures": 38,
+    "total_failure_fixtures": 40,
     "no_op_failure_fixtures": 0,
     "problems": 0
   }

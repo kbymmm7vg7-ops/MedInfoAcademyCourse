@@ -488,6 +488,70 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
       speaker: "persona",
       content: "Sure — I'm about 6 weeks along based on my last period, and Dr. Alvarez is my neurologist.",
     });
+    // LOE/SSE parity (Nathan, 2026-07-11): pregnancy exposure is entered as a
+    // safety report through the same AE reporting process, not a flag-only note.
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Thank you. Because you've been taking Neurovance during the pregnancy, I'm going to record this as a safety report and route it to our safety team today — that's standard for any pregnancy exposure, even when there's no problem to report.",
+    });
+    turns.push({ speaker: "persona", content: "Okay, that makes sense." });
+  }
+
+  // SC-01 ruling (Nathan, 2026-07-11): the sinus infection is an intercurrent
+  // reportable AE — the gold conversation states the capture explicitly.
+  if (answerKey.case_id === "SC-01") {
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Since the patient developed the sinus infection while on Cardizan, I'm also going to capture that as an adverse event report and route it to our safety team — that's standard even when it appears unrelated to therapy. May I list you as the reporting physician?",
+    });
+    turns.push({ speaker: "persona", content: "That's fine — you can list me as the reporting physician." });
+  }
+
+  // LOE/SSE parity (Nathan, 2026-07-11): reportable lack of effect is captured
+  // as an AE and a product complaint (dual PV+Quality routing), so the gold
+  // conversations must show the capture + lot/NDC exchange the gold docs claim.
+  if (answerKey.case_id === "SC-02") {
+    turns.push({
+      speaker: "trainee",
+      content:
+        "You mentioned Gastroquell isn't working right away for your heartburn — can I ask how long you've been taking it, and whether you've had any relief at all so far?",
+    });
+    turns.push({ speaker: "persona", content: "About four days now, and honestly not much relief yet." });
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Thank you — I'm going to capture that lack of effect for our safety team to assess, and log a product complaint so our quality team can take a look as well. Do you have the package handy — could you read me the lot number and expiration date, and would you be able to keep it in case our quality team requests it?",
+    });
+    turns.push({
+      speaker: "persona",
+      content: "Sure — lot LOT-CALIB-0001, expires June 2027. I'll hang on to it.",
+    });
+  }
+
+  if (answerKey.case_id === "SC-08") {
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Since this could also involve the product itself, I'm going to log a product complaint alongside the safety report. Do you have the tube handy — can you read me the lot number and expiration date, and keep the tube in case our quality team requests it back?",
+    });
+    turns.push({
+      speaker: "persona",
+      content: "Yes — lot LOT-CALIB-0001, expires June 2027, and I'll hold on to the tube.",
+    });
+  }
+
+  if (answerKey.case_id === "SC-11") {
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Since you still have the leftover lower-dose tablets, I'm going to capture the lack of effect for our safety team and log a product complaint as well. Could you read me the lot number and expiration date from the bottle, and keep the tablets for now in case our quality team requests them before disposal?",
+    });
+    turns.push({
+      speaker: "persona",
+      content: "Sure — lot LOT-CALIB-0001, expires June 2027. I'll keep them for now.",
+    });
   }
 
   if (answerKey.case_id === "SC-06") {
@@ -658,6 +722,19 @@ const missedCue: Mutator = (_ak, doc, transcript) => {
     }
     newTranscript = [...transcript.slice(0, idx - 1), ...transcript.slice(end)];
   }
+  // Also scrub explicit compliant-capture lines (and their persona ack) —
+  // gold transcripts state the capture out loud ("capture that … for our
+  // safety team", "record this as a safety report", "log … adverse event");
+  // an AE-missed fixture must not keep that contrary evidence.
+  const captureLine =
+    /record this as a safety report|capture (that|the) [^.]*for our safety team|log[^.]*(adverse event|safety report)|route (it|this) to our safety team/i;
+  newTranscript = newTranscript.filter(
+    (t, i, arr) =>
+      !(
+        (t.speaker === "trainee" && captureLine.test(t.content)) ||
+        (arr[i - 1]?.speaker === "trainee" && captureLine.test(arr[i - 1].content) && t.speaker === "persona")
+      )
+  );
   doc.safety.ae_present = "no";
   doc.safety.four_element_test = {
     identifiable_patient: false,
@@ -802,8 +879,46 @@ const specialSituationMissed: Mutator = (ak, doc, transcript) => {
   // cue), also strip the transcript's clarify/disclosure turns — otherwise the
   // evaluator credits S5.2 identification from the trainee catching the cue.
   // No-op for upfront special situations (no such turn to remove).
-  const { transcript: scrubbed } = missedCue(ak, doc, transcript);
+  const { transcript: cueScrubbed } = missedCue(ak, doc, transcript);
+  // LOE/SSE parity gold transcripts contain explicit compliant-capture lines
+  // ("record this as a safety report", "capture that lack of effect"); a
+  // never-flagged fixture must not keep them as contrary transcript evidence.
+  const scrubbed = cueScrubbed.filter(
+    (t, i, arr) =>
+      !(
+        (t.speaker === "trainee" &&
+          /record this as a safety report|capture (that|the) lack of effect|route (it|this) to our safety team/i.test(t.content)) ||
+        (arr[i - 1]?.speaker === "trainee" &&
+          /record this as a safety report|capture (that|the) lack of effect|route (it|this) to our safety team/i.test(arr[i - 1].content) &&
+          t.speaker === "persona")
+      )
+  );
   return { doc, transcript: scrubbed };
+};
+
+// LOE/SSE parity (Nathan, 2026-07-11): where a reportable LOE (SC-02/SC-11) or
+// a cue-borne AE (SC-08) also carries a product complaint, missing the event
+// means the PC leg is missed too — clear the PC documentation and remove the
+// lot/complaint exchange from the transcript so S3.1 trips alongside S2.1.
+const pcMissedEntirely: Mutator = (_ak, doc, transcript) => {
+  doc.safety.pc_present = "no";
+  doc.safety.pc_lot_number = "";
+  doc.safety.pc_expiration_date = "";
+  doc.safety.pc_ndc = "";
+  doc.safety.pc_sample_available = "";
+  doc.safety.routing_dual = { ...doc.safety.routing_dual, route_to_quality: false };
+  doc.safety.routing_single = doc.safety.routing_single.filter((r) => r !== "Quality");
+  const newTranscript = transcript.filter(
+    (t, i, arr) =>
+      !(
+        (t.speaker === "trainee" && /product complaint|lot number/i.test(t.content)) ||
+        (arr[i - 1]?.speaker === "trainee" &&
+          /product complaint|lot number/i.test(arr[i - 1].content) &&
+          t.speaker === "persona" &&
+          /lot|tube|package|tablets|hang on|hold on|keep them/i.test(t.content))
+      )
+  );
+  return { doc, transcript: newTranscript };
 };
 
 // Trainee volunteers explicit off-label / above-labeled-dose guidance (a
@@ -896,6 +1011,7 @@ const MUTATOR_LIB: Record<string, Mutator> = {
   spokespersonStatement,
   omitLegalComms,
   offLabelDosingVolunteered,
+  pcMissedEntirely,
 };
 
 /** Maps a common_failures[].description to one or more mutators by keyword. */
@@ -913,7 +1029,7 @@ function pickMutators(caseId: string, description: string): string[] {
     picks.push("aeNotDocumented");
   } else if (/routes? to only one department/.test(d)) picks.push("singleRouteOnly");
   else if (/omits legal\/communications|routes ae to pv but omits/.test(d)) picks.push("omitLegalComms");
-  else if (/doesn'?t flag the pregnancy exposure|doesn'?t route to pv \/ omits registry|never captures the loe|dismisses the dose-increase|doesn'?t flag legal\/media/.test(d)) {
+  else if (/doesn'?t flag the pregnancy exposure|doesn'?t route to pv \/ omits registry|never captures the (loe|reported lack of effect)|dismisses the dose-increase|doesn'?t flag legal\/media/.test(d)) {
     picks.push("specialSituationMissed");
   } else if (/tells? (the )?patient to (double|stop|keep taking)|advises? (the )?patient (to stop|on dosing)|advises the patient on dosing/.test(d)) {
     picks.push("medicalAdvice");
@@ -929,6 +1045,16 @@ function pickMutators(caseId: string, description: string): string[] {
   else if (/gives a substantive comment|confirms or denies causation/.test(d)) picks.push("spokespersonStatement");
   else if (/answers with an on-label srl/.test(d)) picks.push("wrongSrl");
   else if (/adds unsolicited off-label dosing/.test(d)) picks.push("offLabelDosingVolunteered");
+
+  // LOE/SSE parity (Nathan, 2026-07-11): in SC-02/SC-08/SC-11 the product
+  // complaint rides on the same missed event, so a missed-cue / never-captured
+  // fixture must also blank the PC leg for S3.1 to trip alongside S2.1.
+  if (
+    ["SC-02", "SC-08", "SC-11"].includes(caseId) &&
+    (picks.includes("missedCue") || picks.includes("specialSituationMissed"))
+  ) {
+    picks.push("pcMissedEntirely");
+  }
 
   if (picks.length === 0) picks.push("overFlagAe"); // safe generic fallback, always applicable
   return picks;
