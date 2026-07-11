@@ -2,6 +2,41 @@
 
 ---
 
+## 2026-07-10 (later) · S7 COMPLETE — SEC-1/SEC-2 closed, admin area + Cohort Lite live (Fable orchestrator)
+
+**All of spec `10-dashboard/spec_admin-dashboard.md` is built and E2E-verified.** Vitest 63/63, build
+green. Full detail in the session commits; highlights + your items:
+
+- **SEC-1/SEC-2 CLOSED at the DB layer** (migration 0007): answer keys → `case_answer_keys`, SRL
+  bodies → `srd_document_bodies`, both RLS-no-policy + REVOKE. Verified by direct PostgREST probes
+  with a trainee JWT (all denied) and RLS test 11/11. Seeds rewritten (payloads byte-identical);
+  `--verify-db` green. SEC-9 firewall grep is now a vitest test.
+- **E2E-verified in the browser**: trainee gets 404 on /admin/* and /manager; ground-truth edit
+  gate de-approves + audits + re-approve is an explicit Nathan-sign-off confirm; the SEC-4
+  pending-evaluations view found and successfully retried a REAL orphaned SC-03 submission from
+  07-06 (now `evaluated`); Cohort Lite create/roster-upload/score-table all work.
+- **Production bug found & fixed by the retry E2E**: the evaluator's spell-checker dependency
+  (`dictionary-en`) breaks under the Next/Turbopack server runtime (`fs` gets a bundler-mangled
+  URL). Every *in-app* evaluation would have failed this way (tsx scripts were unaffected — which
+  is why calibration never saw it). Fix: `serverExternalPackages` in `next.config.ts`.
+- **SEC-7 cert expiry** implemented as decided (void-don't-burn, 24h, lazy; migration 0008) with
+  8 unit tests. **SEC-5** audit trail live (`lib/audit/log.ts`) incl. cert-lock writes.
+- **① NEEDS YOUR DECISION — user deactivation**: the spec's §4.4 "deactivate user" has no schema
+  support (`users` has no active/inactive column; agents correctly did not invent one). Options:
+  add `users.deactivated_at` migration + auth-ban, or drop deactivation from MVP. UI states the gap.
+- **② E2E fixtures left in place for you**: org "S7 Probe Org", users `nite414+s7admin@gmail.com`
+  (platform_admin — USE THIS TO ACCESS /admin) and `nite414+s7trainee@gmail.com`, cohort "S7 E2E
+  Cohort". **Reset both passwords via the Supabase dashboard before real use** (E2E passwords were
+  transient). Delete the cohort/org whenever; the audit rows they generated are legit history.
+- **③ Training shadowing hardening**: migration 0009 made `training_modules.slug` uniqueness
+  scope-aware so org copies can shadow shared modules; the training gate now counts the shadowed
+  set (unit-tested incl. the org-copy-satisfies-gate case).
+
+**Still open, unchanged:** your S4 blind-scoring gate (cert stays offline until then); S5 voice;
+Checkpoint B after that.
+
+---
+
 ## 2026-07-10 · S4 CLOSED at 12/12 + 17/17 — blind-scoring gate is the only S4 item left (Fable)
 
 - **① SC-05 failure-1 key edit applied** per your approval: `["S5.1","S4.2"]` → `["S4.2"]` in the

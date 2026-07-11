@@ -45,6 +45,7 @@ export default async function AdminUsersPage() {
           <table className="min-w-full divide-y divide-slate-200 text-sm">
             <thead className="bg-slate-50">
               <tr>
+                <th className="px-4 py-3 text-left font-medium text-slate-500">ID</th>
                 <th className="px-4 py-3 text-left font-medium text-slate-500">Name</th>
                 <th className="px-4 py-3 text-left font-medium text-slate-500">Email</th>
                 {result.viewerRole === "platform_admin" && (
@@ -57,6 +58,9 @@ export default async function AdminUsersPage() {
             <tbody className="divide-y divide-slate-100 bg-white">
               {result.users.map((u) => (
                 <tr key={u.id} className="hover:bg-slate-50">
+                  <td className="px-4 py-3 font-mono text-xs text-slate-500" title={u.id}>
+                    {u.id.slice(0, 8)}
+                  </td>
                   <td className="px-4 py-3 text-slate-900">{u.fullName || "—"}</td>
                   <td className="px-4 py-3 text-slate-600">{u.email || "—"}</td>
                   {result.viewerRole === "platform_admin" && (

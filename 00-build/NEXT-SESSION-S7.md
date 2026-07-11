@@ -1,5 +1,9 @@
 # SESSION S7 — Admin dashboard + SEC-1/2 hardening (Opus)
 
+> ✅ **DONE 2026-07-10 (Fable orchestrator).** All spec modules built and E2E-verified; SEC-1/SEC-2
+> closed at the DB layer. See BLOCKERS 2026-07-10 entry and `NEXT-SESSION-S5.md` for what's next.
+> This file is retained as the historical brief.
+
 *Written by Fable 2026-07-07. Run this session AFTER S4 evaluator calibration (`NEXT-SESSION-S4.md`);
 S5 voice may run before or after S7 — no dependency either way. Full design:
 `10-dashboard/spec_admin-dashboard.md` (authoritative; supersedes the RUNBOOK S7 paragraph).*
