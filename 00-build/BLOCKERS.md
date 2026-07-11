@@ -2,6 +2,17 @@
 
 ---
 
+## 2026-07-10 (evening) · DECISION OF RECORD — S5 TTS pivot: ElevenLabs → Groq Orpheus (Nathan)
+
+Dev/demo TTS is now **Groq-hosted Orpheus** (`canopylabs/orpheus-v1-english`, existing
+`GROQ_API_KEY`). ElevenLabs demoted to optional one-shot A/B on the final demo; production vendor
+remains a launch-time decision (Orpheus vs ElevenLabs paid vs Deepgram Aura-2 — note Aura is NOT
+available via Groq; it would be a second vendor). Updated: voice spec §TTS (authoritative),
+`NEXT-SESSION-S5.md` prompt, RUNBOOK S5 note. Rationale: one vendor for STT+TTS (single ZDR review
+for the confidentiality tier), no free-tier quota cliff, Groq latency helps the <3s target.
+
+---
+
 ## 2026-07-10 (later) · S7 COMPLETE — SEC-1/SEC-2 closed, admin area + Cohort Lite live (Fable orchestrator)
 
 **All of spec `10-dashboard/spec_admin-dashboard.md` is built and E2E-verified.** Vitest 63/63, build

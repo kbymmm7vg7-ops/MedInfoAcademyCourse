@@ -9,20 +9,24 @@ Remaining before Checkpoint B: Nathan's S4 blind-scoring gate (his action, not a
   (`07-evaluator/calibration-report.md` Part A; zero Critical disagreements, ≤1 Major/case).
 - Admin access: platform_admin test user `nite414+s7admin@gmail.com` (Nathan: reset its password
   in the Supabase dashboard first).
-- Keys in `app/.env.local` incl. `GROQ_API_KEY` and `ELEVENLABS_API_KEY` (present at S7).
+- Keys in `app/.env.local` incl. `GROQ_API_KEY` (now covers BOTH STT and TTS after the
+  2026-07-10 Orpheus pivot) and `ELEVENLABS_API_KEY` (A/B comparator only).
 
 ## How to start
 1. Fresh **Opus 4.8** session in the repo root.
 2. **Attach:** `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md`, `00-build/BLOCKERS.md`, this file,
    `06-voice-layer/spec_voice-pipeline.md`, `01-seed-cases/`.
-3. Paste the RUNBOOK S5 prompt (unchanged, reproduced here):
+3. Paste the S5 prompt below (**updated 2026-07-10 for Nathan's TTS pivot to Groq Orpheus** —
+   supersedes the RUNBOOK S5 prompt's ElevenLabs wording; spec §TTS has the decision of record):
 
 > Implement the voice pipeline per `06-voice-layer/spec_voice-pipeline.md`: mic capture → VAD →
-> **Groq Whisper v3 Turbo** STT (adapter) → persona reasoning → **ElevenLabs (free tier)** TTS
-> (adapter) → audio + CC strip; the large-doc-panel voice layout (§7); mic-permission-at-Start with
-> text fallback. Instrument per-turn latency (target <3s). **Budget the ElevenLabs free quota
-> (~10 min/month): iterate with short utterances, run the one full-case voice demo last.** Keep
-> STT/TTS behind adapters so production vendors swap in later.
+> **Groq Whisper v3 Turbo** STT (adapter) → persona reasoning → **Groq Orpheus TTS**
+> (`canopylabs/orpheus-v1-english`, same `GROQ_API_KEY`, adapter) → audio + CC strip; the
+> large-doc-panel voice layout (§7); mic-permission-at-Start with text fallback. Instrument
+> per-turn latency (target <3s). Run the seed-case pronunciation QA (the seven fictional brand
+> names) on the Orpheus voice. Optionally add a thin ElevenLabs connector behind the same adapter
+> for ONE A/B pass on the final full-case demo only (free tier ≈10 min/month — never iterate on
+> it). Keep STT/TTS behind adapters so the production vendor stays a launch-time decision.
 
 **Definition of done**: one seed case completed end-to-end by voice on laptop mic, captions
 correct, latency logged. (Voice needs Nathan at the machine for mic permission — this session is

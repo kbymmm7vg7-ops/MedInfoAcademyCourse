@@ -51,6 +51,10 @@ Fable gives an explicit go/no-go before the evaluator is built.
 **Your gate**: blind-score the 10 outputs against the scorecard. Ship only if zero Critical-criterion disagreements, ≤1 Major/case. Otherwise loop the evaluator prompt and re-run.
 
 ## Session S5 — Voice baseline (Opus itself)
+> ⟨UPDATED 2026-07-10⟩ **TTS pivoted to Groq-hosted Orpheus at Nathan's direction** (same
+> `GROQ_API_KEY` as STT; no ElevenLabs quota cliff; one-vendor ZDR review). Use the prompt in
+> `00-build/NEXT-SESSION-S5.md` and the revised TTS section of the voice spec — the prompt below
+> is retained as the original outline only.
 **Attach**: `06`, `01`.
 **Prompt**:
 > Implement the voice pipeline per `06-voice-layer/spec_voice-pipeline.md`: mic capture → VAD → **Groq Whisper v3 Turbo** STT (adapter) → persona reasoning → **ElevenLabs (free tier)** TTS (adapter) → audio + CC strip; the large-doc-panel voice layout (§7); mic-permission-at-Start with text fallback. Instrument per-turn latency (target <3s). **Budget the ElevenLabs free quota (~10 min/month): iterate with short utterances, run the one full-case voice demo last.** Keep STT/TTS behind adapters so production vendors swap in later.

@@ -15,10 +15,16 @@ The persona/eval engine is identical to text mode; voice only swaps input (mic�
 - Behind an `STT` adapter interface (`transcribe(audioChunk) → text`) so a streaming vendor (AssemblyAI Universal-Streaming) can be dropped in for the enterprise upsell without touching the engine.
 - Dev fallback: local Whisper on the Mac for offline testing (dev/demo only, never production).
 
-## TTS — adapter with ElevenLabs (free tier) for the 48h build
-- `TTS` adapter interface (`synthesize(text, voiceId) → audioStream`). **ElevenLabs connector, free tier** is the dev/demo implementation and the seed-case pronunciation-QA tool.
-- **Free tier is non-commercial + ~10 min audio/month** — hard constraint. During the build: use short utterances for iteration; run the one full-case voice demo last; do not burn the quota on repeated full runs.
-- **Production vendor is a launch-time decision** (post-48h): ElevenLabs paid (best realism, easy per-persona voices) vs Deepgram Aura-2 (~$0.03/1k chars, medical-term tuning). Decide with measured per-case audio cost. Whatever is chosen must carry a commercial license before any public traffic.
+## TTS — adapter with Groq Orpheus as dev default ⟨PIVOT, Nathan 2026-07-10⟩
+> ⟨Decided by Nathan 2026-07-10⟩ **Dev/demo TTS = Groq-hosted Orpheus** (Canopy Labs,
+> `canopylabs/orpheus-v1-english` via the existing `GROQ_API_KEY`) — replaces the ElevenLabs
+> free tier as the S5 default. Rationale: no new vendor (Groq already does STT, so the
+> confidentiality-tier ZDR review stays one vendor), no ~10 min/month quota cliff during
+> iteration, and Groq latency helps the <3s per-turn target. The original ElevenLabs plan is
+> retained below only as the one-shot A/B comparator.
+- `TTS` adapter interface (`synthesize(text, voiceId) → audioStream`) — unchanged; the adapter is the whole point. **Groq Orpheus connector** is the dev/demo implementation and the seed-case pronunciation-QA tool.
+- Optionally keep a thin **ElevenLabs connector** behind the same adapter for a single A/B pass on the final full-case demo (free tier: non-commercial, ~10 min/month — never iterate on it).
+- **Production vendor is still a launch-time decision** (post-48h): Groq Orpheus (already integrated, one-vendor compliance) vs ElevenLabs paid (best realism, easy per-persona voices) vs Deepgram Aura-2 (~$0.03/1k chars, sub-200ms TTFA — adds a second vendor + ZDR review). Decide with measured per-case audio cost + the pronunciation QA below. Whatever is chosen must carry a commercial license before any public traffic.
 - Distinct `voiceId` per persona type (HCP vs patient vs caregiver) improves realism; the adapter carries voiceId so this is vendor-independent.
 
 ## Turn-taking & latency
