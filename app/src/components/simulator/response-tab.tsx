@@ -97,15 +97,6 @@ export function ResponseTab({
         </ul>
       </div>
 
-      <Field label="Customization notes">
-        <TextArea
-          disabled={disabled}
-          rows={3}
-          value={response.customization_notes}
-          onChange={(e) => onChange({ customization_notes: e.target.value })}
-        />
-      </Field>
-
       <Field label="Delivery method">
         <Select
           disabled={disabled}

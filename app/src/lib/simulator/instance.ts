@@ -91,7 +91,11 @@ export async function loadCaseInstance(
     }));
   }
 
-  const base = emptyFormState(brief.contact_prefill);
+  // Contact fields start BLANK (Nathan, 2026-07-11): capturing the caller's
+  // name/phone/address from the conversation is part of the skill being
+  // trained (S4.3) — the seed prefill defeated it. brief.contact_prefill is
+  // still exposed for non-form uses (e.g. the voice layer's persona voice).
+  const base = emptyFormState({});
   const formState = docRecord
     ? mergeFormState(base, {
         intake: { ...base.intake, ...(docRecord.intake_json ?? {}) },

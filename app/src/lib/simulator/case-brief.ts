@@ -217,6 +217,42 @@ export async function buildCaseBrief(
       : shuffle(hydrated);
   }
 
+  // The product's labeling (PI) is always offered as a reference entry in the
+  // SRL list (Nathan, 2026-07-11). Seeded as shared srd_documents rows with
+  // srl_code 'PI-<PRODUCT>' (seed_s5_product_labels.sql); appended after the
+  // shuffled SRLs so it never participates in the decoy arrangement, and its
+  // body follows the same open-book gating as SRL bodies (SEC-2).
+  if (template.product_ref) {
+    const piCode = "PI-" + template.product_ref.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    const { data: piRow } = await supabase
+      .from("srd_documents")
+      .select("id, srl_code, title")
+      .eq("srl_code", piCode)
+      .is("org_id", null)
+      .maybeSingle<SrdDocumentRow>();
+    if (piRow) {
+      let piBody: string | undefined;
+      if (openBook) {
+        const admin = createAdminClient();
+        const { data: piBodyRow } = await admin
+          .from("srd_document_bodies")
+          .select("body")
+          .eq("document_id", piRow.id)
+          .maybeSingle<{ body: string }>();
+        piBody = piBodyRow?.body ?? undefined;
+      }
+      srlCandidates = [
+        ...srlCandidates,
+        {
+          id: piRow.id,
+          srl_code: piRow.srl_code,
+          title: piRow.title,
+          ...(openBook && piBody !== undefined ? { body: piBody } : {}),
+        },
+      ];
+    }
+  }
+
   const contactPrefill: ContactPrefill = variant
     ? {
         name: variant.contact.name,

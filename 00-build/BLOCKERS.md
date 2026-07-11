@@ -2,6 +2,63 @@
 
 ---
 
+## 2026-07-11 · S5 COMPLETE — voice E2E-verified · S4 gate resolved via LOE/SSE parity loop · cert awaits your re-blind-score (Fable orchestrator)
+
+**S5 voice DoD MET**: Nathan completed a full seed case end-to-end by laptop mic and submitted it.
+Pipeline: mic → VAD (adaptive, pure/unit-tested) → Groq Whisper v3 Turbo (adapter) → persona →
+**Groq Orpheus** (`canopylabs/orpheus-v1-english`, adapter) → WebAudio playback + CC strip; voice
+layout = caption strip over full-width doc panel (PRD §5.1a); mic-permission-at-Start with text
+fallback. Vitest **94/94**, build green. Latency (server-logged): STT 0.3–1.7s, first-sentence TTS
+0.6–2.5s (replies stream sentence-by-sentence), persona ~1–2s → first audio typically ~3s; long
+replies can exceed — voice hardening stays on the punch list.
+- **Two real bugs found by the live E2E and fixed**: (1) HTMLAudio `play()` loses Chrome's
+  transient user activation mid-call → `NotAllowedError` on later replies (why only one line was
+  ever audible) — playback moved to the Start-click AudioContext (WebAudio, no per-play
+  activation); (2) Groq streams WAV with `0xFFFFFFFF` RIFF/data sizes — normalized server-side
+  (`lib/voice/wav.ts`; `decodeAudioData` requires correct headers).
+- **Pronunciation QA: all 7 brand names PASS** on Orpheus voice `autumn` (Nathan, this session).
+  Clips + sign-off sheet: `06-voice-layer/pronunciation-qa/groq-orpheus/`. Note: Groq's Orpheus
+  roster is `autumn/diana/hannah/austin/daniel/troy`; per-persona map in `lib/voice/config.ts`.
+  ⚠️ One-time **Groq model-terms acceptance** was required (done by Nathan in the Groq console).
+- **ElevenLabs A/B SKIPPED (Nathan's call)**: free tier now blocks premade "library" voices via
+  API and the stored key is permission-restricted. Production TTS vendor decision unchanged —
+  launch-time, punch list.
+
+**S4 GATE (your blind score) — resolved this session, ONE ACTION LEFT FOR YOU.** Your findings:
+LOE/SSE must be reported through the same AE/PC process (A2/A8/A11 = AE+PC reportable LOE;
+A10 = reportable SSE); later you added **SC-01** (sinus infection on Cardizan = intercurrent
+reportable AE). All ratified line-by-line in-session and implemented:
+- **Answer keys edited (your sign-off recorded)**: SC-01 (AE, PV route), SC-02 + SC-11 (AE+PC LOE,
+  dual PV+Quality), SC-08 (added PC leg, dual routing), SC-10 (pregnancy exposure entered as a
+  safety report, S2 applicable). Grading maps updated (misses now trip S2.1/S3.1/S5.2 as
+  applicable). Keys, `seed_s2.sql`, and the live DB are byte-equal (`--verify-db` 12/12 green).
+- **Calibration re-run (paid, twice): 12/12 gold pass · 19/19 expected Criticals · 0 errors.**
+  Report regenerated: `07-evaluator/calibration-report.{json,md}`.
+- **① YOUR ACTION — cert stays offline until**: re-blind-score the five CHANGED outputs in the
+  new report (**A1, A2, A8, A10, A11**; the other seven are unchanged from the version you already
+  passed). Same bar: zero Critical disagreements, ≤1 Major/case. Then flip cert-live per
+  `08-accreditation-cert` spec (no code expected).
+
+**Simulator changes from your E2E feedback (all live)**: open-book always on, toggle removed
+(cert closed-book is still enforced server-side in `case-brief.ts` — bodies never load for
+closed-book variants); contact fields start blank (capture-from-call is the S4.3 skill);
+"probing/clarifying questions" (Inquiry) and "customization notes" (Response) fields removed
+(schema fields retained, empty); **product PI now always appears in the SRL list** — seeded as
+`PI-<PRODUCT>` label skeletons **verbatim from the approved product bank**
+(`seed_s5_product_labels.sql`). **② Content task**: full USPI-style label prose per product
+(bank explicitly defers this to Sonnet + your review) — punch list.
+
+**User deactivation (your ① from 2026-07-10) — DONE** (Sonnet subagent): migration 0010
+(`users.deactivated_at` + trigger guard: self-deactivation blocked for every role, org admins
+scoped to their org), `/admin/users` deactivate/reactivate with audit writes, 3-layer sign-in ban
+(proxy 403/redirect + app layout + persona API). Applied to the live DB.
+
+**Still open:** ① above (your re-blind-score → cert-live); Checkpoint B (bring the new
+calibration report + cert variant/burn/lock); post-48h punch list (incl. voice hardening,
+production TTS + commercial license, full PI prose, PC-description form field).
+
+---
+
 ## 2026-07-10 (evening) · DECISION OF RECORD — S5 TTS pivot: ElevenLabs → Groq Orpheus (Nathan)
 
 Dev/demo TTS is now **Groq-hosted Orpheus** (`canopylabs/orpheus-v1-english`, existing

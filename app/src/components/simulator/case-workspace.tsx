@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import type { CaseBrief, DocumentationFormState, TranscriptTurn } from "@/lib/simulator/types";
 import { saveDraft, submitCase } from "@/lib/simulator/actions";
 import { TranscriptPane } from "@/components/simulator/transcript-pane";
+import { VoiceCall } from "@/components/simulator/voice-call";
 import { IntakeTab } from "@/components/simulator/intake-tab";
 import { InquiryTab } from "@/components/simulator/inquiry-tab";
 import { SafetyTab } from "@/components/simulator/safety-tab";
@@ -28,7 +29,16 @@ export function CaseWorkspace({
 }) {
   const [activeTab, setActiveTab] = useState<Tab>("Intake");
   const [formState, setFormState] = useState<DocumentationFormState>(initialFormState);
-  const [openBook, setOpenBook] = useState(false);
+  // Open-book is always on in the simulator (Nathan, 2026-07-11 — the toggle
+  // is gone). Certification stays closed-book SERVER-side: the loader never
+  // hydrates SRL bodies for a closed_book variant (case-brief.ts), so this
+  // flag only controls display of bodies that were already allowed to load.
+  const openBook = true;
+  // Voice mode (PRD §5.1a): large doc panel + caption strip while on a call.
+  const [voiceMode, setVoiceMode] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [voiceTurns, setVoiceTurns] = useState<TranscriptTurn[]>([]);
+  const [chatSession, setChatSession] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -80,21 +90,34 @@ export function CaseWorkspace({
     });
   }
 
-  return (
-    <div className="grid h-[calc(100vh-3.5rem)] grid-cols-2">
-      <TranscriptPane
-        instanceId={instanceId}
-        transcript={brief.transcript}
-        hasScriptedTranscript={brief.hasScriptedTranscript}
-        hasLivePersona={brief.hasLivePersona}
-        conversationTurns={initialConversationTurns}
-        productLabel={brief.product_ref}
-        openBook={openBook}
-        onToggleOpenBook={() => setOpenBook((v) => !v)}
-        readOnly={readOnly}
-      />
+  const canVoice = brief.channel === "voice" && brief.hasLivePersona && !readOnly;
 
-      <div className="flex h-full flex-col overflow-hidden">
+  // Mic permission is requested at the Start click (spec §Mic permission);
+  // denied/unsupported falls back gracefully to the text chat for this case.
+  async function startVoiceCall() {
+    persist();
+    try {
+      const probe = await navigator.mediaDevices.getUserMedia({ audio: true });
+      probe.getTracks().forEach((t) => t.stop());
+      setVoiceError(null);
+      setVoiceMode(true);
+    } catch {
+      setVoiceError("Microphone permission denied or unavailable — continue the case by text.");
+    }
+  }
+
+  function handleVoiceEnd(turns: TranscriptTurn[]) {
+    if (turns.length > 0) {
+      setVoiceTurns((prev) => [...prev, ...turns]);
+      // Remount the chat pane so it re-seeds its history with the voice turns
+      // (they are already persisted server-side by /api/persona/turn).
+      setChatSession((s) => s + 1);
+    }
+    setVoiceMode(false);
+  }
+
+  const docPanel = (
+    <div className="flex h-full flex-col overflow-hidden">
         <div className="border-b border-slate-200 px-4 py-3">
           <div className="flex items-center justify-between">
             <div>
@@ -230,6 +253,37 @@ export function CaseWorkspace({
           </div>
         </div>
       </div>
+  );
+
+  if (voiceMode) {
+    return (
+      <div className="flex h-[calc(100vh-3.5rem)] flex-col">
+        <VoiceCall
+          instanceId={instanceId}
+          productLabel={brief.product_ref}
+          background={brief.contact_prefill.background ?? null}
+          onEnd={handleVoiceEnd}
+        />
+        <div className="min-h-0 flex-1">{docPanel}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid h-[calc(100vh-3.5rem)] grid-cols-2">
+      <TranscriptPane
+        key={`chat-${chatSession}`}
+        instanceId={instanceId}
+        transcript={brief.transcript}
+        hasScriptedTranscript={brief.hasScriptedTranscript}
+        hasLivePersona={brief.hasLivePersona}
+        conversationTurns={[...initialConversationTurns, ...voiceTurns]}
+        productLabel={brief.product_ref}
+        readOnly={readOnly}
+        onStartVoice={canVoice ? startVoiceCall : undefined}
+        voiceError={voiceError}
+      />
+      {docPanel}
     </div>
   );
 }

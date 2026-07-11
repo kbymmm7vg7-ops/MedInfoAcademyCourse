@@ -33,9 +33,9 @@ export function TranscriptPane({
   hasLivePersona,
   conversationTurns,
   productLabel,
-  openBook,
-  onToggleOpenBook,
   readOnly = false,
+  onStartVoice,
+  voiceError = null,
 }: {
   instanceId: string;
   transcript: TranscriptTurn[];
@@ -43,35 +43,40 @@ export function TranscriptPane({
   hasLivePersona: boolean;
   conversationTurns: TranscriptTurn[];
   productLabel: string | null;
-  openBook: boolean;
-  onToggleOpenBook: () => void;
   readOnly?: boolean;
+  /** present when this case supports voice mode — mic permission is requested
+   *  inside this handler (at the Start click, per the voice spec) */
+  onStartVoice?: () => void;
+  voiceError?: string | null;
 }) {
   return (
     <div className="flex h-full flex-col border-r border-slate-200">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
-        <h2 className="text-sm font-semibold text-slate-900">
-          {hasLivePersona ? "Call" : "Call transcript"}
-        </h2>
-        <label className="flex items-center gap-2 text-xs font-medium text-slate-600">
-          <span>{openBook ? "Open-book" : "Closed-book"}</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={openBook}
-            onClick={onToggleOpenBook}
-            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-              openBook ? "bg-blue-700" : "bg-slate-300"
-            }`}
-          >
-            <span
-              className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
-                openBook ? "translate-x-4.5" : "translate-x-1"
-              }`}
-            />
-          </button>
-        </label>
+        <div className="flex items-center gap-3">
+          <h2 className="text-sm font-semibold text-slate-900">
+            {hasLivePersona ? "Call" : "Call transcript"}
+          </h2>
+          {onStartVoice && (
+            <button
+              type="button"
+              onClick={onStartVoice}
+              className="flex items-center gap-1.5 rounded-md bg-emerald-700 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-emerald-600"
+            >
+              <svg aria-hidden viewBox="0 0 16 16" className="h-3 w-3 fill-current">
+                <path d="M8 1a2.5 2.5 0 0 0-2.5 2.5v4a2.5 2.5 0 0 0 5 0v-4A2.5 2.5 0 0 0 8 1Z" />
+                <path d="M3.5 7.5a.5.5 0 0 1 1 0 3.5 3.5 0 0 0 7 0 .5.5 0 0 1 1 0 4.5 4.5 0 0 1-4 4.473V14h2a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h2v-2.027a4.5 4.5 0 0 1-4-4.473Z" />
+              </svg>
+              Start voice call
+            </button>
+          )}
+        </div>
       </div>
+
+      {voiceError && (
+        <p className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-800">
+          {voiceError}
+        </p>
+      )}
 
       {hasLivePersona ? (
         <div className="flex flex-1 flex-col overflow-hidden">
