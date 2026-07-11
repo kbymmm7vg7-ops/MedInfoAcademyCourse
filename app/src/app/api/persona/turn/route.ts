@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { buildPersonaSystemPromptForTemplate } from "@/lib/simulator/case-brief";
 import type { VariantSnapshot } from "@/lib/cert/variant-engine";
 import { runPersonaTurn, MAX_TURNS_PER_INSTANCE, type ChatTurn } from "@/lib/persona/engine";
+import { isDeactivated, fetchDeactivatedAt, DEACTIVATED_MESSAGE } from "@/lib/auth/deactivation";
 
 // POST /api/persona/turn — one live persona exchange.
 // Body: { instanceId: string, message: string }
@@ -13,6 +14,14 @@ export async function POST(request: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+  // The proxy already blocks deactivated users on the middleware pass, but
+  // this route is re-checked directly too — same defense-in-depth posture
+  // as the (app) layout — so it fails closed even if invoked in a context
+  // that bypassed the proxy.
+  if (isDeactivated(await fetchDeactivatedAt(supabase, user.id))) {
+    return NextResponse.json({ error: DEACTIVATED_MESSAGE }, { status: 403 });
+  }
 
   let body: { instanceId?: unknown; message?: unknown };
   try {

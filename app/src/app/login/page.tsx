@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { LoginForm } from "./login-form";
+import { DEACTIVATED_MESSAGE } from "@/lib/auth/deactivation";
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ confirm?: string; redirectTo?: string }>;
+  searchParams: Promise<{ confirm?: string; redirectTo?: string; deactivated?: string }>;
 }) {
   const params = await searchParams;
   const justSignedUp = params.confirm === "1";
+  const wasDeactivated = params.deactivated === "1";
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
@@ -26,6 +28,11 @@ export default async function LoginPage({
             <div className="mb-4 rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
               Account created. Check your email to confirm your address, then
               sign in below.
+            </div>
+          )}
+          {wasDeactivated && (
+            <div className="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              {DEACTIVATED_MESSAGE}
             </div>
           )}
           <LoginForm redirectTo={params.redirectTo} />

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isDeactivated, fetchDeactivatedAt, DEACTIVATED_MESSAGE } from "@/lib/auth/deactivation";
 
 // Routes that do not require an authenticated session.
 const PUBLIC_ROUTE_PREFIXES = ["/login", "/signup", "/auth"];
@@ -54,6 +55,37 @@ export async function updateSession(request: NextRequest) {
     redirectUrl.pathname = "/login";
     redirectUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(redirectUrl);
+  }
+
+  // Sign-in ban: a deactivated user must not be able to use the app,
+  // including API routes (e.g. /api/persona/turn). This runs on every
+  // request that reached here with a session, covering both page
+  // navigations and fetch calls — the same middleware pass already does
+  // the getUser() call above, so this adds one more query on that path.
+  if (user && !isPublicRoute(pathname)) {
+    const deactivatedAt = await fetchDeactivatedAt(supabase, user.id);
+    if (isDeactivated(deactivatedAt)) {
+      await supabase.auth.signOut();
+
+      const blockedResponse = pathname.startsWith("/api/")
+        ? NextResponse.json({ error: DEACTIVATED_MESSAGE }, { status: 403 })
+        : NextResponse.redirect(
+            (() => {
+              const url = request.nextUrl.clone();
+              url.pathname = "/login";
+              url.searchParams.set("deactivated", "1");
+              return url;
+            })()
+          );
+
+      // Carry over the cookies signOut() cleared via the client above (it
+      // wrote them onto supabaseResponse through the setAll hook) since
+      // blockedResponse is a distinct NextResponse instance.
+      supabaseResponse.cookies.getAll().forEach((cookie) => {
+        blockedResponse.cookies.set(cookie);
+      });
+      return blockedResponse;
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.

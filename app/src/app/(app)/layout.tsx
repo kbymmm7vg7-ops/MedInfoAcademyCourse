@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUserRole, isManagerRole } from "@/lib/auth/get-user-role";
+import { isDeactivated, fetchDeactivatedAt } from "@/lib/auth/deactivation";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { SignOutButton } from "@/components/sign-out-button";
 import { ResumeCaseButton } from "@/components/resume-case-button";
@@ -20,6 +21,14 @@ export default async function AppLayout({
   // through it, so this is checked again here.
   if (!user) {
     redirect("/login");
+  }
+
+  // Same reasoning for deactivation: the proxy already blocks a deactivated
+  // user's requests, but this re-checks server-side rather than trusting
+  // that every request passed through it.
+  if (isDeactivated(await fetchDeactivatedAt(supabase, user.id))) {
+    await supabase.auth.signOut();
+    redirect("/login?deactivated=1");
   }
 
   const role = await getUserRole();
