@@ -1,18 +1,27 @@
 import {
-  ROUTING_TARGETS,
   SERIOUSNESS_CRITERIA,
   SPECIAL_SITUATIONS,
-  type RoutingTarget,
+  type PatientGender,
   type SafetyData,
   type SeriousnessCriterion,
   type SpecialSituation,
 } from "@/lib/simulator/types";
-import { Checkbox, Field, RadioGroup, TextArea, TextInput } from "@/components/simulator/field";
+import { Checkbox, Field, RadioGroup, Select, TextArea, TextInput } from "@/components/simulator/field";
 
 function toggleInArray<T>(arr: T[], value: T): T[] {
   return arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value];
 }
 
+const GENDER_OPTIONS: { value: PatientGender; label: string }[] = [
+  { value: "female", label: "Female" },
+  { value: "male", label: "Male" },
+  { value: "other", label: "Other" },
+  { value: "unknown", label: "Unknown" },
+];
+
+// Safety-tab redesign (Nathan, 2026-07-11): four-element checkboxes removed —
+// identifiability is captured through the patient fields below; routing moved
+// to the Closure tab.
 export function SafetyTab({
   safety,
   onChange,
@@ -24,7 +33,6 @@ export function SafetyTab({
 }) {
   const aePresent = safety.ae_present === "yes";
   const pcPresent = safety.pc_present === "yes";
-  const dualRoutingRequired = aePresent && pcPresent;
 
   return (
     <div className="space-y-6">
@@ -44,50 +52,10 @@ export function SafetyTab({
       {aePresent && (
         <div className="rounded-md border border-amber-200 bg-amber-50 p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
-            Four-element test
+            Adverse event details
           </p>
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <Checkbox
-              disabled={disabled}
-              checked={safety.four_element_test.identifiable_patient}
-              onChange={(v) =>
-                onChange({
-                  four_element_test: { ...safety.four_element_test, identifiable_patient: v },
-                })
-              }
-              label="Identifiable patient"
-            />
-            <Checkbox
-              disabled={disabled}
-              checked={safety.four_element_test.identifiable_reporter}
-              onChange={(v) =>
-                onChange({
-                  four_element_test: { ...safety.four_element_test, identifiable_reporter: v },
-                })
-              }
-              label="Identifiable reporter"
-            />
-            <Checkbox
-              disabled={disabled}
-              checked={safety.four_element_test.suspect_product}
-              onChange={(v) =>
-                onChange({
-                  four_element_test: { ...safety.four_element_test, suspect_product: v },
-                })
-              }
-              label="Suspect product"
-            />
-            <Checkbox
-              disabled={disabled}
-              checked={safety.four_element_test.event}
-              onChange={(v) =>
-                onChange({ four_element_test: { ...safety.four_element_test, event: v } })
-              }
-              label="Event"
-            />
-          </div>
 
-          <div className="mt-4 space-y-4">
+          <div className="mt-3 space-y-4">
             <Field label="AE description" required>
               <TextArea
                 disabled={disabled}
@@ -139,6 +107,69 @@ export function SafetyTab({
                     label={c.label}
                   />
                 ))}
+              </div>
+            </div>
+
+            <div className="border-t border-amber-200 pt-4">
+              <p className="text-xs font-medium text-slate-700">Patient details</p>
+              <div className="mt-2 grid grid-cols-3 gap-4">
+                <Field label="Patient initials">
+                  <TextInput
+                    disabled={disabled}
+                    value={safety.patient_initials}
+                    onChange={(e) => onChange({ patient_initials: e.target.value })}
+                  />
+                </Field>
+                <Field label="Date of birth">
+                  <TextInput
+                    type="date"
+                    disabled={disabled}
+                    value={safety.patient_dob}
+                    onChange={(e) => onChange({ patient_dob: e.target.value })}
+                  />
+                </Field>
+                <Field label="Gender">
+                  <Select
+                    disabled={disabled}
+                    value={safety.patient_gender}
+                    onChange={(e) =>
+                      onChange({ patient_gender: e.target.value as SafetyData["patient_gender"] })
+                    }
+                  >
+                    <option value="">Select…</option>
+                    {GENDER_OPTIONS.map((g) => (
+                      <option key={g.value} value={g.value}>
+                        {g.label}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+              </div>
+
+              <div className="mt-4">
+                <Field label="Concomitant medications">
+                  <TextArea
+                    disabled={disabled}
+                    rows={2}
+                    value={safety.concomitant_meds}
+                    onChange={(e) => onChange({ concomitant_meds: e.target.value })}
+                  />
+                </Field>
+              </div>
+
+              <div className="mt-4">
+                <Field label="Consent for HCP follow-up?">
+                  <RadioGroup
+                    name="hcp_followup_consent"
+                    disabled={disabled}
+                    value={safety.hcp_followup_consent}
+                    onChange={(v) => onChange({ hcp_followup_consent: v })}
+                    options={[
+                      { value: "yes", label: "Yes" },
+                      { value: "no", label: "No" },
+                    ]}
+                  />
+                </Field>
               </div>
             </div>
           </div>
@@ -202,13 +233,6 @@ export function SafetyTab({
         </div>
       )}
 
-      <Checkbox
-        disabled={disabled}
-        checked={safety.pregnancy_or_lactation}
-        onChange={(v) => onChange({ pregnancy_or_lactation: v })}
-        label="Pregnancy / lactation flag"
-      />
-
       <div>
         <p className="text-xs font-medium text-slate-700">Special situations</p>
         <div className="mt-2 grid grid-cols-3 gap-2">
@@ -231,63 +255,9 @@ export function SafetyTab({
         </div>
       </div>
 
-      <div className="rounded-md border border-slate-200 p-4">
-        {dualRoutingRequired ? (
-          <>
-            <div className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs font-semibold text-red-800">
-              Dual routing required — both AE and product complaint are present
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <Checkbox
-                disabled={disabled}
-                checked={safety.routing_dual.route_to_pv}
-                onChange={(v) =>
-                  onChange({ routing_dual: { ...safety.routing_dual, route_to_pv: v } })
-                }
-                label="Route to PV (required)"
-              />
-              <Checkbox
-                disabled={disabled}
-                checked={safety.routing_dual.route_to_quality}
-                onChange={(v) =>
-                  onChange({ routing_dual: { ...safety.routing_dual, route_to_quality: v } })
-                }
-                label="Route to Quality (required)"
-              />
-            </div>
-          </>
-        ) : (
-          <div>
-            <p className="text-xs font-medium text-slate-700">Routing</p>
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              {ROUTING_TARGETS.map((r) => (
-                <Checkbox
-                  key={r}
-                  disabled={disabled}
-                  checked={safety.routing_single.includes(r)}
-                  onChange={() =>
-                    onChange({
-                      routing_single: toggleInArray<RoutingTarget>(safety.routing_single, r),
-                    })
-                  }
-                  label={r}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="mt-4">
-          <Field label="Routed within timeframe (date)">
-            <TextInput
-              type="date"
-              disabled={disabled}
-              value={safety.routed_within_timeframe_date}
-              onChange={(e) => onChange({ routed_within_timeframe_date: e.target.value })}
-            />
-          </Field>
-        </div>
-      </div>
+      <p className="text-xs text-slate-400">
+        Routing is recorded on the Closure tab before submission.
+      </p>
     </div>
   );
 }

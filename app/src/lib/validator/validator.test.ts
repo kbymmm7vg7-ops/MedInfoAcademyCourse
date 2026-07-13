@@ -33,15 +33,10 @@ function goldDoc(): DocumentationFormState {
   d.inquiry.summary = "Caregiver asks whether the patient should rinse his mouth after using the inhaler.";
   d.inquiry.verbatim_question = "Is he supposed to rinse his mouth after using it?";
   d.safety.ae_present = "yes";
-  d.safety.four_element_test = {
-    identifiable_patient: true,
-    identifiable_reporter: true,
-    suspect_product: true,
-    event: true,
-  };
   d.safety.ae_description = "Tremor and palpitations, onset about one week after starting Pulmonara, ongoing.";
-  d.safety.routing_single = ["PV"];
-  d.safety.routed_within_timeframe_date = "2026-07-07";
+  d.safety.patient_initials = "DM";
+  d.safety.hcp_followup_consent = "yes";
+  d.closure.routing_single = ["PV"];
   d.response.selected_srl_id = "some-uuid";
   d.response.verbal_answer_given = "Advised rinsing the mouth with water after each use.";
   d.closure.qc_self_check = true;
@@ -67,6 +62,7 @@ function base(overrides?: Partial<ValidatorInput>): ValidatorInput {
     transcript: SURFACED_TRANSCRIPT,
     groundTruth: GT,
     receivedAt: RECEIVED_AT,
+    submittedAt: RECEIVED_AT,
     sopTimeframeBusinessDays: 1,
     spellCheck,
     ...overrides,
@@ -98,12 +94,13 @@ describe("documentation validator", () => {
     expect(f.evidence).toContain("inquiry summary");
   });
 
-  it("S4.13 fails when AE documented without complete four-element test", () => {
+  it("S4.13 fails when AE documented without routing recorded on closure", () => {
     const doc = goldDoc();
-    doc.safety.four_element_test.suspect_product = false;
+    doc.closure.routing_single = [];
+    doc.closure.routing_dual = { route_to_pv: false, route_to_quality: false };
     const f = byCriterion(runValidator(base({ doc })), "S4.13");
     expect(f.status).toBe("fail");
-    expect(f.evidence).toContain("suspect product");
+    expect(f.evidence).toContain("safety routing");
   });
 
   it("S4.3 requires the full address set when an AE is documented", () => {
@@ -118,14 +115,8 @@ describe("documentation validator", () => {
     const doc = goldDoc();
     doc.intake.requester_type = "patient";
     doc.safety.ae_present = "no";
-    doc.safety.four_element_test = {
-      identifiable_patient: false,
-      identifiable_reporter: false,
-      suspect_product: false,
-      event: false,
-    };
     doc.safety.ae_description = "";
-    doc.safety.routing_single = [];
+    doc.closure.routing_single = [];
     doc.intake.contact.street_address = "";
     const f = byCriterion(runValidator(base({ doc })), "S4.3");
     expect(f.status).toBe("pass");
@@ -175,21 +166,27 @@ describe("documentation validator", () => {
     expect(f.status).toBe("fail");
   });
 
-  it("S2.2/S3.2 business-day arithmetic: Friday receipt allows Monday routing", () => {
+  it("S2.2/S3.2 business-day arithmetic: Friday receipt allows Monday submission", () => {
     const doc = goldDoc();
     doc.intake.received_date = "2026-07-10";
-    doc.safety.routed_within_timeframe_date = "2026-07-13"; // Mon after Fri = 1 business day
     const f = byCriterion(
-      runValidator(base({ doc, receivedAt: "2026-07-10T15:00:00Z" })),
+      runValidator(
+        base({
+          doc,
+          receivedAt: "2026-07-10T15:00:00Z",
+          submittedAt: "2026-07-13T09:00:00Z", // Mon after Fri = 1 business day
+        })
+      ),
       "S2.2/S3.2"
     );
     expect(f.status).toBe("pass");
   });
 
-  it("S2.2/S3.2 fails when routed after the deadline", () => {
-    const doc = goldDoc();
-    doc.safety.routed_within_timeframe_date = "2026-07-10"; // 3 business days later
-    const f = byCriterion(runValidator(base({ doc })), "S2.2/S3.2");
+  it("S2.2/S3.2 fails when submitted after the deadline", () => {
+    const f = byCriterion(
+      runValidator(base({ submittedAt: "2026-07-10T09:00:00Z" })), // 3 business days later
+      "S2.2/S3.2"
+    );
     expect(f.status).toBe("fail");
   });
 

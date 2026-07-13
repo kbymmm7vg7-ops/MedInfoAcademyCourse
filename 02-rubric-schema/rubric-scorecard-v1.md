@@ -106,9 +106,9 @@ Pass / Fail / N/A per criterion. **Mandatory for all case types** (criteria with
 | ID | Criterion | CAT | Val |
 |---|---|:---:|:---:|
 | S5.1 | No off-label information volunteered; unsolicited off-label requests handled per SOP (acknowledged, not answered promotionally; routed through the approved MI response process) | Cri | 10 |
-| S5.2 | Special situation identified and flagged (pregnancy/lactation exposure, overdose, misuse/abuse, lack of effect, medication error, legal or media contact) | Cri | 10 |
+| S5.2 | Special situation identified and flagged (pregnancy/lactation, overdose, misuse/abuse, lack of effect, medication error, product tampering) ⟨CHANGED 2026-07-11, Nathan: legal/media are routing destinations, not SSE flags⟩ | Cri | 10 |
 | S5.3 | No promotional language; response balanced and non-promotional | Maj | 8 |
-| S5.4 | Correct escalation route selected and documented (PV, quality, legal, communications, supervisor) | Maj | 8 |
+| S5.4 | Correct escalation route selected and documented (PV, Quality, Legal, Media) ⟨CHANGED 2026-07-11, Nathan: routing roster revised; Communications/Medical Affairs/Supervisor removed⟩ | Maj | 8 |
 | S5.5 | Consumer/patient appropriately referred to their HCP for medical-advice-adjacent questions | Min | 2 |
 
 **Max 38 • Pass ≥ 30.** Any Critical fail = section fail.

@@ -1,13 +1,13 @@
 # Evaluator calibration report (S4)
 
-_Generated 2026-07-11T18:16:26.706Z · model claude-sonnet-5 · eval-prompt-v1 · rubric v1.0_
+_Generated 2026-07-12T13:18:24.525Z · model claude-sonnet-5 · eval-prompt-v1 · rubric v1.0_
 
 ## Definition-of-done gate
 
 | Gate | Result |
 |---|---|
 | Gold examples → `pass` | 12/12 ✅ |
-| Non-empty `expected_critical_fail` → trips exact Critical(s) | 19/19 ✅ |
+| Non-empty `expected_critical_fail` → trips exact Critical(s) | 18/18 ✅ |
 | Errors | 0 |
 | **Overall DoD** | **✅ MET** |
 
@@ -41,17 +41,16 @@ None. Every gold passed and every mandated Critical tripped.
 | SC-04-failure-4-noRetrieval | failure | — | pass | info |
 | SC-05-gold | gold | (pass) | pass | match |
 | SC-05-failure-1-admitCausation | failure | S4.2 | fail | match |
-| SC-05-failure-2-specialSituationMissed | failure | S5.2 | fail | match |
+| SC-05-failure-2-omitLegalMedia | failure | — | fail | info |
 | SC-05-failure-3-admitCausation | failure | — | fail | info |
-| SC-05-failure-4-omitLegalComms | failure | — | fail | info |
+| SC-05-failure-4-omitLegalMedia | failure | — | fail | info |
 | SC-06-gold | gold | (pass) | pass | match |
 | SC-06-failure-1-offLabelVolunteered | failure | S5.1 | fail | match |
 | SC-06-failure-2-wrongSrl | failure | — | fail | info |
-| SC-06-failure-3-omitLegalComms | failure | — | fail | info |
 | SC-07-gold | gold | (pass) | pass | match |
-| SC-07-failure-1-spokespersonStatement | failure | S5.2 | fail | match |
+| SC-07-failure-1-spokespersonStatement | failure | S4.2 | fail | match |
 | SC-07-failure-2-spokespersonStatement | failure | — | fail | info |
-| SC-07-failure-3-omitLegalComms | failure | — | fail | info |
+| SC-07-failure-3-omitLegalMedia | failure | — | fail | info |
 | SC-08-gold | gold | (pass) | pass | match |
 | SC-08-failure-1-missedCue+pcMissedEntirely | failure | S2.1, S3.1 | fail | match |
 | SC-08-failure-2-medicalAdvice | failure | S4.2 | fail | match |
@@ -67,7 +66,7 @@ None. Every gold passed and every mandated Critical tripped.
 | SC-11-gold | gold | (pass) | pass | match |
 | SC-11-failure-1-specialSituationMissed+pcMissedEntirely | failure | S2.1, S3.1, S5.2 | fail | match |
 | SC-11-failure-2-medicalAdvice | failure | S4.2 | fail | match |
-| SC-11-failure-3-wrongSrl | failure | — | pass | info |
+| SC-11-failure-3-wrongSrl | failure | — | fail | info |
 | SC-11-failure-4-overFlagAe | failure | — | fail | info |
 | SC-12-gold | gold | (pass) | pass | match |
 | SC-12-failure-1-missedCue | failure | S2.1 | fail | match |
@@ -76,33 +75,33 @@ None. Every gold passed and every mandated Critical tripped.
 
 ## Deduction fixtures (informational)
 
-- `SC-01-failure-2-overFlagAe`: deduction fixture — overall fail; failing: S1.3, S2.1, S4.5
-- `SC-01-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.2, S4.6, S4.7
+- `SC-01-failure-2-overFlagAe`: deduction fixture — overall fail; failing: S1.3, S2.1
+- `SC-01-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.1, S4.6, S4.7
 - `SC-02-failure-1-wrongContactSet`: deduction fixture — overall pass; failing: none
-- `SC-02-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.2, S4.6, S4.7
-- `SC-03-failure-2-aeNotDocumented`: deduction fixture — overall fail; failing: S2.1, S2.4, S4.4, S5.4
-- `SC-03-failure-3-aeNotDocumented`: deduction fixture — overall fail; failing: S2.1, S2.3, S2.4
+- `SC-02-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.6, S4.7
+- `SC-03-failure-2-aeNotDocumented`: deduction fixture — overall fail; failing: S2.1, S2.3, S2.4, S2.7, S4.4, S5.4
+- `SC-03-failure-3-aeNotDocumented`: deduction fixture — overall fail; failing: S2.1, S2.3, S2.4, S2.7, S4.4, S5.4
 - `SC-04-failure-3-missingPcIdentifiers`: deduction fixture — overall fail; failing: S3.6
-- `SC-04-failure-4-noRetrieval`: deduction fixture — overall pass; failing: S1.5
+- `SC-04-failure-4-noRetrieval`: deduction fixture — overall pass; failing: none
+- `SC-05-failure-2-omitLegalMedia`: deduction fixture — overall fail; failing: S2.3, S5.4
 - `SC-05-failure-3-admitCausation`: deduction fixture — overall fail; failing: S1.2, S4.2, S5.3
-- `SC-05-failure-4-omitLegalComms`: deduction fixture — overall fail; failing: S2.3, S4.10, S5.2, S5.4
+- `SC-05-failure-4-omitLegalMedia`: deduction fixture — overall fail; failing: S2.3, S5.4
 - `SC-06-failure-2-wrongSrl`: deduction fixture — overall fail; failing: S4.7
-- `SC-06-failure-3-omitLegalComms`: deduction fixture — overall fail; failing: S5.4
-- `SC-07-failure-2-spokespersonStatement`: deduction fixture — overall fail; failing: S1.1, S1.3, S4.2, S4.5, S4.7, S4.10, S5.2, S5.3, S5.4
-- `SC-07-failure-3-omitLegalComms`: deduction fixture — overall fail; failing: S5.4
-- `SC-08-failure-3-aeNotDocumented`: deduction fixture — overall fail; failing: S2.1, S2.3, S2.4, S4.4
-- `SC-09-failure-1-wrongSrl`: deduction fixture — overall fail; failing: S4.2, S4.6, S4.7, S4.10
+- `SC-07-failure-2-spokespersonStatement`: deduction fixture — overall fail; failing: S1.1, S1.3, S4.2, S4.7, S5.3, S5.4
+- `SC-07-failure-3-omitLegalMedia`: deduction fixture — overall fail; failing: S5.4
+- `SC-08-failure-3-aeNotDocumented`: deduction fixture — overall fail; failing: S2.1, S2.3, S2.4, S2.7
+- `SC-09-failure-1-wrongSrl`: deduction fixture — overall fail; failing: S4.6, S4.7, S4.10
 - `SC-09-failure-2-wrongContactSet`: deduction fixture — overall fail; failing: S4.3, S4.10
 - `SC-10-failure-3-overFlagAe`: deduction fixture — overall fail; failing: S1.3, S2.1, S2.4, S4.5, S4.7
-- `SC-11-failure-3-wrongSrl`: deduction fixture — overall pass; failing: none
-- `SC-11-failure-4-overFlagAe`: deduction fixture — overall fail; failing: S1.3, S2.1, S4.2, S4.5
-- `SC-12-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.2, S4.6, S4.7
+- `SC-11-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.2
+- `SC-11-failure-4-overFlagAe`: deduction fixture — overall fail; failing: S1.3, S2.1, S4.5, S4.7
+- `SC-12-failure-3-wrongSrl`: deduction fixture — overall fail; failing: S4.6, S4.7
 
 ---
 
 # Blind-scoring appendix (for Nathan)
 
-Score each GOLD case yourself from the transcript + documentation **before** reading the evaluator's verdicts in Part B. The gate: **zero Critical-criterion disagreements, ≤1 Major disagreement per case.** 12 gold outputs below; the JSON report holds all 52 outputs (incl. failure fixtures) with full per-criterion evidence.
+Score each GOLD case yourself from the transcript + documentation **before** reading the evaluator's verdicts in Part B. The gate: **zero Critical-criterion disagreements, ≤1 Major disagreement per case.** 12 gold outputs below; the JSON report holds all 51 outputs (incl. failure fixtures) with full per-criterion evidence.
 
 ## Part A — cases to score (verdicts hidden)
 
@@ -150,31 +149,21 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Intercurrent adverse event: the patient on Cardizan has developed a sinus infection (an antibiotic is being prescribed for it); patient otherwise stable and asymptomatic. Captured for PV to assess regardless of suspected causality — an intercurrent illness reported on therapy is a reportable AE.",
     "onset_date": "",
     "ongoing": "no",
     "seriousness": [],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "PV"
-    ],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-CDZ-INR",
@@ -186,6 +175,13 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [
+      "PV"
+    ],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -210,11 +206,13 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 6. **persona**: About four days now, and honestly not much relief yet.
 7. **trainee**: Thank you — I'm going to capture that lack of effect for our safety team to assess, and log a product complaint so our quality team can take a look as well. Do you have the package handy — could you read me the lot number and expiration date, and would you be able to keep it in case our quality team requests it?
 8. **persona**: Sure — lot LOT-CALIB-0001, expires June 2027. I'll hang on to it.
-9. **trainee**: Based on SRL-GAS-ONSET, here's what our approved information says about your question on Gastroquell: full symptom relief typically takes several days of consistent dosing; I'd encourage keeping to the regimen and checking with your pharmacist before changing the dose.
-10. **persona**: That's helpful, thank you.
-11. **trainee**: Is there anything else I can help you with today?
-12. **persona**: No, that covers it — thank you for your help.
-13. **trainee**: Thank you for calling Medical Information. Have a good day.
+9. **trainee**: And would it be all right if I or our safety team follow up with your doctor or pharmacist about this if we need more detail?
+10. **persona**: Sure, that's fine.
+11. **trainee**: Based on SRL-GAS-ONSET, here's what our approved information says about your question on Gastroquell: full symptom relief typically takes several days of consistent dosing; I'd encourage keeping to the regimen and checking with your pharmacist before changing the dose.
+12. **persona**: That's helpful, thank you.
+13. **trainee**: Is there anything else I can help you with today?
+14. **persona**: No, that covers it — thank you for your help.
+15. **trainee**: Thank you for calling Medical Information. Have a good day.
 
 **Submitted documentation**
 
@@ -244,31 +242,23 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Potential lack of effect: patient reports Gastroquell isn't working right away for their heartburn — no symptom relief yet on the current regimen, and the lack of relief is ongoing at the time of the call. Captured for PV to assess; flagging is not concluding the drug failed.",
     "onset_date": "",
     "ongoing": "yes",
     "seriousness": [],
+    "patient_initials": "JE",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "yes",
     "pc_lot_number": "LOT-CALIB-0001",
     "pc_expiration_date": "2027-06-30",
     "pc_ndc": "0000-0000-01",
     "pc_sample_available": "yes",
-    "pregnancy_or_lactation": false,
     "special_situations": [
       "lack_of_effect"
-    ],
-    "routing_dual": {
-      "route_to_pv": true,
-      "route_to_quality": true
-    },
-    "routing_single": [],
-    "routed_within_timeframe_date": "2026-07-06"
+    ]
   },
   "response": {
     "selected_srl_id": "SRL-GAS-ONSET",
@@ -280,6 +270,11 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": true,
+      "route_to_quality": true
+    },
+    "routing_single": [],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -339,31 +334,21 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Tremor and palpitations, onset ~1 week after Pulmonara initiation, ongoing.",
     "onset_date": "",
     "ongoing": "yes",
     "seriousness": [],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "PV"
-    ],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-PUL-CANDID",
@@ -375,6 +360,13 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [
+      "PV"
+    ],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -434,29 +426,21 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Perioral tingling and numbness (possible hypocalcemia), onset hours after Osteveda injection.",
     "onset_date": "",
     "ongoing": "no",
     "seriousness": [],
+    "patient_initials": "RN",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "yes",
     "pc_lot_number": "LOT-CALIB-0001",
     "pc_expiration_date": "2027-06-30",
     "pc_ndc": "0000-0000-01",
     "pc_sample_available": "yes",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": true,
-      "route_to_quality": true
-    },
-    "routing_single": [],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-OST-HYPOCAL",
@@ -468,6 +452,11 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": true,
+      "route_to_quality": true
+    },
+    "routing_single": [],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -492,13 +481,16 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 6. **persona**: Someone needs to just admit this drug did this to her. Can you at least say that?
 7. **trainee**: I hear how frightening this has been, and I want to make sure your mother gets the right care. I'm not able to confirm what caused the rash — that's something her treating physician needs to evaluate — but I am documenting everything you've told me and routing it to our safety team right away.
 8. **persona**: Fine. Just make sure someone actually does something about it.
-9. **trainee**: Based on SRL-NEU-RASH, here's what our approved information says about your question on Neurovance: the approved prescribing information addresses this directly.
-10. **persona**: That's helpful, thank you.
-11. **trainee**: For any decisions about your treatment or dosing, please check with your prescribing physician — I'm not able to advise on that directly.
-12. **persona**: Understood, I'll follow up with them.
-13. **trainee**: Is there anything else I can help you with today?
-14. **persona**: No, that covers it — thank you for your help.
-15. **trainee**: Thank you for calling Medical Information. Have a good day.
+9. **trainee**: Because you've mentioned a lawyer and the news, I'm also flagging this to our Legal and Media desks so the right teams are looped in from the start.
+10. **persona**: Good. They should be.
+11. **trainee**: Thank you. With your permission, our safety team may also contact your mother's treating physician for the medical details — is that all right?
+12. **persona**: Yes, fine — whatever gets this looked at.
+13. **trainee**: Based on SRL-NEU-RASH, here's what our approved information says about your question on Neurovance: the approved prescribing information addresses this directly.
+14. **persona**: That's helpful, thank you.
+15. **trainee**: For any decisions about your treatment or dosing, please check with your prescribing physician — I'm not able to advise on that directly.
+16. **persona**: Understood, I'll follow up with them.
+17. **trainee**: Is there anything else I can help you with today?
+18. **persona**: No, that covers it — thank you for your help.
 
 **Submitted documentation**
 
@@ -528,38 +520,23 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Blistering rash with mouth sores, hospitalized, possible SJS; onset ~2 weeks after starting Neurovance. Serious AE.",
     "onset_date": "",
     "ongoing": "no",
     "seriousness": [
       "hospitalization"
     ],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [
-      "legal",
-      "media"
-    ],
-    "routing_dual": {
-      "route_to_pv": true,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "Legal",
-      "Communications",
-      "Supervisor"
-    ],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-NEU-RASH",
@@ -571,6 +548,15 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [
+      "PV",
+      "Legal",
+      "Media"
+    ],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -592,9 +578,9 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 3. **trainee**: Happy to help with that. Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf?
 4. **persona**: Sure — this is Chris Delgado, internal sales representative. My callback number is (555) 0190-2213.
 5. **persona**: Can you at least tell me if it works for psoriasis? Even off the record, just for my own knowledge?
-6. **trainee**: I understand you're trying to help your customer, but I'm not able to share efficacy data for an unapproved use — Immunexa is only approved for RA. I'll route this to Medical Affairs, and if the dermatologist has a genuine question, that needs to come through our approved unsolicited-request process.
+6. **trainee**: I understand you're trying to help your customer, but I'm not able to share efficacy data for an unapproved use — Immunexa is only approved for RA. If the dermatologist has a genuine clinical question, it needs to come through our approved unsolicited-request process — I'll document this request and the redirect.
 7. **persona**: Okay, understood — go ahead and route it.
-8. **trainee**: As I mentioned, I'm not able to provide off-label efficacy data — I've routed this to Medical Affairs.
+8. **trainee**: As I mentioned, I'm not able to provide off-label efficacy data — I've documented the request and the redirect through our approved unsolicited-request process.
 9. **persona**: That's helpful, thank you.
 10. **trainee**: Is there anything else I can help you with today?
 11. **persona**: No, that covers it — thank you for your help.
@@ -628,42 +614,37 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "no",
-    "four_element_test": {
-      "identifiable_patient": false,
-      "identifiable_reporter": false,
-      "suspect_product": false,
-      "event": false
-    },
     "ae_description": "",
     "onset_date": "",
     "ongoing": "",
     "seriousness": [],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "Medical Affairs"
-    ],
-    "routed_within_timeframe_date": ""
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "",
     "customization_notes": "Answered per SC-06 gold documentation example.",
     "delivery_method": "phone",
-    "verbal_answer_given": "Declined to provide off-label information for Immunexa; explained MI cannot support off-label promotional requests and routed to Medical Affairs."
+    "verbal_answer_given": "Declined to provide off-label information for Immunexa; explained MI cannot support off-label promotional requests and documented the redirect to the approved unsolicited-request process."
   },
   "closure": {
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -686,9 +667,9 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 4. **trainee**: Happy to help with that. Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf?
 5. **persona**: Sure — this is Alex Reyes, health journalist, The Meridian Health Desk. My callback number is (555) 0166-7788.
 6. **persona**: So you're saying it does cause cancer — can I quote you on that?
-7. **trainee**: I'm not able to speak on the record or characterize the warning beyond what's in the approved labeling. I'll have our Corporate Communications team follow up with you directly — can I get the best contact for you and your outlet?
+7. **trainee**: I'm not able to speak on the record or characterize the warning beyond what's in the approved labeling. I'm routing your inquiry to our Media desk to follow up with you directly — can I get the best contact for you and your outlet?
 8. **persona**: The Meridian Health Desk, same number I called from.
-9. **trainee**: I've routed your inquiry to Corporate Communications, who will follow up with an approved statement.
+9. **trainee**: I've routed your inquiry to our Media desk, who will follow up with an approved statement.
 10. **persona**: That's helpful, thank you.
 11. **trainee**: Is there anything else I can help you with today?
 12. **persona**: No, that covers it — thank you for your help.
@@ -722,45 +703,39 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "no",
-    "four_element_test": {
-      "identifiable_patient": false,
-      "identifiable_reporter": false,
-      "suspect_product": false,
-      "event": false
-    },
     "ae_description": "",
     "onset_date": "",
     "ongoing": "",
     "seriousness": [],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [
-      "media"
-    ],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "Communications",
-      "Supervisor"
-    ],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "",
     "customization_notes": "Answered per SC-07 gold documentation example.",
     "delivery_method": "phone",
-    "verbal_answer_given": "Declined to comment as an unauthorized spokesperson, made no causation statement, and routed the media inquiry to Corporate Communications."
+    "verbal_answer_given": "Declined to comment as an unauthorized spokesperson, made no causation statement, and routed the media inquiry to the Media desk."
   },
   "closure": {
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [
+      "Media"
+    ],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -822,29 +797,21 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Persistent application-site burning and a spreading rash beyond the treated area, ~5 days, worsening.",
     "onset_date": "",
     "ongoing": "no",
     "seriousness": [],
+    "patient_initials": "TB",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "yes",
     "pc_lot_number": "LOT-CALIB-0001",
     "pc_expiration_date": "2027-06-30",
     "pc_ndc": "0000-0000-01",
     "pc_sample_available": "yes",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": true,
-      "route_to_quality": true
-    },
-    "routing_single": [],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-DRM-APPLY",
@@ -856,6 +823,11 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": true,
+      "route_to_quality": true
+    },
+    "routing_single": [],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -912,29 +884,21 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "no",
-    "four_element_test": {
-      "identifiable_patient": false,
-      "identifiable_reporter": false,
-      "suspect_product": false,
-      "event": false
-    },
     "ae_description": "",
     "onset_date": "",
     "ongoing": "",
     "seriousness": [],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [],
-    "routed_within_timeframe_date": ""
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-CDZ-RENAL",
@@ -946,6 +910,11 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -970,13 +939,15 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 6. **persona**: Sure — I'm about 6 weeks along based on my last period, and Dr. Alvarez is my neurologist.
 7. **trainee**: Thank you. Because you've been taking Neurovance during the pregnancy, I'm going to record this as a safety report and route it to our safety team today — that's standard for any pregnancy exposure, even when there's no problem to report.
 8. **persona**: Okay, that makes sense.
-9. **trainee**: Based on SRL-NEU-PREG, here's what our approved information says about your question on Neurovance: there's a pregnancy exposure registry for Neurovance, and any decision about continuing or stopping needs to be made with your prescriber given the risks of abrupt discontinuation.
-10. **persona**: That's helpful, thank you.
-11. **trainee**: For any decisions about your treatment or dosing, please check with your prescribing physician — I'm not able to advise on that directly.
-12. **persona**: Understood, I'll follow up with them.
-13. **trainee**: Is there anything else I can help you with today?
-14. **persona**: No, that covers it — thank you for your help.
-15. **trainee**: Thank you for calling Medical Information. Have a good day.
+9. **trainee**: And is it all right if our safety team follows up with Dr. Alvarez for any medical details they need?
+10. **persona**: Yes, that's fine.
+11. **trainee**: Based on SRL-NEU-PREG, here's what our approved information says about your question on Neurovance: there's a pregnancy exposure registry for Neurovance, and any decision about continuing or stopping needs to be made with your prescriber given the risks of abrupt discontinuation.
+12. **persona**: That's helpful, thank you.
+13. **trainee**: For any decisions about your treatment or dosing, please check with your prescribing physician — I'm not able to advise on that directly.
+14. **persona**: Understood, I'll follow up with them.
+15. **trainee**: Is there anything else I can help you with today?
+16. **persona**: No, that covers it — thank you for your help.
+17. **trainee**: Thank you for calling Medical Information. Have a good day.
 
 **Submitted documentation**
 
@@ -1006,33 +977,23 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Pregnancy exposure (reportable special situation entered as a safety report): patient approximately 6 weeks pregnant by last menstrual period with Neurovance exposure throughout; no adverse outcome reported. Exposure ongoing at the time of the call.",
     "onset_date": "",
     "ongoing": "yes",
     "seriousness": [],
+    "patient_initials": "DW",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": true,
     "special_situations": [
       "pregnancy_exposure"
-    ],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "PV"
-    ],
-    "routed_within_timeframe_date": "2026-07-06"
+    ]
   },
   "response": {
     "selected_srl_id": "SRL-NEU-PREG",
@@ -1044,6 +1005,13 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [
+      "PV"
+    ],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -1105,31 +1073,23 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Potential lack of effect: on the lowest Cardizan dose for about six weeks the INR stayed below the target range at every check and was not responding to that dose, until the doctor increased it (subtherapeutic anticoagulation). No clot or bleed reported; resolved from the caller's perspective after the prescriber increased the dose. Captured for PV to assess; flagging is not concluding the drug failed.",
     "onset_date": "",
     "ongoing": "no",
     "seriousness": [],
+    "patient_initials": "MB",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "yes",
     "pc_lot_number": "LOT-CALIB-0001",
     "pc_expiration_date": "2027-06-30",
     "pc_ndc": "0000-0000-01",
     "pc_sample_available": "yes",
-    "pregnancy_or_lactation": false,
     "special_situations": [
       "lack_of_effect"
-    ],
-    "routing_dual": {
-      "route_to_pv": true,
-      "route_to_quality": true
-    },
-    "routing_single": [],
-    "routed_within_timeframe_date": "2026-07-06"
+    ]
   },
   "response": {
     "selected_srl_id": "",
@@ -1141,6 +1101,11 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": true,
+      "route_to_quality": true
+    },
+    "routing_single": [],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -1200,33 +1165,23 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
   },
   "safety": {
     "ae_present": "yes",
-    "four_element_test": {
-      "identifiable_patient": true,
-      "identifiable_reporter": true,
-      "suspect_product": true,
-      "event": true
-    },
     "ae_description": "Hospitalization for a serious infection (pneumonia) while on Immunexa, a known serious risk of the TNF-class. Serious AE.",
     "onset_date": "",
     "ongoing": "no",
     "seriousness": [
       "hospitalization"
     ],
+    "patient_initials": "",
+    "patient_dob": "",
+    "patient_gender": "",
+    "concomitant_meds": "",
+    "hcp_followup_consent": "yes",
     "pc_present": "no",
     "pc_lot_number": "",
     "pc_expiration_date": "",
     "pc_ndc": "",
     "pc_sample_available": "",
-    "pregnancy_or_lactation": false,
-    "special_situations": [],
-    "routing_dual": {
-      "route_to_pv": false,
-      "route_to_quality": false
-    },
-    "routing_single": [
-      "PV"
-    ],
-    "routed_within_timeframe_date": "2026-07-06"
+    "special_situations": []
   },
   "response": {
     "selected_srl_id": "SRL-IMM-VACC",
@@ -1238,6 +1193,13 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
     "follow_up_needed": "no",
     "follow_up_scheduled_date": "",
     "outstanding_info": "",
+    "routing_dual": {
+      "route_to_pv": false,
+      "route_to_quality": false
+    },
+    "routing_single": [
+      "PV"
+    ],
     "checklist": {
       "inquiry_answered": true,
       "safety_captured_routed": true,
@@ -1254,500 +1216,250 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 
 ### B1. SC-01 — evaluator says: **PASS**
 
-> This was a clean, well-organized HCP interaction call correctly identified, documented, and routed under the Drug-Interactions category with the right SRL (SRL-CDZ-INR) and complete contact capture. However, the case reveals a significant AE/PC Detection and Questioning Technique issue: the ground truth confirms the patient was stable/asymptomatic with no true adverse event cue to surface, yet the trainee unilaterally declared the incidental mention of a sinus infection/antibiotic prescription to be a reportable AE without any listen-and-clarify exchange to confirm an actual event, symptom, or reporter concern. This is a fabricated/over-flagged AE — the skill required is catching and clarifying volunteered cues, not treating incidental clinical context as an automatic safety signal. In a live QA environment, this kind of over-reporting creates downstream PV workload, may trigger unnecessary follow-up outreach to the HCP, and reflects poorly on judgment around what truly qualifies as reportable versus routine clinical background. Coaching focus: reinforce the distinction between "listening for volunteered AE cues" versus "manufacturing AE reports from incidental details" — future calls should include a brief clarifying question (e.g., "was there any adverse reaction to the antibiotic or Cardizan itself?") before committing to a formal AE capture, rather than assuming reportability outright.
+> Strong, clean handling of a Tier-1 case. AE/PC Detection: the trainee correctly caught the volunteered cue (sinus infection/antibiotic while on Cardizan) and appropriately captured/routed it as an intercurrent AE to PV without fabricating or over-probing for additional symptoms — exactly the listen-and-clarify standard required. Questioning Technique: good use of an open clarifying question to establish requester type, and correct restraint in not fishing for symptoms beyond what was volunteered. Compliance: response stayed strictly within the approved SRL content (drug-interaction classes affecting INR), no medical advice or off-label content, no promotional language. Documentation: all required fields (contact, product, inquiry summary, AE description, SRL citation, response route, routing) were completed accurately and consistently with the transcript; received date and category correctly logged. Empathy: professional, warm, and respectful tone throughout with no condescension.
 
 | Criterion | Result | Evidence / rationale |
 |---|---|---|
 | S1.1 | pass (3) | Thank you for calling Medical Information, this is Alex Reed speaking. |
-| S1.2 | pass (3) | Professional and pleasant tone throughout, no condescension. |
-| S1.3 | fail (1) | [5] TRAINEE: Since the patient developed the sinus infection while on Cardizan, I'm also going to capture that as an adverse event report and route it to our safety team — that's standard even when it appears unrelated to therapy. |
+| S1.2 | pass (3) | Happy to help with that. |
+| S1.3 | pass (3) | Since the patient developed the sinus infection while on Cardizan, I'm also going to capture that as an adverse event report and route it to our safety team |
 | S1.4 | na |  |
-| S1.5 | pass (3) | No slang, jargon, or acronyms used inappropriately; clear phrasing. |
-| S2.1 | pass (10) | Ground truth confirms ae_present=true (intercurrent sinus infection is reportable regardless of causality); trainee identified and captured it as an AE, matching the key. |
+| S1.5 | pass (3) | Based on SRL-CDZ-INR, here's what our approved information says |
+| S2.1 | pass (10) | AE (intercurrent sinus infection while on Cardizan) correctly identified from the volunteered cue and documented, matching ground truth ae_present=true. |
 | S2.2 | na | No AE/PC documented or no SOP timeframe for this case. |
-| S2.3 | pass (10) | Routed to PV, matching correct_routes in the key. |
-| S2.4 | pass (8) |  |
+| S2.3 | pass (10) | Routed to PV, matching ground truth correct_routes ['pv']. |
+| S2.4 | pass (8) | Fixed validator finding. |
 | S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | HCP consent to be listed as reporting physician was obtained verbally and documented in the safety field. |
 | S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.10 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product Cardizan selected. |
-| S4.2 | pass (5) | Response based on cited SRL, no medical advice given; on-label interaction info per PI. |
+| S4.1 | pass (5) | Correct product Cardizan selected, matching case product. |
+| S4.2 | pass (5) | Response was based on the correct SRL and contained factual drug-interaction information, not medical advice. |
 | S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | MI request (drug interaction inquiry) correctly entered in database. |
-| S4.5 | pass (4) | Response was concise and on-inquiry, limited to antibiotic-INR interaction classes. |
-| S4.6 | pass (4) | Correct SRL cited and documented in response field. |
-| S4.7 | pass (4) | Response correctly entered with SRL reference and summary of the interaction guidance. |
+| S4.4 | pass (4) | MI request (drug interaction inquiry) and AE both correctly entered into the case database. |
+| S4.5 | pass (4) | Response stayed on the specific interaction question without volunteering unrelated information. |
+| S4.6 | pass (4) | Correct SRL (SRL-CDZ-INR) cited and documented in the response field, matching ground truth correct_srl. |
+| S4.7 | pass (4) | Response correctly entered with reference to the SRL and appropriate detail level. |
 | S4.8 | pass (4) | deterministic validator: received_date_match |
 | S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response delivered via phone, matching contact channel; documented appropriately. |
+| S4.10 | pass (1) | Response route (phone, verbal answer) documented consistent with the call channel. |
 | S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Drug-Interactions category correctly selected matching inquiry_category in key. |
+| S4.12 | pass (1) | Inquiry category correctly selected as Drug-Interactions, matching ground truth inquiry_category. |
 | S4.13 | pass (1) | deterministic validator: required_fields_present |
 | S4.14 | pass (1) | deterministic validator: spelling_count |
 | S5.1 | na |  |
 | S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S5.3 | pass (8) | No promotional language; response was balanced and factual, citing PI-based interaction classes. |
-| S5.4 | pass (8) | Escalation route to PV correctly selected and documented. |
-| S5.5 | na | No medical-advice-adjacent question from a consumer/patient was posed; caller was an HCP asking a straightforward interaction question answered via approved SRL. |
+| S5.3 | pass (8) | Response was balanced, factual, and non-promotional, sourced strictly from the SRL. |
+| S5.4 | pass (8) | Correct escalation route (PV) selected and documented, matching ground truth correct_routes. |
+| S5.5 | na |  |
 
 ### B2. SC-02 — evaluator says: **PASS**
 
-> Strong performance overall. AE/PC Detection: the trainee correctly caught the volunteered lack-of-effect cue, captured it as both an AE and PC, and applied the required dual routing to PV and Quality — matching the ground truth exactly. Questioning Technique: the trainee used a listen-and-clarify approach rather than probing, appropriately confirming requester type and asking only about the duration/relief the caller had already raised, which also correctly surfaced the ambiguous-requester detail (patient, not HCP). Compliance: no off-label content was involved, and the trainee properly redirected the dosing-adjacent question to the pharmacist without giving medical advice — good regulatory-risk management. Documentation: all required fields (lot, expiration, NDC, sample availability, AE/PC descriptions, dual-routing flags, SRL citation) were completed accurately and match the gold answer key almost verbatim. Empathy: tone was professional and warm throughout the call.
+> Strong overall handling of an ambiguous-requester efficacy call that concealed a lack-of-effect signal. AE/PC Detection: the trainee correctly caught the volunteered "not much relief yet" cue, flagged it as a potential lack-of-effect AE and quality complaint, and routed dual to PV and Quality as required — matching the ground truth exactly. Questioning Technique: the trainee used a clean, non-solicitous clarifying question to establish requester type (patient vs. HCP) rather than probing for symptoms, which is exactly the "listen-and-clarify" skill being trained, and did not fabricate any additional AE beyond what was raised. Compliance: no off-label question arose so S5.1 is n/a; the trainee proactively and appropriately redirected the caller to their pharmacist rather than advising a dose change themselves, which protects against medical-advice risk. Documentation: nearly all required fields were completed correctly (lot, expiration, NDC, sample availability, AE/PC descriptions, dual routing flags, SRL citation, HCP consent) and the resolution/closure checklist accurately reflects the call outcome.
 
 | Criterion | Result | Evidence / rationale |
 |---|---|---|
-| S1.1 | pass (4) | Thank you for calling Medical Information, this is Alex Reed speaking. |
-| S1.2 | pass (3) | Happy to help with that. |
-| S1.3 | pass (3) | You mentioned Gastroquell isn't working right away for your heartburn — can I ask how long you've been taking it, and whether you've had any relief at all so far? |
+| S1.1 | pass (3) | "this is Alex Reed speaking" |
+| S1.2 | pass (3) | Tone was professional and courteous throughout, no condescension. |
+| S1.3 | pass (4) | "Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf?" |
 | S1.4 | na |  |
-| S1.5 | pass (3) | No jargon or acronyms present in trainee's turns. |
-| S2.1 | pass (10) | Lack of effect AE correctly identified and documented, matching ground truth. |
+| S1.5 | pass (3) | No slang/jargon/acronyms used by the trainee; language was plain and clear. |
+| S2.1 | pass (10) | Trainee correctly identified the lack-of-effect AE as volunteered by the caller and documented it matching the ground truth. |
 | S2.2 | pass (10) | deterministic validator: report_timeframe |
 | S2.3 | pass (10) | Dual routing to PV and Quality correctly flagged, matching required correct_routes. |
-| S2.4 | pass (8) | AE description is clear, concise, sequential, and matches the ground-truth wording closely. |
+| S2.4 | pass (8) | AE description is clear, concise, and sequential, matching the ground-truth narrative. |
 | S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact HCP was verbally obtained and documented. |
 | S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.10 | pass (2) | deterministic validator: received_date_match |
-| S3.1 | pass (10) | Product complaint identified alongside the AE, consistent with ground truth pc_present true. |
+| S3.1 | pass (10) | Product complaint tied to lack of effect correctly identified and documented, matching ground truth. |
 | S3.2 | pass (10) | deterministic validator: report_timeframe |
-| S3.3 | pass (10) | Routed to quality team as required for the PC. |
+| S3.3 | pass (10) | Routed to Quality as required by dual routing flags. |
 | S3.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.6 | pass (8) | deterministic validator: pc_identifiers |
-| S3.7 | pass (8) | Availability of suspect product documented as available (patient will keep it). |
+| S3.7 | pass (8) | Sample availability documented as available. |
 | S3.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.10 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.12 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product Gastroquell selected. |
-| S4.2 | pass (5) | Response based on approved SRL; no medical advice given, only referred to pharmacist/HCP for dose questions. |
+| S4.1 | pass (5) | Correct product Gastroquell selected throughout. |
+| S4.2 | pass (5) | Response was based on the approved SRL and appropriately redirected dosing questions to HCP/pharmacist without giving medical advice. |
 | S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | Inquiry logged in database with correct category and product. |
-| S4.5 | pass (4) | Response stayed on-topic, addressing onset of relief without extraneous information. |
-| S4.6 | pass (4) | Correct SRL-GAS-ONSET cited and documented in response field. |
-| S4.7 | pass (4) | Response summary and reference correctly entered. |
+| S4.4 | pass (4) | Inquiry logged correctly in the database with category and product. |
+| S4.5 | pass (4) | Response stayed on-inquiry, did not volunteer extraneous unrelated information. |
+| S4.6 | pass (4) | Correct SRL-GAS-ONSET selected and documented in response record. |
+| S4.7 | pass (4) | Response correctly entered with summary and reference to SRL, matching the verbal answer given. |
 | S4.8 | pass (4) | deterministic validator: received_date_match |
 | S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone) appropriate and documented. |
+| S4.10 | pass (1) | Response delivered by phone, verbal answer documented consistent with the call. |
 | S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case category correctly selected as Efficacy. |
+| S4.12 | pass (1) | Inquiry category correctly set to Efficacy. |
 | S4.13 | pass (1) | deterministic validator: required_fields_present |
 | S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na |  |
-| S5.2 | pass (10) | Lack-of-effect special situation correctly flagged. |
-| S5.3 | pass (8) | Response was balanced, non-promotional, and directed caller to pharmacist for dosing. |
-| S5.4 | pass (8) | Dual routing to PV and Quality documented in routing fields as required. |
-| S5.5 | pass (2) | Caller appropriately referred to pharmacist for dose-related decision rather than receiving medical advice. |
+| S5.1 | na | No off-label question was asked or volunteered in this case. |
+| S5.2 | pass (10) | Lack-of-effect special situation correctly identified and flagged. |
+| S5.3 | pass (8) | Response was balanced, non-promotional, and appropriately redirected to HCP/pharmacist for dosing. |
+| S5.4 | pass (8) | Correct dual escalation routes (PV and Quality) selected and documented. |
+| S5.5 | pass (2) | Caller appropriately referred to pharmacist for dose-change consideration. |
 
 ### B3. SC-03 — evaluator says: **PASS**
 
-> Strong call overall. AE/PC Detection: the trainee correctly caught the caller's fragmented, volunteered cue ('s been a bit shaky lately, but that') and clarified it without over-probing — this is exactly the listen-and-clarify skill the scorecard rewards, and it surfaced a real AE (tremor + palpitations) that matched the ground truth. Documentation of the AE description, routing to PV, and timeframe were all correct and complete. Questioning Technique (S1.3) was excellent — verbatim re-quote of the caller's own words to prompt clarification is a model approach. Compliance: response stayed on-label, non-promotional, and appropriately deferred treatment questions to the prescriber, with consent to contact HCP obtained. One documentation gap: the resolution/closure notes lack a substantive narrative closing out the AE handling (S2.9) — only checklist booleans are present, with no free-text confirmation of case completion or next steps. In live QA this would likely just need a one-line closure note to fully close the loop.
+> Strong performance overall. AE/PC Detection: the trainee excelled at listen-and-clarify — catching the caller's offhand, half-finished 'shaky' remark mid-sentence and asking for specifics (onset, whether ongoing) without turning it into a probing interrogation. This is exactly the target behavior and surfaced a real AE (tremor/palpitations) that would otherwise have been missed. Compliance: consent to contact the HCP was properly obtained and documented, no off-label content arose, and the response stayed strictly on the administration question with no promotional or advisory language on symptom management — the caller was correctly referred to the prescriber. Documentation: nearly all required fields were completed correctly (contact info, AE description, SRL citation, routing to PV), matching the transcript closely. The one gap is in the resolution/completion notes for the AE — the case lacks a clear closing note documenting that the AE was captured, routed to PV, and next steps, which should be added to close the loop for audit purposes.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (4) | Thank you for calling Medical Information, this is Alex Reed speaking. |
+| S1.2 | pass (4) | Happy to help with that. |
+| S1.3 | pass (4) | Before we go further — you mentioned "s been a bit shaky lately, but that" a moment ago. Can you tell me more about that: when it started, and whether it's still happening? |
+| S1.4 | na |  |
+| S1.5 | pass (4) | N/A - clean professional language throughout |
+| S2.1 | pass (10) | AE (tremor and palpitations) correctly identified after catching volunteered cue, matching ground truth. |
+| S2.2 | pass (10) | deterministic validator: report_timeframe |
+| S2.3 | pass (10) | Routed to PV per ground truth correct_routes. |
+| S2.4 | pass (8) |  |
+| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact HCP was asked and obtained verbally, and documented in the safety tab. |
+| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.10 | pass (2) | deterministic validator: received_date_match |
+| S4.1 | pass (5) | Correct product (Pulmonara) selected. |
+| S4.2 | pass (5) | Response was based on the approved SRL and referred treatment decisions to the HCP; no medical advice given. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | MI request entered in database with appropriate inquiry category and product. |
+| S4.5 | pass (4) | Response stayed on-inquiry (mouth rinse guidance) without volunteering extraneous information. |
+| S4.6 | pass (4) | Correct SRL (SRL-PUL-CANDID) cited and documented in response field. |
+| S4.7 | pass (4) | Response correctly entered with summary and reference to the SRL. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | pass (1) | Response delivered verbally by phone, documented in response fields. |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Inquiry category 'Other' appropriately selected given the administration/rinse question as primary inquiry. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | na | No off-label information was requested or volunteered in this call. |
+| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.3 | pass (8) | Response was balanced, factual, and non-promotional. |
+| S5.4 | pass (8) | Correct escalation route (PV) selected and documented in routing_single per ground truth correct_routes. |
+| S5.5 | pass (2) | Trainee appropriately referred treatment-related follow-up to the prescriber rather than giving medical advice. |
+
+### B4. SC-04 — evaluator says: **PASS**
+
+> Strong performance on a complex dual PC+AE case. AE/PC Detection: Both the product complaint (cloudy solution, bent needle) and the AE (perioral tingling/numbness suggestive of hypocalcemia) were correctly identified from caller-volunteered cues — no fabrication, no missed signals. Questioning Technique: Excellent listen-and-clarify approach; the trainee explicitly returned to both volunteered cues ("you mentioned X a moment ago...") rather than cold-probing, which is exactly the desired behavior. Compliance: No medical advice was given — the tingling/numbness was correctly framed as an urgent referral to a physician rather than clinical guidance, and language stayed balanced/non-promotional. Documentation: Dual routing to PV and Quality was correctly flagged and matches the required correct_routes; lot/expiry/NDC captured; HCP contact consent was solicited and documented; AE description, PC description, and response fields are all complete and consistent with the transcript. Regulatory risk: Correct SRL (SRL-OST-HYPOCAL) was cited and used appropriately given the decoys available (ONJ, pregnancy, bleed SRLs were correctly avoided).
 
 | Criterion | Result | Evidence / rationale |
 |---|---|---|
 | S1.1 | pass (3) | "this is Alex Reed speaking" |
-| S1.2 | pass (3) | "Happy to help with that." |
-| S1.3 | pass (4) | "you mentioned \"s been a bit shaky lately, but that\" a moment ago. Can you tell me more about that: when it started, and whether it's still happening?" |
+| S1.2 | pass (3) | Professional, empathetic tone throughout, no condescension. |
+| S1.3 | pass (3) | "Before we go further — you mentioned ... Can you tell me more about that: when it started, and whether it's still happening?" |
 | S1.4 | na |  |
-| S1.5 | pass (3) | N/A - no jargon present |
-| S2.1 | pass (10) | AE (tremor and palpitations) correctly identified after catching the volunteered cue, matching ground truth. |
+| S1.5 | pass (4) | No slang/jargon/acronyms used; SRL ID stated but explained in context. |
+| S2.1 | pass (10) | AE (perioral tingling/numbness, possible hypocalcemia) identified and clarified, matching ground truth. |
 | S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) | Routed to PV per correct_routes, matching ground truth single-route requirement. |
+| S2.3 | pass (10) | Dual routing to PV and Quality both flagged in closure.routing_dual, matching required dual routing. |
 | S2.4 | pass (8) |  |
 | S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact HCP was requested and granted, and documented in safety.hcp_followup_consent. |
 | S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.10 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product Pulmonara selected. |
-| S4.2 | pass (5) | Response based on SRL-PUL-CANDID with no medical advice; caller referred to prescriber for treatment decisions. |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | Inquiry entered in database with category and summary captured. |
-| S4.5 | pass (4) | Response stayed on-inquiry (mouth-rinse question) without volunteering unrelated information. |
-| S4.6 | pass (4) | Correct SRL cited and documented in response field. |
-| S4.7 | pass (4) | Response correctly entered with reference to SRL and summary of verbal answer. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone, verbal) documented appropriately. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case question category appropriately selected as 'Other' matching ground truth inquiry_category. |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na | No off-label information was volunteered or requested in this case. |
-| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S5.3 | pass (8) | Response was balanced, non-promotional, sourced from approved SRL. |
-| S5.4 | pass (8) | Correct escalation route (PV) selected and documented in routing_single field, matching ground truth correct_routes. |
-| S5.5 | pass (2) | Caller appropriately referred to prescriber for treatment/dosing decisions related to the tremor/palpitations. |
-
-### B4. SC-04 — evaluator says: **PASS**
-
-> Strong overall handling of a complex dual PC/AE case. AE/PC Detection: Trainee correctly caught both the volunteered PC cue (cloudy solution/bent needle) and the offhand AE cue ("felt a bit off since"), clarifying each per the listen-and-clarify standard rather than fishing — matching the ground truth exactly, and routed dual to PV+Quality correctly. Questioning Technique: Excellent re-engagement on the volunteered detail ("Before we go further, you mentioned..."), a good model of catching cues without over-probing. Compliance: No medical advice given; appropriately referred to HCP/ER for the hypocalcemia-adjacent symptom, non-promotional tone maintained throughout. Documentation: Most required fields are complete and accurate (contact, product, SRL, dual routing, PC identifiers), but resolution/closure fields are thin — onset_date was left blank despite the AE description specifying "onset hours after injection," and neither the AE nor PC resolution notes summarize next steps or completion status in the resolution fields. In a live QA environment this would trigger a minor documentation deficiency at audit even though the safety-critical routing and identification were done correctly.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (4) | "this is Alex Reed speaking" |
-| S1.2 | pass (3) | "I'd like to make sure this gets captured for our safety team..." |
-| S1.3 | pass (3) | "Before we go further — you mentioned... Can you tell me more about that: when it started, and whether it's still happening?" |
-| S1.4 | na |  |
-| S1.5 | pass (3) | N/A - no jargon present in transcript |
-| S2.1 | pass (10) | AE (perioral tingling/numbness, possible hypocalcemia) was identified and captured matching ground truth. |
-| S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) | Dual routing to PV and Quality documented as required. |
-| S2.4 | pass (8) |  |
-| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.10 | pass (2) | deterministic validator: received_date_match |
-| S3.1 | pass (10) | PC (cloudy solution, bent needle) identified and documented matching ground truth. |
+| S3.1 | pass (10) | PC (cloudy solution, bent needle) identified and documented, matching ground truth. |
 | S3.2 | pass (10) | deterministic validator: report_timeframe |
-| S3.3 | pass (10) | Routed to Quality as required for PC alongside PV for AE. |
+| S3.3 | pass (10) | Routed to Quality as required for PC. |
 | S3.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.6 | pass (8) | deterministic validator: pc_identifiers |
-| S3.7 | pass (8) | Suspect product availability documented as available. |
+| S3.7 | pass (8) | Suspect product availability documented. |
 | S3.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.10 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S3.12 | pass (2) | deterministic validator: received_date_match |
 | S4.1 | pass (5) | Correct product (Osteveda) selected. |
-| S4.2 | pass (5) | Response cited approved SRL and referred to HCP without giving medical advice. |
+| S4.2 | pass (5) | Response based on approved SRL and no medical advice given, HCP referral provided instead. |
 | S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | MI request (the 'other' inquiry re: replacement/complaint) correctly entered. |
-| S4.5 | pass (4) | Response stayed on-inquiry, addressed the symptom and referred to HCP without volunteering unrelated info. |
-| S4.6 | pass (4) | Correct SRL documented in response field. |
-| S4.7 | pass (4) | Response correctly entered with SRL reference and summary of what was conveyed. |
+| S4.4 | pass (4) | Both AE and PC requests entered in database with dual routing. |
+| S4.5 | pass (4) | Response stayed on-topic, concise, no unsolicited info volunteered. |
+| S4.6 | pass (4) | Correct SRL (SRL-OST-HYPOCAL) documented in response field. |
+| S4.7 | pass (4) | Response correctly entered with reference to SRL and detail level appropriate. |
 | S4.8 | pass (4) | deterministic validator: received_date_match |
 | S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone) appropriate and documented. |
+| S4.10 | pass (1) | Response route (phone) documented with verbal answer given. |
 | S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case categorized appropriately as Other given the dual PC/AE nature. |
+| S4.12 | pass (1) | Inquiry category 'Other' selected appropriately given dual PC/AE non-standard case. |
 | S4.13 | pass (1) | deterministic validator: required_fields_present |
 | S4.14 | pass (1) | deterministic validator: spelling_count |
 | S5.1 | na |  |
 | S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S5.3 | pass (8) | Response was balanced, non-promotional, focused on safety referral. |
-| S5.4 | pass (8) | Correct dual escalation route (PV + Quality) selected and documented. |
-| S5.5 | pass (2) | Caller appropriately referred to HCP for the medical-advice-adjacent symptom question. |
+| S5.3 | pass (8) | Response non-promotional, balanced, focused on safety referral. |
+| S5.4 | pass (8) | Correct dual escalation routes (PV and Quality) selected and documented. |
+| S5.5 | pass (2) | Caller appropriately referred to HCP/urgent evaluation for the medical-advice-adjacent symptom. |
 
 ### B5. SC-05 — evaluator says: **PASS**
 
-> Strong performance on a high-difficulty hostile/legal-threat case. AE/PC Detection: the trainee correctly identified the serious AE (blistering rash, mouth sores, hospitalization, possible SJS) exactly as the caller volunteered it, without fabricating additional symptoms — a clean listen-and-clarify catch. Both special situations (legal, media) were correctly flagged and dual-routed to PV, Legal, Communications, and Supervisor, matching the required escalation route. Questioning Technique: the trainee de-escalated skillfully before eliciting clinical details, modeling the correct 'clarify, don't probe' approach. Compliance/Regulatory risk: excellent — the trainee explicitly declined to confirm causation or admit fault, and redirected treatment/dosing decisions to the prescribing physician, avoiding both promotional language and medical advice. Documentation: overall thorough and complete (contact info, SRL citation, routing, resolution notes), with one gap — the onset_date field was left blank even though the AE description clearly states onset ~2 weeks after starting the drug; this timeline detail should be captured in the structured onset field, not just narrative text, to support downstream PV timeline analysis.
+> Strong performance on a high-difficulty hostile/legal-threat case. AE/PC Detection: the trainee correctly identified and documented the serious AE (blistering rash, mouth sores, hospitalization, possible SJS) matching the ground truth exactly, and did so without fabricating additional symptoms — good listen-and-clarify discipline. Questioning Technique: rather than probing for symptoms, the trainee de-escalated with empathy and control, which caused the caller to volunteer the clinical details naturally (per the reveal rule), exactly the intended skill. Compliance: the trainee correctly avoided confirming causation or fault ("I'm not able to confirm what caused the rash") and redirected treatment questions to the prescribing physician — no promotional or advisory language was used. Regulatory risk: legal and media triggers were correctly recognized and routed alongside PV, matching the ground truth's correct_routes, and HCP contact consent was properly obtained and documented. Documentation: all required fields were completed, the correct SRL (SRL-NEU-RASH) was cited, contact info was complete for the case type, and the record was submitted within the SOP timeframe with matching received date. Empathy: tone remained professional and validating throughout without being condescension or minimization, appropriate for an emotionally charged, legally sensitive call.
 
 | Criterion | Result | Evidence / rationale |
 |---|---|---|
-| S1.1 | pass (3) | Thank you for calling Medical Information, this is Alex Reed speaking. |
+| S1.1 | pass (4) | Thank you for calling Medical Information, this is Alex Reed speaking. |
 | S1.2 | pass (4) | I hear how frightening this has been, and I want to make sure your mother gets the right care. |
-| S1.3 | pass (4) | Happy to help with that. Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf? |
+| S1.3 | pass (4) | I'm not able to confirm what caused the rash — that's something her treating physician needs to evaluate — but I am documenting everything you've told me and routing it to our safety team right away. |
 | S1.4 | na |  |
-| S1.5 | pass (4) | N/A - clean language throughout |
-| S2.1 | pass (10) | Serious AE (blistering rash, mouth sores, hospitalization, possible SJS) correctly identified and documented matching ground truth. |
+| S1.5 | pass (4) | Because you've mentioned a lawyer and the news, I'm also flagging this to our Legal and Media desks so the right teams are looped in from the start. |
+| S2.1 | pass (10) | Serious AE (blistering rash, hospitalization, possible SJS) identified and documented matching ground truth. |
 | S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) | Routed dual to PV and to Legal/Communications/Supervisor per case's dual routing requirement matching ground truth correct_routes. |
-| S2.4 | pass (8) | AE description is clear, concise, and sequential covering rash, mouth sores, hospitalization, suspected SJS, and onset timing. |
+| S2.3 | pass (10) | Routed to PV, Legal, and Media as required by ground truth correct_routes. |
+| S2.4 | pass (8) | AE description is clear, concise, and matches the required clinical details. |
 | S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact treating physician was requested verbally and documented as yes. |
 | S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S2.10 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product Neurovance selected, matching ground truth. |
-| S4.2 | pass (5) | Response was based on approved SRL and PI, refused to speculate on causation, and gave no medical advice. |
+| S4.1 | pass (5) | Correct product Neurovance selected. |
+| S4.2 | pass (5) | Response grounded in SRL, no causation confirmation or medical advice given. |
 | S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | Inquiry entered into database with category and summary correctly captured. |
-| S4.5 | pass (4) | Response stayed on-inquiry, referencing the SRL and redirecting to HCP without volunteering unrelated information. |
-| S4.6 | pass (4) | Correct SRL (SRL-NEU-RASH) cited and documented in response field, matching ground truth correct_srl. |
-| S4.7 | pass (4) | Response summary correctly entered with reference to SRL and HCP redirection captured in verbal_answer_given. |
+| S4.4 | pass (4) | Case entered with correct category and product in database record. |
+| S4.5 | pass (4) | Response stayed on-inquiry, referred to SRL and HCP, did not volunteer unrelated info. |
+| S4.6 | pass (4) | Correct SRL (SRL-NEU-RASH) cited and documented matching ground truth correct_srl. |
+| S4.7 | pass (4) | Response entered with summary, SRL reference, and appropriate detail level. |
 | S4.8 | pass (4) | deterministic validator: received_date_match |
 | S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone) documented appropriately and consistent with voice channel. |
+| S4.10 | pass (1) | Response delivered verbally over phone, documented appropriately. |
 | S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case question category correctly selected as Safety, matching ground truth inquiry_category. |
+| S4.12 | pass (1) | Case category correctly selected as Safety matching the AE nature of the call. |
 | S4.13 | pass (1) | deterministic validator: required_fields_present |
 | S4.14 | pass (1) | deterministic validator: spelling_count |
 | S5.1 | na |  |
-| S5.2 | pass (10) | Both legal and media special situations correctly identified and flagged, matching ground truth special_situations. |
-| S5.3 | pass (8) | Response was balanced and non-promotional; trainee explicitly avoided confirming causation or fault. |
-| S5.4 | pass (8) | Escalation route documented across routing_dual (PV) and routing_single (Legal, Communications, Supervisor) fields matching ground truth correct_routes of pv, legal, communications, supervisor. |
-| S5.5 | pass (2) | Caller was appropriately referred to the treating physician for causation and treatment/dosing decisions. |
+| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.3 | pass (8) | No promotional language; balanced, compliant response focused on referral and documentation. |
+| S5.4 | pass (8) | Correct escalation routes (PV, Legal, Media) selected and documented per ground truth correct_routes. |
+| S5.5 | pass (2) | Caller appropriately referred to treating physician for medical-advice-adjacent questions. |
 
 ### B6. SC-06 — evaluator says: **PASS**
 
-> Strong handling of a high-stakes internal compliance trap. Alex identified the off-label efficacy request from an internal sales rep, held the line clearly and professionally even after mild pushback ('can you at least tell me if it works... off the record'), and correctly explained why MI could not share off-label data for promotional use. The case was properly routed to Medical Affairs and documentation (requester type, off-label flag, routing) matches the required fields and ground truth. No AE/PC was present and none was fabricated — good discipline in not over-flagging. Contact info, product selection, and inquiry categorization were all correctly captured; no medical advice or promotional language crept into the response.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (4) | Thank you for calling Medical Information, this is Alex Reed speaking. |
-| S1.2 | pass (3) | I understand you're trying to help your customer, but I'm not able to share efficacy data for an unapproved use |
-| S1.3 | pass (4) | Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf? |
-| S1.4 | na |  |
-| S1.5 | pass (3) | N/A - no jargon present in transcript |
-| S4.1 | pass (5) | Correct product (Immunexa) selected and documented. |
-| S4.2 | pass (5) | No medical advice given; response restricted to compliance explanation, consistent with PI/SOP for off-label requests. |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | Inquiry logged with category, product, and summary reflecting the off-label efficacy request. |
-| S4.5 | pass (4) | Response stayed on-topic, declining off-label data without volunteering extra unrelated information. |
-| S4.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.7 | pass (4) | Response summary correctly reflects verbal answer given and rationale; no fabricated references. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone/verbal) documented and appropriate to how the case was received. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case categorized correctly as Efficacy inquiry. |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | pass (10) | Trainee correctly refused to volunteer off-label efficacy data despite mild pushback, explained the compliance boundary, and routed properly instead of answering promotionally. |
-| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S5.3 | pass (8) | Language was neutral and non-promotional; no product claims were made. |
-| S5.4 | pass (8) | Routed to Medical Affairs matches the correct_routes in the key, and is reflected in routing_single field. |
-| S5.5 | na | No medical-advice-adjacent question directed at a patient/consumer; requester is an internal sales rep, not seeking personal medical guidance. |
-
-### B7. SC-07 — evaluator says: **PASS**
-
-> Strong handling of a high-risk media edge case. The trainee correctly identified the journalist/media special situation early through active listening (clarifying caller type at the outset), avoided becoming an unauthorized spokesperson, made no causation statement about the boxed warning, and cleanly redirected to Corporate Communications while capturing full contact details. Documentation mirrors the verbal handling: special_situations flagged as 'media', routing captured to Communications and Supervisor, contact fields complete, and no AE/PC fabricated where none was present — good discipline avoiding over-flagging. All fixed/validator criteria pass and no regulatory or compliance red flags were found.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (3) | Thank you for calling Medical Information, this is Alex Reed speaking. |
-| S1.2 | pass (3) | I'm not able to speak on the record or characterize the warning beyond what's in the approved labeling. |
-| S1.3 | pass (3) | Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf? |
-| S1.4 | na |  |
-| S1.5 | pass (3) | I'll have our Corporate Communications team follow up with you directly |
-| S4.1 | pass (5) | Correct product (Dermelia) selected and documented. |
-| S4.2 | pass (5) | No medical advice or causation statement given; response limited to approved labeling framework and redirection. |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | Inquiry logged in the database with correct category (Safety) and summary reflecting the media/cancer-warning question. |
-| S4.5 | pass (4) | Response was concise and on-inquiry; trainee did not volunteer any additional off-topic information or speculation. |
-| S4.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.7 | pass (4) | Response summary accurately reflects the verbal exchange and redirect action; no misrepresentation of what was said. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone, redirect to Corporate Communications) is appropriate and documented. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case question category correctly selected as Safety, matching the nature of the inquiry (media asking about boxed warning/cancer risk). |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | pass (10) | No off-label information was involved or volunteered; trainee correctly declined to characterize the warning beyond approved labeling. |
-| S5.2 | pass (10) | Media contact special situation correctly identified and flagged both verbally (routed to Corp Comms) and in documentation. |
-| S5.3 | pass (8) | No promotional language used; response was neutral, declined causation, and redirected appropriately. |
-| S5.4 | pass (8) | Escalation route correctly captured as Communications and Supervisor, matching the ground-truth correct_routes. |
-| S5.5 | na | No medical-advice-adjacent question was posed by this journalist caller requiring an HCP referral; case is a media/compliance scenario, not a patient medical question. |
-
-### B8. SC-08 — evaluator says: **PASS**
-
-> Strong performance overall. AE/PC Detection: The trainee correctly caught the volunteered 'stings a bit' cue (S1.3), clarified it without over-probing, and accurately identified both the AE and the PC (S2.1/S3.1), routing dual to PV and Quality as required — a critical-criteria success. Compliance: No medical advice was given; the worsening rash was appropriately referred to the prescriber (S5.5), and the response stayed on-label and non-promotional (S5.1 na, S5.3 pass). Documentation: Most required fields (contact, product, lot/exp/NDC, routing flags, SRL) were completed accurately and on time. However, resolution/notes fields for both the AE and PC records (S2.9, S3.10) were left as generic checklist booleans without a substantive closure note — in a live QA environment this would raise questions about whether follow-up (e.g., HCP contact outcome, sample retrieval confirmation) was properly tracked to closure.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (4) | Agent stated name 'Alex Reed' in the opening greeting. |
-| S1.2 | pass (4) | Professional, warm, non-condescending tone throughout, including when handling the sensitive AE disclosure. |
-| S1.3 | pass (4) | Trainee caught the volunteered 'stings a bit' cue and clarified it directly without over-probing: 'Before we go further — you mentioned...Can you tell me more about that.' This is textbook listen-and-clarify. |
-| S1.4 | na |  |
-| S1.5 | pass (4) | No slang, jargon, or unexplained acronyms used; SRL reference was framed clearly for the caller. |
-| S2.1 | pass (10) | AE was correctly identified per ground truth via the volunteered cue and captured in Safety tab ae_present='yes' with matching description. |
-| S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) | Correct dual routing (PV + Quality) matches ground-truth correct_routes. |
-| S2.4 | pass (8) |  |
-| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.10 | pass (2) | deterministic validator: received_date_match |
-| S3.1 | pass (10) | PC correctly identified alongside AE, matching ground truth pc_present=true. |
-| S3.2 | pass (10) | deterministic validator: report_timeframe |
-| S3.3 | pass (10) | PC correctly routed to quality department as required by dual routing. |
-| S3.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.6 | pass (8) | deterministic validator: pc_identifiers |
-| S3.7 | pass (8) | Availability of suspect product (tube) documented correctly per caller's confirmation 'I'll hold on to the tube.' |
-| S3.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.10 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.12 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product selected matching case. |
-| S4.2 | pass (5) | Response based on approved SRL, no medical advice given directly; deferred to prescriber. |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | MI request correctly entered in database with category and verbatim question. |
-| S4.5 | pass (4) | Concise, on-topic response with no unsolicited additional information. |
-| S4.6 | pass (4) | Correct SRL documented matching ground truth correct_srl. |
-| S4.7 | pass (4) | Response correctly entered with summary and reference to source. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone) appropriate and documented, consistent with voice channel. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case question category appropriately selected matching ground truth inquiry_category 'other'. |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na |  |
-| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S5.3 | pass (8) | Response balanced, non-promotional, focused on safety and prescriber referral. |
-| S5.4 | pass (8) | Correct dual escalation route (PV + Quality) documented matching ground truth correct_routes. |
-| S5.5 | pass (2) | Caller appropriately referred to HCP/prescriber for the medical-advice-adjacent worsening rash question. |
-
-### B9. SC-09 — evaluator says: **PASS**
-
-> Solid, clean-inquiry handling on a tier-1 case. AE/PC Detection: correctly recognized no safety signal was present and did not fabricate or fish for one — good discipline per S1.3/S5.2 guidance. Compliance: response stayed strictly on-label, citing the correct SRL (SRL-CDZ-RENAL) with no promotional or off-label content — no regulatory risk noted. Documentation: contact info, product selection, inquiry category, SRL citation, and response route were all captured accurately and completely; fixed validator checks (S4.3, S4.8, S4.13, S4.14) all passed. Empathy/Questioning: tone was professional and courteous; agent appropriately confirmed there was nothing further to note without over-probing. One minor inconsistency: response.delivery_method was logged as "phone" while intake.contact_channel is also "phone" — consistent and correct here, but ensure channel fields are double-checked for cross-consistency in email/portal-based variants of similar cases. Overall this is a strong example of correct minimal, compliant, well-documented handling of a clean pharmacokinetics inquiry.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (3) | Thank you for calling Medical Information, this is Alex Reed speaking. |
-| S1.2 | pass (3) | Tone is professional and pleasant throughout, no condescension. |
-| S1.3 | pass (3) | Just to confirm, is there anything else about this you'd like me to note before we wrap up? |
-| S1.4 | na |  |
-| S1.5 | pass (3) | No slang, jargon, or unexplained acronyms used inappropriately; clinical terms like CrCl were used by the caller, not introduced improperly by agent. |
-| S4.1 | pass (5) | Correct product Cardizan selected in documentation and referenced correctly in response. |
-| S4.2 | pass (5) | Response was based on the correct SRL and contained no medical advice, only referencing PI-based guidance. |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | MI request (pharmacokinetics/renal dosing) correctly entered with category and summary in database record. |
-| S4.5 | pass (4) | Response stayed on-inquiry, did not volunteer unrelated information. |
-| S4.6 | pass (4) | Correct SRL (SRL-CDZ-RENAL) documented in response field matching the ground truth correct_srl. |
-| S4.7 | pass (4) | Response summary and reference to SRL correctly entered in documentation matching what was delivered verbally. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone, matching the actual call channel) is documented appropriately. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Question category 'Pharmacokinetics' appropriately selected matching the inquiry_category in ground truth. |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na | No off-label information was requested or discussed; question was strictly on-label renal dosing per PI. |
-| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S5.3 | pass (8) | Response was factual, PI-based, and non-promotional in tone. |
-| S5.4 | na | No escalation required per ground truth (dual_routing_required=false, correct_routes=[]). |
-| S5.5 | na | Caller is an HCP (pharmacist) asking a dosing question directly relevant to their professional practice; no medical-advice-adjacent consumer referral was triggered. |
-
-### B10. SC-10 — evaluator says: **PASS**
-
-> Strong performance on a high-difficulty special-situation case. AE/PC Detection: the trainee correctly recognized the pregnancy exposure as a reportable safety event immediately upon the volunteered cue, without fabricating additional AEs — textbook listen-and-clarify. Questioning Technique: follow-up questions (LMP/gestational age, prescriber name) were precisely targeted at closing documentation gaps rather than probing for unrelated symptoms. Compliance/Regulatory risk: the trainee avoided the key trap of advising the patient to stop or continue her anticonvulsant, correctly redirecting to the prescriber and citing the abrupt-discontinuation risk — exactly per SOP. Documentation: all required fields (contact, ae_description, special_situation_flags, gestational age, prescriber, SRL citation, routing) were completed accurately and match the ground truth almost verbatim, with correct routing to PV within the 1-business-day SOP window.
+> Strong handling of a classic internal-sales off-label compliance trap. The trainee (Alex Reed) identified himself, professionally clarified the requester's role, and — critically — held the compliance line twice: once on the initial ask and again when the rep mildly pushed back ('can you at least tell me if it works... off the record'). Rather than answering promotionally or volunteering any efficacy data, the trainee correctly declined, explained the RA-only approval status, and documented the redirect through the approved unsolicited-request channel. Documentation captured the requester type, product, inquiry summary, and off-label/redirect action consistent with the required fields, and the response route (phone, verbal) was appropriately recorded.
 
 | Criterion | Result | Evidence / rationale |
 |---|---|---|
 | S1.1 | pass (4) | "this is Alex Reed speaking" |
-| S1.2 | pass (3) | "Happy to help with that." / "Thank you." |
-| S1.3 | pass (4) | "Can you tell me your estimated due date or last menstrual period, and who your prescribing physician is?" |
+| S1.2 | pass (3) | "I understand you're trying to help your customer, but I'm not able to share efficacy data..." — professional and empathetic tone throughout |
+| S1.3 | pass (3) | Trainee clarified requester type/role in [3] and caught the repeated off-label push in [5], addressing it directly without soliciting any AE/PC info |
 | S1.4 | na |  |
-| S1.5 | pass (4) | No slang/jargon/acronyms used in trainee dialogue. |
-| S2.1 | pass (10) | Correctly identified pregnancy exposure as a reportable safety event, matching ground truth ae_present=true. |
-| S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) | Routed to PV as required by correct_routes: ["pv"]. |
-| S2.4 | pass (8) | Clear, concise, sequential description matching the ground-truth ae_description exactly. |
-| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.10 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product selected matching the case. |
-| S4.2 | pass (5) | Response was based on approved SRL and avoided giving medical advice, correctly redirecting the 'should I stop' trap to the prescriber. |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | MI request captured in database with appropriate detail. |
-| S4.5 | pass (4) | Response stayed on-topic and did not volunteer unrelated information. |
-| S4.6 | pass (4) | Correct SRL matching the case's correct_srl was cited and documented. |
-| S4.7 | pass (4) | Response correctly entered with reference to source document and detail level appropriate. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone) and safety routing (PV) documented appropriately. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case correctly categorized as Safety given the pregnancy exposure special situation. |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na |  |
-| S5.2 | pass (10) | Pregnancy exposure special situation correctly identified and flagged, matching ground truth. |
-| S5.3 | pass (8) | Response was balanced, non-promotional, and safety-focused. |
-| S5.4 | pass (8) | Correct escalation route (PV) selected and documented, matching correct_routes. |
-| S5.5 | pass (2) | Patient appropriately referred to HCP for the medical-advice-adjacent 'should I stop' question, avoiding the discontinuation trap. |
-
-### B11. SC-11 — evaluator says: **PASS**
-
-> Strong performance on a difficult embedded-cue case. AE/PC Detection: the trainee caught the volunteered dose-increase cue mid-sentence, paused to clarify it properly (not by cold-probing but by reflecting the caller's own words back), and this correctly surfaced the full lack-of-effect detail per the reveal rule. Both the AE (subtherapeutic INR/LOE) and the associated PC (leftover lower-dose tablets) were identified, dual-routed to PV and Quality, and documented with lot/expiration/NDC captured. Questioning Technique was exemplary — used a listen-and-clarify approach rather than solicitation, exactly per the SOP standard. Compliance/Regulatory risk: the trainee explicitly declined to advise on dosing/INR target and appropriately redirected to the prescriber, correctly treating disposal guidance as general safety information rather than medical advice, and did not engage with the decoy SRLs (INR/renal) that would have constituted overreach. Documentation: all required fields were completed, dates/lot/expiration accurately transcribed, resolution and routing fields correctly reflect the dual PV/Quality escalation.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (4) | Thank you for calling Medical Information, this is Alex Reed speaking. |
-| S1.2 | pass (3) | Happy to help with that. |
-| S1.3 | pass (4) | Before we go further — you mentioned "My doctor bumped me up because the low dose wasn" a moment ago. Can you tell me more about that: when it started, and whether it's still happening? |
-| S1.4 | na |  |
-| S1.5 | pass (3) | For disposal of unused Cardizan, the safest approach is a pharmacy take-back program... |
-| S2.1 | pass (10) | AE (potential lack of effect / subtherapeutic INR) correctly identified per ground truth. |
-| S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) | Dual routing to PV and Quality correctly captured, matching required correct_routes. |
-| S2.4 | pass (8) |  |
-| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.10 | pass (2) | deterministic validator: received_date_match |
-| S3.1 | pass (10) | Product complaint (leftover tablets tied to the LOE) correctly identified alongside the AE. |
-| S3.2 | pass (10) | deterministic validator: report_timeframe |
-| S3.3 | pass (10) | PC routed to Quality as required by dual routing. |
-| S3.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.6 | pass (8) | deterministic validator: pc_identifiers |
-| S3.7 | pass (8) | Availability of suspect product documented (patient retains sample). |
-| S3.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.10 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S3.12 | pass (2) | deterministic validator: received_date_match |
-| S4.1 | pass (5) | Correct product (Cardizan) selected. |
-| S4.2 | pass (5) | Response limited to general disposal guidance; no dosing/INR medical advice given; correctly avoided the decoy SRLs (INR/renal). |
-| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
-| S4.4 | pass (4) | Inquiry entered with appropriate summary and category capturing both the disposal question and embedded LOE. |
-| S4.5 | pass (4) | Response stayed on-topic (disposal) and did not volunteer unrelated info. |
-| S4.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.7 | pass (4) | Response summary/detail level appropriately entered; no SRL needed since general guidance only. |
-| S4.8 | pass (4) | deterministic validator: received_date_match |
-| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.10 | pass (1) | Response route (phone, verbal) appropriately documented. |
-| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S4.12 | pass (1) | Case category selected as 'Other', matching ground truth inquiry_category. |
-| S4.13 | pass (1) | deterministic validator: required_fields_present |
-| S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na | No off-label information was requested or involved in this case per ground truth. |
-| S5.2 | pass (10) | Lack-of-effect special situation correctly identified and flagged. |
-| S5.3 | pass (8) | Response was balanced, factual, and non-promotional throughout. |
-| S5.4 | pass (8) | Dual routing to PV and Quality correctly selected, matching required escalation targets. |
-| S5.5 | pass (2) | Caller appropriately referred to prescriber/pharmacist for dosing/INR questions. |
-
-### B12. SC-12 — evaluator says: **PASS**
-
-> Strong performance on this difficult embedded-AE case. AE/PC Detection (S2.1): the trainee correctly caught the volunteered "treated at the hospital" cue in beat 2 and clarified it before proceeding, surfacing the serious AE (hospitalization for pneumonia on Immunexa) rather than letting it slide past to answer only the tidy vaccine-interaction question — this is exactly the target skill for this case tier. Questioning Technique (S1.3): the clarification was a clean listen-and-clarify (repeating the caller's own words and asking onset/status) rather than a fishing expedition, which is the correct approach. Compliance (S5.1/S5.3): no off-label content was introduced, and the response was properly grounded in SRL-IMM-VACC with an appropriate HCP referral for infection management, avoiding medical advice. Documentation across Section 2 and Section 4 was thorough and consistent between transcript and case record (AE description, seriousness flag, PV routing, contact fields, SRL citation all correctly captured). Regulatory risk (S5 criticals): AE correctly routed to PV within the 1-business-day SOP window with correct routing documentation. No significant gaps found in this transcript/documentation pair.
-
-| Criterion | Result | Evidence / rationale |
-|---|---|---|
-| S1.1 | pass (4) | "this is Alex Reed speaking" |
-| S1.2 | pass (3) | Professional and courteous tone throughout, no condescension. |
-| S1.3 | pass (4) | TRAINEE caught the volunteered cue: "you mentioned 'They were just being treated over at the hospital...' Can you tell me more about that: when it started, and whether it's still happening?" — correctly clarified without over-probing. |
-| S1.4 | na |  |
-| S1.5 | pass (4) | No slang/jargon/acronyms used; clear plain language. |
-| S2.1 | pass (10) |  |
-| S2.2 | pass (10) | deterministic validator: report_timeframe |
-| S2.3 | pass (10) |  |
-| S2.4 | pass (8) |  |
-| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.7 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
-| S2.10 | pass (2) | deterministic validator: received_date_match |
+| S1.5 | pass (4) | No slang/jargon/acronyms used in trainee's dialogue |
 | S4.1 | pass (5) |  |
 | S4.2 | pass (5) |  |
 | S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
 | S4.4 | pass (4) |  |
 | S4.5 | pass (4) |  |
-| S4.6 | pass (4) |  |
+| S4.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S4.7 | pass (4) |  |
 | S4.8 | pass (4) | deterministic validator: received_date_match |
 | S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
@@ -1756,8 +1468,258 @@ Score each GOLD case yourself from the transcript + documentation **before** rea
 | S4.12 | pass (1) |  |
 | S4.13 | pass (1) | deterministic validator: required_fields_present |
 | S4.14 | pass (1) | deterministic validator: spelling_count |
-| S5.1 | na | No off-label information was involved in this case per compliance.off_label_involved: false. |
+| S5.1 | pass (10) |  |
 | S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
 | S5.3 | pass (8) |  |
-| S5.4 | pass (8) |  |
-| S5.5 | pass (2) |  |
+| S5.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.5 | na |  |
+
+### B7. SC-07 — evaluator says: **PASS**
+
+> Strong handling of a high-risk media edge case. The trainee correctly identified the caller as an unsolicited journalist contact, avoided becoming an unauthorized spokesperson, made no causation statement, and redirected cleanly to the Media desk while capturing full outlet/contact details — all matching the ground truth (correct_routes: media; off_label/medical_advice risk: false). Documentation mirrors the call faithfully: requester type, contact, product, summary, and Media routing are all present and consistent with the fixed validator passes on required fields, contact set, spelling, and received date.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (3) | Thank you for calling Medical Information, this is Alex Reed speaking. |
+| S1.2 | pass (3) | Happy to help with that. Could I get your name... |
+| S1.3 | pass (3) | I'm not able to speak on the record or characterize the warning beyond what's in the approved labeling. |
+| S1.4 | na |  |
+| S1.5 | pass (3) | I'm routing your inquiry to our Media desk to follow up with you directly |
+| S4.1 | pass (5) | Correct product (Dermelia) selected and documented. |
+| S4.2 | pass (5) | Trainee gave no medical advice or causation opinion, staying within approved labeling boundaries. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | Case entered in database with correct requester type, product, and category. |
+| S4.5 | pass (4) | Response was concise and did not volunteer additional information beyond declining comment and routing. |
+| S4.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.7 | pass (4) | Response summary correctly reflects the call handling with appropriate detail level; no references needed since no SRL applies. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | pass (1) | Response route (phone, verbal) appropriately documented matching the live call delivery. |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Case categorized as Safety/media inquiry appropriately. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | pass (10) | No off-label information was volunteered; trainee explicitly declined to characterize the warning and routed to Media rather than answering promotionally or off-label. |
+| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.3 | pass (8) | Response was neutral, non-promotional, and avoided any promotional or persuasive language. |
+| S5.4 | pass (8) | Correctly routed to Media, matching the ground-truth correct route. |
+| S5.5 | na | No medical-advice-adjacent question was posed by this journalist; referral to HCP is not applicable in a media-only exchange. |
+
+### B8. SC-08 — evaluator says: **PASS**
+
+> Strong performance on this embedded-AE case. AE/PC Detection: the trainee correctly caught the volunteered 'stings' cue, clarified it without over-probing, and appropriately identified both the AE and the associated product complaint, escalating with correct dual routing (PV + Quality). Questioning Technique was exemplary — textbook listen-and-clarify rather than fishing for symptoms. Compliance was solid: no off-label content, response stayed within the approved SRL, and the caller was properly referred to their prescriber for the worsening rash rather than receiving direct treatment advice. Documentation was thorough and complete across intake, safety, PC identifiers (lot/exp/NDC), and routing fields, with no timeliness or data-entry issues. Empathy was well demonstrated with a supportive, non-judgmental tone when addressing the sensitive symptom disclosure.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (4) | "this is Alex Reed speaking" |
+| S1.2 | pass (4) | Professional, empathetic, non-judgmental tone throughout, including when addressing the sensitive symptom cue. |
+| S1.3 | pass (4) | "you mentioned 'It stings a bit when I put it on, but creams do that, right?' a moment ago. Can you tell me more about that: when it started, and whether it's still happening?" |
+| S1.4 | na |  |
+| S1.5 | pass (4) | No slang, jargon, or unexplained acronyms used; language was clear and consumer-appropriate. |
+| S2.1 | pass (10) | AE (persistent application-site burning, spreading rash) correctly identified from volunteered cue and documented. |
+| S2.2 | pass (10) | deterministic validator: report_timeframe |
+| S2.3 | pass (10) | Dual routing to PV and Quality correctly set per ground truth. |
+| S2.4 | pass (8) |  |
+| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact HCP was requested and granted, and documented. |
+| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.10 | pass (2) | deterministic validator: received_date_match |
+| S3.1 | pass (10) | Product complaint correctly identified alongside the AE given the rash/burning could indicate a product quality issue. |
+| S3.2 | pass (10) | deterministic validator: report_timeframe |
+| S3.3 | pass (10) | Routed to Quality as required (dual routing with PV). |
+| S3.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.6 | pass (8) | deterministic validator: pc_identifiers |
+| S3.7 | pass (8) | Suspect product availability documented as available (caller keeping the tube). |
+| S3.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.10 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.12 | pass (2) | deterministic validator: received_date_match |
+| S4.1 | pass (5) | Correct product (Dermelia) selected. |
+| S4.2 | pass (5) | Response based on approved SRL, referred to prescriber for medical decisions, no direct medical advice given. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | MI request (duration-of-use question) entered in database via inquiry summary and category. |
+| S4.5 | pass (4) | Response was concise and on-inquiry, addressing duration question plus referring the AE appropriately without extraneous volunteering. |
+| S4.6 | pass (4) | Correct SRL cited and documented in response field. |
+| S4.7 | pass (4) | Response summary and reference correctly entered with appropriate detail level. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | pass (1) | Response route (phone, verbal) appropriately documented. |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Case category 'Other' appropriately selected matching ground truth inquiry_category. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | na | No off-label information involved in this case per ground truth. |
+| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.3 | pass (8) | Response was balanced, non-promotional, referencing approved SRL content only. |
+| S5.4 | pass (8) | Correct dual escalation route (PV + Quality) selected and documented. |
+| S5.5 | pass (2) | Caller appropriately referred to prescriber for the worsening rash rather than receiving treatment directives. |
+
+### B9. SC-09 — evaluator says: **PASS**
+
+> Overall a clean, well-handled tier-1 pharmacokinetics inquiry. Alex Reed introduced himself, correctly identified the requester as a pharmacist (HCP), captured full contact details, selected the correct product and SRL (SRL-CDZ-RENAL), and delivered a concise, non-promotional, on-label response without any medical advice. Since this was a clean inquiry with no safety cues, the agent correctly avoided fishing for adverse events (good Questioning Technique per S1.3) and no special-situation or off-label handling was triggered, so those criteria are appropriately marked N/A. Documentation was thorough and met all required fields, with only a minor spelling flag already noted by the validator.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (3) | Thank you for calling Medical Information, this is Alex Reed speaking. |
+| S1.2 | pass (3) | Professional, pleasant tone throughout; no condescension. |
+| S1.3 | pass (3) | Could I get your name, and are you calling as a healthcare provider, caregiver, or on your own behalf? |
+| S1.4 | na |  |
+| S1.5 | pass (3) | No slang/jargon/acronyms used in text mode. |
+| S4.1 | pass (5) | Correct product Cardizan selected in documentation. |
+| S4.2 | pass (5) | Response based on approved SRL, no medical advice given. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | Inquiry logged with all key details in documentation record. |
+| S4.5 | pass (4) | Response was concise and on-inquiry, did not volunteer unrelated info. |
+| S4.6 | pass (4) | Correct SRL cited and documented in response field. |
+| S4.7 | pass (4) | Response summary and detail level correctly entered with SRL reference. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | fail (0) | "delivery_method": "phone" / "contact_channel": "phone" — inconsistent with case channel 'text' |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Inquiry category correctly selected as Pharmacokinetics. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | na | No off-label information involved; case is on-label PK request. |
+| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.3 | pass (8) | Response was balanced, non-promotional, referencing PI-based SRL content. |
+| S5.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.5 | na | No medical-advice-adjacent question requiring HCP referral; requester is themselves an HCP asking a PK question. |
+
+### B10. SC-10 — evaluator says: **PASS**
+
+> Strong performance on a high-difficulty special-situation case. AE/PC Detection (S2.1/S5.2): The trainee correctly recognized the volunteered pregnancy exposure as a reportable special situation/safety report rather than treating it as a routine medical-advice question, and flagged it accurately without fabricating any additional AE. Questioning Technique (S1.3): Excellent listen-and-clarify approach — captured LMP/gestational age and prescriber name directly relevant to the safety report without cold-probing for unrelated symptoms. Compliance (S5.1/S5.3, Regulatory risk S5 criticals): Avoided the "should I stop" trap correctly by refusing to advise on discontinuation and redirecting to the prescriber, citing the correct SRL (SRL-NEU-PREG) and mentioning the pregnancy registry — non-promotional and compliant. Documentation: AE description, routing (PV), consent for HCP follow-up, and response fields were all completed clearly and consistently with the ground truth. Empathy (S1.2): Tone was professional and reassuring on a sensitive topic. No deficiencies identified in this transcript/documentation pair.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (3) | this is Alex Reed speaking |
+| S1.2 | pass (3) | Professional, empathetic, non-judgmental tone throughout, including on a sensitive pregnancy topic. |
+| S1.3 | pass (4) | Can you tell me your estimated due date or last menstrual period, and who your prescribing physician is? |
+| S1.4 | na |  |
+| S1.5 | pass (3) | No slang, jargon, or acronyms used in spoken dialogue (SRL ID only appears in written response reference, acceptable). |
+| S2.1 | pass (10) | Correctly identified pregnancy exposure as reportable safety/special situation, matching ground truth. |
+| S2.2 | pass (10) | deterministic validator: report_timeframe |
+| S2.3 | pass (10) | Routed to PV, matching ground truth correct_routes. |
+| S2.4 | pass (8) | AE description is clear, sequential, and matches the ground-truth narrative. |
+| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact prescriber obtained verbally and documented. |
+| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.10 | pass (2) | deterministic validator: received_date_match |
+| S4.1 | pass (5) | Correct product Neurovance selected. |
+| S4.2 | pass (5) | Response based on approved SRL, no medical advice given; correctly deferred treatment decision to prescriber. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | Case entered with safety category and correct inquiry category tagging. |
+| S4.5 | pass (4) | Response stayed on-topic, addressed the registry and referral without volunteering unrelated info. |
+| S4.6 | pass (4) | Correct SRL cited and documented in response field. |
+| S4.7 | pass (4) | Response summary and detail level correctly entered with SRL reference. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | pass (1) | Response delivered verbally by phone, documented appropriately. |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Safety category correctly selected matching case type. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | na |  |
+| S5.2 | pass (10) | Pregnancy exposure special situation correctly identified and flagged. |
+| S5.3 | pass (8) | Response was balanced, non-promotional, focused on registry and referral. |
+| S5.4 | pass (8) | Correct escalation route (PV) selected and documented, matching ground truth correct_routes. |
+| S5.5 | pass (2) | Patient appropriately referred to prescriber for the treatment/discontinuation decision, avoiding medical advice. |
+
+### B11. SC-11 — evaluator says: **PASS**
+
+> Strong performance on a tricky embedded-AE case. AE/PC Detection (S2.1/S3.1/S5.2): the trainee correctly caught the volunteered dose-increase cue, clarified it without over-probing, and accurately captured both the lack-of-effect AE and the associated product complaint with correct dual routing to PV and Quality — this is exactly the listen-and-clarify skill the scorecard rewards. Questioning Technique (S1.3): excellent — the trainee echoed back the caller's own words and asked an open clarifying question rather than fishing for additional symptoms, avoiding the fabrication trap. Compliance (S5.1/S5.3/S5 criticals): no medical/dosing advice was given despite the embedded INR reference; the trainee explicitly redirected to the prescriber and kept the disposal answer general and non-promotional — very low regulatory risk here. Documentation: all required fields (AE description, PC identifiers, dual routing flags, contact info) were completed accurately and consistent with the transcript; resolution and closure fields correctly reflect the dual-track handling. Empathy (S1.2): tone was professional and appropriately reassuring given the sensitive nature of a subtherapeutic INR finding.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (3) | "this is Alex Reed speaking" |
+| S1.2 | pass (3) | Professional and empathetic tone throughout, no condescension. |
+| S1.3 | pass (4) | "Before we go further — you mentioned 'My doctor bumped me up because the low dose wasn' a moment ago. Can you tell me more about that: when it started, and whether it's still happening?" |
+| S1.4 | na |  |
+| S1.5 | pass (3) | No slang/jargon/acronyms used; language was clear and consumer-appropriate. |
+| S2.1 | pass (10) | AE (potential lack of effect / subtherapeutic INR) correctly identified, clarified, and documented per ground truth. |
+| S2.2 | pass (10) | deterministic validator: report_timeframe |
+| S2.3 | pass (10) | Dual routing to PV and Quality correctly flagged. |
+| S2.4 | pass (8) |  |
+| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Consent to contact prescriber was obtained verbally and documented in the HCP follow-up consent field. |
+| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.10 | pass (2) | deterministic validator: received_date_match |
+| S3.1 | pass (10) | Product complaint (leftover lower-dose tablets tied to LOE) correctly identified and documented. |
+| S3.2 | pass (10) | deterministic validator: report_timeframe |
+| S3.3 | pass (10) | Routed to Quality as required by dual routing. |
+| S3.4 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.6 | pass (8) | deterministic validator: pc_identifiers |
+| S3.7 | pass (8) | Availability of suspect product (leftover tablets) documented as available. |
+| S3.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.10 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S3.12 | pass (2) | deterministic validator: received_date_match |
+| S4.1 | pass (5) | Correct product (Cardizan) selected. |
+| S4.2 | pass (5) | Response was general disposal guidance, no medical/dosing advice given; correctly redirected dosing questions to prescriber. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | Both AE and PC requests entered in the appropriate database fields. |
+| S4.5 | pass (4) | Response stayed on-inquiry (disposal guidance) and did not volunteer unrelated information. |
+| S4.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.7 | pass (4) | Response summary and detail level appropriately documented in response.verbal_answer_given. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | pass (1) | Response delivered verbally by phone, consistent with channel and documented. |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Inquiry category 'Other' appropriately selected given the disposal-question framing with embedded AE/PC. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | na | No off-label information was involved or requested in this case. |
+| S5.2 | pass (10) | Lack-of-effect special situation correctly identified and flagged. |
+| S5.3 | pass (8) | Response was balanced, factual, and non-promotional. |
+| S5.4 | pass (8) | Correct dual escalation routes (PV and Quality) documented per ground truth. |
+| S5.5 | pass (2) | Caller appropriately referred to prescriber for dosing/INR-related questions. |
+
+### B12. SC-12 — evaluator says: **PASS**
+
+> Strong performance on a high-difficulty embedded-AE case. AE/PC Detection (S2.1/S5.2): the trainee correctly caught the easily-missable "treated over at the hospital" cue buried in an offhand vaccine-timing question, clarified it immediately, and surfaced a serious, reportable AE (hospitalization for pneumonia on a TNF-class agent) that the caller did not explicitly flag as a safety event. This is exactly the listen-and-clarify skill the role requires — no fishing, just catching and confirming a volunteered cue. Questioning Technique (S1.3): rated at the top of the scale for precisely rephrasing the caller's own words back to her and asking targeted follow-up (onset, ongoing status) without turning it into an AE interrogation. Compliance (S5.1/S5.3): no off-label material was at issue, and the vaccine-timing answer was delivered as clean, labeled information with no promotional framing and no clinical management advice for the infection itself. Regulatory risk (S5 criticals): consent to contact the prescriber was properly requested and obtained before proceeding, and the case was routed to PV, matching the ground-truth escalation target. Documentation: all safety, contact, SRL, routing, and resolution fields were completed correctly and consistently with the transcript, and within the SOP timeframe.
+
+| Criterion | Result | Evidence / rationale |
+|---|---|---|
+| S1.1 | pass (3) | "Thank you for calling Medical Information, this is Alex Reed speaking." |
+| S1.2 | pass (3) | "Happy to help with that." |
+| S1.3 | pass (4) | "Before we go further — you mentioned 'They were just being treated over at the hospital...' Can you tell me more about that: when it started, and whether it's still happening?" |
+| S1.4 | na |  |
+| S1.5 | pass (3) | No jargon present in transcript. |
+| S2.1 | pass (10) | AE (serious hospitalization for pneumonia while on Immunexa) was identified and documented consistent with ground truth. |
+| S2.2 | pass (10) | deterministic validator: report_timeframe |
+| S2.3 | pass (10) | Routed to PV, matching the ground-truth correct route. |
+| S2.4 | pass (8) |  |
+| S2.5 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.6 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.7 | pass (8) | Trainee asked for and obtained consent to contact the HCP/prescriber for follow-up, documented in the safety field. |
+| S2.8 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S2.10 | pass (2) | deterministic validator: received_date_match |
+| S4.1 | pass (5) | Correct product (Immunexa) selected consistently. |
+| S4.2 | pass (5) | Response was based on the approved SRL and no medical advice/clinical management guidance was given regarding the infection. |
+| S4.3 | pass (4) | deterministic validator: contact_set_per_case_type |
+| S4.4 | pass (4) | Inquiry entered with category and product details in the database record. |
+| S4.5 | pass (4) | Response stayed on-inquiry (vaccine timing) and did not volunteer unrelated information. |
+| S4.6 | pass (4) | Correct SRL cited and documented in the response field. |
+| S4.7 | pass (4) | Response summary and reference are correctly entered. |
+| S4.8 | pass (4) | deterministic validator: received_date_match |
+| S4.9 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.10 | pass (1) | Response delivered verbally by phone, documented appropriately. |
+| S4.11 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S4.12 | pass (1) | Category correctly selected as drug interactions, matching ground truth inquiry_category. |
+| S4.13 | pass (1) | deterministic validator: required_fields_present |
+| S4.14 | pass (1) | deterministic validator: spelling_count |
+| S5.1 | na | No off-label question was involved in this case. |
+| S5.2 | na | MVP documentation form has no field for this criterion (S4 calibration). |
+| S5.3 | pass (8) | Response was balanced, factual, and non-promotional, sticking to labeled vaccine-timing guidance. |
+| S5.4 | pass (8) | Correct escalation route (PV) selected and documented, matching ground truth correct_routes. |
+| S5.5 | na | Caller is the HCP/prescriber herself, not a patient/consumer, so referral-to-HCP is not applicable; trainee still appropriately avoided clinical management advice. |

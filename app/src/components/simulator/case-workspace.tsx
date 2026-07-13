@@ -225,6 +225,7 @@ export function CaseWorkspace({
               <>
                 <ClosureTab
                   closure={formState.closure}
+                  safety={formState.safety}
                   onChange={patchClosure}
                   disabled={readOnly}
                 />

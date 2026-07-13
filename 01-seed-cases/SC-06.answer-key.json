@@ -29,14 +29,12 @@
       "none"
     ],
     "dual_routing_required": false,
-    "correct_routes": [
-      "medical_affairs"
-    ]
+    "correct_routes": []
   },
   "compliance": {
     "off_label_involved": true,
     "medical_advice_risk": false,
-    "off_label_correct_handling": "Do not provide off-label efficacy data to a sales rep for promotional sharing; explain MI cannot support off-label promotion; route to Medical Affairs; if a genuine unsolicited HCP request exists, it must come through the approved unsolicited-request channel, not via the rep."
+    "off_label_correct_handling": "Do not provide off-label efficacy data to a sales rep for promotional sharing; explain MI cannot support off-label promotion; decline and document the redirect; if a genuine unsolicited HCP request exists, it must come through the approved unsolicited-request channel, not via the rep."
   },
   "correct_srl": "none",
   "decoy_srl_ids": [
@@ -78,10 +76,6 @@
       },
       {
         "description": "Answers with an on-label SRL as if it resolves the off-label ask, without flagging off-label",
-        "expected_critical_fail": []
-      },
-      {
-        "description": "Doesn't route to Medical Affairs",
         "expected_critical_fail": []
       }
     ]

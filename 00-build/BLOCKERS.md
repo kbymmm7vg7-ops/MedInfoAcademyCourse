@@ -2,6 +2,49 @@
 
 ---
 
+## 2026-07-12 · SAFETY-TAB REDESIGN + ROUTING/SSE ROSTER (Nathan's rulings, all ratified in-session) — ⚠️ FULL re-blind-score now required (Fable orchestrator)
+
+**Form redesign (your direction, live + E2E-visible at the case page):**
+- Safety tab: **four-element test REMOVED** (identifiability is captured through real fields);
+  AE block = description / onset / ongoing / seriousness + **patient initials, DOB, gender,
+  concomitant meds, consent-for-HCP-follow-up**; PC keeps lot/expiration/NDC/sample;
+  **pregnancy/lactation boolean flag removed**; SSE list = Overdose · Misuse/abuse ·
+  Medication error · Lack of effect · **Pregnancy/Lactation** (stored value stays
+  `pregnancy_exposure`) · Product tampering — **Legal and Media SSEs removed**.
+- Closure tab: **Routing moved here** (dual AE+PC banner intact); roster now
+  **PV · Quality · Legal · Media** (Communications / Medical Affairs / Supervisor removed);
+  **"routed within timeframe (date)" field removed.**
+
+**Grading decisions you ratified:**
+- **S2.2/S3.2 timeframe = submission-time arithmetic** (submit date ≤ received + SOP business
+  days; admin retries grade the ORIGINAL submission moment).
+- **No minimum patient-demographics gate** in S4.13; identifiability judged qualitatively.
+- **S2.7 (HCP consent) is LIVE** (form field + gold consent exchanges); **S2.6 stays forced-NA**
+  (con-meds field captures but the seed cases carry no con-med facts to grade — content task).
+- SC-05/06/07 regrade: SC-05 SSE→none, routes pv+legal+media, "doesn't flag legal/media"
+  Critical → non-Critical routing deduction; SC-07 SSE→none, routes media, spokesperson-comment
+  failure re-tagged **S5.2 → S4.2**; SC-06 routes → none (declined off-label = documented
+  redirect; "route to Medical Affairs" wording removed from its handling text), with a new
+  deterministic **S5.4 conditional-NA when ground truth expects no routing**.
+- **Rubric text updated to match** (S5.2 category list; S5.4 roster) in `criteria.ts` AND
+  `02-rubric-schema/rubric-scorecard-v1.md` (⟨CHANGED 2026-07-11⟩ markers) — your standing
+  sign-off authority over the rubric is the basis; flag if you want the wording different.
+- Answer-key **schema enums updated** (correct_routes: pv/quality/legal/media; SSE list minus
+  legal/media) in `01-seed-cases/answer-key.schema.json` + the vendored admin copy.
+
+**Verification:** vitest 94/94 · build green · keys==DB 12/12 (`--verify-db`) · fixtures-only
+clean. First full paid run caught two real integration bugs (SC-06 judged "should have routed
+the redirect" → the S5.4 conditional-NA above + S4.10 prompt clarification that response route ≠
+safety routing; SC-10 never-flagged fixture kept a consent line as contrary evidence → scrub
+extended). Targeted rerun green; final full-run result recorded below/in the report.
+
+**⚠️ YOUR GATE ACTION CHANGED:** with S2.7 live on every AE case and the doc shape rebuilt, ALL
+12 outputs in `07-evaluator/calibration-report.md` Part A are new — **redo the full blind-score**
+(not just the 5 from yesterday). Same bar: zero Critical disagreements, ≤1 Major/case. Cert
+stays offline until then.
+
+---
+
 ## 2026-07-11 · S5 COMPLETE — voice E2E-verified · S4 gate resolved via LOE/SSE parity loop · cert awaits your re-blind-score (Fable orchestrator)
 
 **S5 voice DoD MET**: Nathan completed a full seed case end-to-end by laptop mic and submitted it.

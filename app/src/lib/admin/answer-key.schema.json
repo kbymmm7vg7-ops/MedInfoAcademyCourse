@@ -4,83 +4,217 @@
   "title": "Seed Case Answer Key",
   "description": "Machine-readable ground truth for one seed case. Preserved verbatim across generated variants.",
   "type": "object",
-  "required": ["case_id", "difficulty_tier", "channel", "requester", "safety", "compliance", "correct_srl", "documentation", "expected_outcome"],
+  "required": [
+    "case_id",
+    "difficulty_tier",
+    "channel",
+    "requester",
+    "safety",
+    "compliance",
+    "correct_srl",
+    "documentation",
+    "expected_outcome"
+  ],
   "properties": {
-    "case_id": { "type": "string", "pattern": "^SC-[0-9]{2}$" },
-    "title": { "type": "string" },
-    "difficulty_tier": { "type": "integer", "minimum": 1, "maximum": 6 },
-    "channel": { "enum": ["voice", "text"] },
-    "therapeutic_area": { "type": "string" },
+    "case_id": {
+      "type": "string",
+      "pattern": "^SC-[0-9]{2}$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "difficulty_tier": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    },
+    "channel": {
+      "enum": [
+        "voice",
+        "text"
+      ]
+    },
+    "therapeutic_area": {
+      "type": "string"
+    },
     "inquiry_category": {
       "description": "Correct category the trainee should select in the intake dropdown (trains inquiry categorization).",
-      "enum": ["indication", "efficacy", "safety", "pharmacokinetics", "drug_interactions", "other"]
+      "enum": [
+        "indication",
+        "efficacy",
+        "safety",
+        "pharmacokinetics",
+        "drug_interactions",
+        "other"
+      ]
     },
     "inquirer_contact": {
       "description": "Fake contact details for this inquirer; feeds the intake contact fields and the gold documentation example. Contact set depends on requester type (see simulation-sop.md).",
       "type": "object",
       "properties": {
-        "name": { "type": "string" },
-        "background": { "type": "string", "description": "e.g. family physician, retail pharmacist, patient, caregiver" },
-        "phone": { "type": "string" },
-        "address": { "type": "string", "description": "full address for AE/PC & HCP MI; city+state or postal code for patients/consumers" }
+        "name": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string",
+          "description": "e.g. family physician, retail pharmacist, patient, caregiver"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string",
+          "description": "full address for AE/PC & HCP MI; city+state or postal code for patients/consumers"
+        }
       }
     },
     "products": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "is_fictional"],
+        "required": [
+          "name",
+          "is_fictional"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "is_fictional": { "const": true },
-          "srl_id": { "type": "string" }
+          "name": {
+            "type": "string"
+          },
+          "is_fictional": {
+            "const": true
+          },
+          "srl_id": {
+            "type": "string"
+          }
         }
       }
     },
     "requester": {
       "type": "object",
-      "required": ["type", "solicited"],
+      "required": [
+        "type",
+        "solicited"
+      ],
       "properties": {
-        "type": { "enum": ["hcp", "patient", "caregiver", "pharmacist", "attorney", "journalist", "internal_sales", "ambiguous"] },
-        "true_type_if_ambiguous": { "type": "string" },
-        "solicited": { "type": "boolean" }
+        "type": {
+          "enum": [
+            "hcp",
+            "patient",
+            "caregiver",
+            "pharmacist",
+            "attorney",
+            "journalist",
+            "internal_sales",
+            "ambiguous"
+          ]
+        },
+        "true_type_if_ambiguous": {
+          "type": "string"
+        },
+        "solicited": {
+          "type": "boolean"
+        }
       }
     },
     "safety": {
       "type": "object",
-      "required": ["ae_present", "pc_present", "pregnancy_or_lactation", "special_situations"],
+      "required": [
+        "ae_present",
+        "pc_present",
+        "pregnancy_or_lactation",
+        "special_situations"
+      ],
       "properties": {
-        "ae_present": { "type": "boolean" },
-        "ae_four_elements_met": { "type": "boolean" },
-        "ae_description": { "type": "string" },
-        "pc_present": { "type": "boolean" },
-        "pc_description": { "type": "string" },
-        "pregnancy_or_lactation": { "type": "boolean" },
+        "ae_present": {
+          "type": "boolean"
+        },
+        "ae_four_elements_met": {
+          "type": "boolean"
+        },
+        "ae_description": {
+          "type": "string"
+        },
+        "pc_present": {
+          "type": "boolean"
+        },
+        "pc_description": {
+          "type": "string"
+        },
+        "pregnancy_or_lactation": {
+          "type": "boolean"
+        },
         "special_situations": {
           "type": "array",
-          "items": { "enum": ["overdose", "misuse_abuse", "medication_error", "lack_of_effect", "pregnancy_exposure", "product_tampering", "legal", "media", "none"] }
+          "items": {
+            "enum": [
+              "overdose",
+              "misuse_abuse",
+              "medication_error",
+              "lack_of_effect",
+              "pregnancy_exposure",
+              "product_tampering",
+              "none"
+            ]
+          }
         },
-        "dual_routing_required": { "type": "boolean" },
-        "correct_routes": { "type": "array", "items": { "enum": ["pv", "quality", "legal", "communications", "medical_affairs", "supervisor"] } }
+        "dual_routing_required": {
+          "type": "boolean"
+        },
+        "correct_routes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "pv",
+              "quality",
+              "legal",
+              "media"
+            ]
+          }
+        }
       }
     },
     "compliance": {
       "type": "object",
-      "required": ["off_label_involved"],
+      "required": [
+        "off_label_involved"
+      ],
       "properties": {
-        "off_label_involved": { "type": "boolean" },
-        "off_label_correct_handling": { "type": "string" },
-        "medical_advice_risk": { "type": "boolean" }
+        "off_label_involved": {
+          "type": "boolean"
+        },
+        "off_label_correct_handling": {
+          "type": "string"
+        },
+        "medical_advice_risk": {
+          "type": "boolean"
+        }
       }
     },
-    "correct_srl": { "type": "string", "description": "srl_id that actually answers the inquiry" },
-    "decoy_srl_ids": { "type": "array", "items": { "type": "string" }, "description": "plausible-but-wrong SRLs preloaded; count/similarity scales with tier" },
-    "sop_timeframe_business_days": { "type": "number", "default": 1 },
+    "correct_srl": {
+      "type": "string",
+      "description": "srl_id that actually answers the inquiry"
+    },
+    "decoy_srl_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "plausible-but-wrong SRLs preloaded; count/similarity scales with tier"
+    },
+    "sop_timeframe_business_days": {
+      "type": "number",
+      "default": 1
+    },
     "documentation": {
       "type": "object",
       "description": "Required fields whose presence the validator checks",
       "properties": {
-        "required_fields": { "type": "array", "items": { "type": "string" } }
+        "required_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "reveal_rules": {
@@ -88,28 +222,67 @@
       "description": "Cues the persona volunteers and the clarification that fully surfaces each (listen-and-clarify model, not probing — see scoring-contract.md)",
       "items": {
         "type": "object",
-        "required": ["cue", "surfaces_when"],
+        "required": [
+          "cue",
+          "surfaces_when"
+        ],
         "properties": {
-          "cue": { "type": "string", "description": "the offhand mention the persona volunteers in natural conversation (symptom, hospitalization, dose change)" },
-          "detail_withheld": { "type": "string", "description": "the specifics the trainee must clarify to fully capture the AE/PC/special situation" },
-          "surfaces_when": { "type": "string", "description": "the clarifying follow-up on the already-volunteered cue that surfaces the detail" },
-          "volunteers_cue": { "type": "boolean", "default": true, "description": "persona raises the cue unprompted; it is never fully hidden behind an interrogation" }
+          "cue": {
+            "type": "string",
+            "description": "the offhand mention the persona volunteers in natural conversation (symptom, hospitalization, dose change)"
+          },
+          "detail_withheld": {
+            "type": "string",
+            "description": "the specifics the trainee must clarify to fully capture the AE/PC/special situation"
+          },
+          "surfaces_when": {
+            "type": "string",
+            "description": "the clarifying follow-up on the already-volunteered cue that surfaces the detail"
+          },
+          "volunteers_cue": {
+            "type": "boolean",
+            "default": true,
+            "description": "persona raises the cue unprompted; it is never fully hidden behind an interrogation"
+          }
         }
       }
     },
     "expected_outcome": {
       "type": "object",
-      "required": ["applicable_sections", "gold_result"],
+      "required": [
+        "applicable_sections",
+        "gold_result"
+      ],
       "properties": {
-        "applicable_sections": { "type": "array", "items": { "enum": ["s1", "s2", "s3", "s4", "s5"] } },
-        "gold_result": { "const": "pass" },
+        "applicable_sections": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "s1",
+              "s2",
+              "s3",
+              "s4",
+              "s5"
+            ]
+          }
+        },
+        "gold_result": {
+          "const": "pass"
+        },
         "common_failures": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "description": { "type": "string" },
-              "expected_critical_fail": { "type": "array", "items": { "type": "string" } }
+              "description": {
+                "type": "string"
+              },
+              "expected_critical_fail": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
             }
           }
         }

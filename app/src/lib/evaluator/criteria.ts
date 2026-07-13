@@ -75,9 +75,9 @@ export const S4_CRITERIA: WeightedCriterion[] = [
 
 export const S5_CRITERIA: WeightedCriterion[] = [
   { id: "S5.1", text: "No off-label information volunteered; unsolicited off-label requests handled per SOP (acknowledged, not answered promotionally; routed through the approved MI response process)", cat: "critical", val: 10 },
-  { id: "S5.2", text: "Special situation identified and flagged (pregnancy/lactation exposure, overdose, misuse/abuse, lack of effect, medication error, legal or media contact)", cat: "critical", val: 10 },
+  { id: "S5.2", text: "Special situation identified and flagged (pregnancy/lactation, overdose, misuse/abuse, lack of effect, medication error, product tampering)", cat: "critical", val: 10 },
   { id: "S5.3", text: "No promotional language; response balanced and non-promotional", cat: "major", val: 8 },
-  { id: "S5.4", text: "Correct escalation route selected and documented (PV, quality, legal, communications, supervisor)", cat: "major", val: 8 },
+  { id: "S5.4", text: "Correct escalation route selected and documented (PV, Quality, Legal, Media)", cat: "major", val: 8 },
   { id: "S5.5", text: "Consumer/patient appropriately referred to their HCP for medical-advice-adjacent questions", cat: "minor", val: 2 },
 ];
 
@@ -108,21 +108,22 @@ export const S1_PASS_THRESHOLD = 2.5;
  * commercial QMS; the simulator form is a subset. Discovered at S4 calibration:
  * the evaluator was failing every gold AE case on these absent fields.
  *
- * Covered: AE/PC questionnaires (S2.5/S3.5); past-med-history / con-meds / lab
- * (S2.6); HCP info + consent-to-contact (S2.7); source-document attachment
+ * Covered: AE/PC questionnaires (S2.5/S3.5); past-med-history / lab (S2.6 —
+ * the form now has a concomitant-meds field, but the seed cases carry no
+ * con-med/PMH facts to grade against, so S2.6 stays N/A per Nathan
+ * 2026-07-11 until case content includes them); source-document attachment
  * (S2.8/S3.9/S4.11); AE/PC resolution narrative (S2.9/S3.10); PC Description
  * narrative field (S3.4 — safety tab has lot/expiry/NDC/sample only, no PC
  * narrative input; the PC story lands in inquiry.summary); retrieval kit
  * (S3.8); credit/refund/replacement (S3.11); correspondence log (S4.9).
  *
- * NOTE for Nathan (S4 gate): the answer keys list these as `required_fields`
- * (con-meds, hcp_info_and_consent, retrieval_kit_offered, …) — the MVP form
- * lacks them. Either the form grows these fields (future enhancement) or they
- * stay N/A. Ratify at the blind-scoring gate. S4.6 is handled separately
- * (conditional: N/A only when the correct response cites no SRL/source).
+ * S2.7 (HCP consent-to-contact) went LIVE 2026-07-11 (Nathan): the safety tab
+ * gained an hcp_followup_consent field, and the gold conversations carry the
+ * consent exchange. S4.6 is handled separately (conditional: N/A only when
+ * the correct response cites no SRL/source).
  */
 export const MVP_FORCED_NA: ReadonlySet<string> = new Set([
-  "S2.5", "S2.6", "S2.7", "S2.8", "S2.9",
+  "S2.5", "S2.6", "S2.8", "S2.9",
   "S3.4", "S3.5", "S3.8", "S3.9", "S3.10", "S3.11",
   "S4.9", "S4.11",
 ]);

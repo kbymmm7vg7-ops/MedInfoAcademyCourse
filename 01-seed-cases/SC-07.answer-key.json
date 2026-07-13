@@ -26,12 +26,11 @@
     "pc_present": false,
     "pregnancy_or_lactation": false,
     "special_situations": [
-      "media"
+      "none"
     ],
     "dual_routing_required": false,
     "correct_routes": [
-      "communications",
-      "supervisor"
+      "media"
     ]
   },
   "compliance": {
@@ -51,7 +50,6 @@
       "outlet",
       "product",
       "inquiry_summary",
-      "special_situation_flags",
       "redirect_action",
       "response_route"
     ]
@@ -75,7 +73,7 @@
       {
         "description": "Gives a substantive comment / confirms or denies causation",
         "expected_critical_fail": [
-          "S5.2"
+          "S4.2"
         ]
       },
       {
@@ -83,7 +81,7 @@
         "expected_critical_fail": []
       },
       {
-        "description": "Doesn't capture outlet/contact or notify Communications",
+        "description": "Doesn't capture outlet/contact or route to Media",
         "expected_critical_fail": []
       }
     ]

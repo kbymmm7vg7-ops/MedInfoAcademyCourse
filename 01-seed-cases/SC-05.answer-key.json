@@ -29,15 +29,13 @@
     "pc_present": false,
     "pregnancy_or_lactation": false,
     "special_situations": [
-      "legal",
-      "media"
+      "none"
     ],
-    "dual_routing_required": true,
+    "dual_routing_required": false,
     "correct_routes": [
       "pv",
       "legal",
-      "communications",
-      "supervisor"
+      "media"
     ]
   },
   "compliance": {
@@ -62,7 +60,6 @@
       "ae_description",
       "ae_onset",
       "seriousness_flag",
-      "special_situation_flags",
       "escalation_notes",
       "srl_cited",
       "response_route"
@@ -92,17 +89,15 @@
         ]
       },
       {
-        "description": "Doesn't flag legal/media special situations",
-        "expected_critical_fail": [
-          "S5.2"
-        ]
+        "description": "Treats the legal and media threats as a routine complaint — neither Legal nor Media routing selected",
+        "expected_critical_fail": []
       },
       {
         "description": "De-escalation fails (cold/defensive)",
         "expected_critical_fail": []
       },
       {
-        "description": "Routes AE to PV but omits Legal/Communications",
+        "description": "Routes the AE to PV but omits the Legal/Media escalation",
         "expected_critical_fail": []
       }
     ]

@@ -40,6 +40,9 @@ export type ValidatorInput = {
   groundTruth: ValidatorGroundTruth;
   /** case_instances.started_at — the simulated "received" moment */
   receivedAt: string;
+  /** when the record was submitted — the S2.2/S3.2 timeframe basis now that
+   *  the routed-date form field is gone (Nathan, 2026-07-11) */
+  submittedAt: string;
   sopTimeframeBusinessDays: number | null;
   /** injected spell checker; when omitted, S4.14 reports "na" */
   spellCheck?: SpellCheckFn;
@@ -87,6 +90,7 @@ const FREE_TEXT_FIELDS: [string, (d: DocumentationFormState) => string][] = [
   ["inquiry.summary", (d) => d.inquiry.summary],
   ["inquiry.verbatim_question", (d) => d.inquiry.verbatim_question],
   ["safety.ae_description", (d) => d.safety.ae_description],
+  ["safety.concomitant_meds", (d) => d.safety.concomitant_meds],
   ["response.customization_notes", (d) => d.response.customization_notes],
   ["response.verbal_answer_given", (d) => d.response.verbal_answer_given],
   ["closure.outstanding_info", (d) => d.closure.outstanding_info],
@@ -97,7 +101,8 @@ const FREE_TEXT_FIELDS: [string, (d: DocumentationFormState) => string][] = [
 // ---------------------------------------------------------------------------
 
 export function runValidator(input: ValidatorInput): ValidatorFinding[] {
-  const { doc, transcript, groundTruth, receivedAt, sopTimeframeBusinessDays, spellCheck } = input;
+  const { doc, transcript, groundTruth, receivedAt, submittedAt, sopTimeframeBusinessDays, spellCheck } =
+    input;
   const findings: ValidatorFinding[] = [];
   const aeDocumented = doc.safety.ae_present === "yes";
   const pcDocumented = doc.safety.pc_present === "yes";
@@ -115,22 +120,14 @@ export function runValidator(input: ValidatorInput): ValidatorFinding[] {
       missing.push("response (no SRL selected and no verbal answer)");
     if (aeDocumented) {
       if (!doc.safety.ae_description.trim()) missing.push("AE description");
-      const fe = doc.safety.four_element_test;
-      const feMissing = (
-        [
-          ["identifiable patient", fe.identifiable_patient],
-          ["identifiable reporter", fe.identifiable_reporter],
-          ["suspect product", fe.suspect_product],
-          ["event", fe.event],
-        ] as const
-      )
-        .filter(([, v]) => !v)
-        .map(([k]) => k);
-      if (feMissing.length > 0) missing.push(`four-element test (${feMissing.join(", ")})`);
+      // Routing lives on the Closure tab (Nathan, 2026-07-11). The
+      // four-element checkbox ritual is gone; patient identifiers are real
+      // fields now and their completeness is judged qualitatively (S2.x),
+      // not gated here.
       const routed =
-        doc.safety.routing_single.length > 0 ||
-        doc.safety.routing_dual.route_to_pv ||
-        doc.safety.routing_dual.route_to_quality;
+        doc.closure.routing_single.length > 0 ||
+        doc.closure.routing_dual.route_to_pv ||
+        doc.closure.routing_dual.route_to_quality;
       if (!routed) missing.push("safety routing");
     }
     if (!doc.closure.qc_self_check) missing.push("QC self-check");
@@ -253,28 +250,25 @@ export function runValidator(input: ValidatorInput): ValidatorFinding[] {
         evidence: "No AE/PC documented or no SOP timeframe for this case.",
       });
     } else {
-      const routedDateStr = doc.safety.routed_within_timeframe_date.trim();
+      // Submission-time arithmetic (Nathan, 2026-07-11): there is no routed-
+      // date form field; the report is routed when the record is submitted,
+      // so the submit timestamp must fall within the SOP window.
       const received = new Date(receivedAt);
       const deadline = addBusinessDays(received, sopTimeframeBusinessDays);
-      if (!routedDateStr) {
-        findings.push({
-          criterion: "S2.2/S3.2",
-          check: "report_timeframe",
-          status: "fail",
-          evidence: "No routing date documented for a case with a reportable safety finding.",
-        });
-      } else {
-        const routed = new Date(`${routedDateStr}T00:00:00`);
-        const ok = routed.getTime() <= deadline.getTime();
-        findings.push({
-          criterion: "S2.2/S3.2",
-          check: "report_timeframe",
-          status: ok ? "pass" : "fail",
-          evidence: ok
-            ? `Routed ${routedDateStr}, within ${sopTimeframeBusinessDays} business day(s) of receipt (deadline ${deadline.toISOString().slice(0, 10)}).`
-            : `Routed ${routedDateStr}, after the ${sopTimeframeBusinessDays}-business-day deadline (${deadline.toISOString().slice(0, 10)}).`,
-        });
-      }
+      // Compare on calendar dates: a submission any time on the deadline day
+      // still meets an N-business-day SOP.
+      const submittedDay = dateOnly(submittedAt);
+      const submitted = submittedDay ? new Date(`${submittedDay}T00:00:00`) : new Date(submittedAt);
+      const deadlineDay = new Date(`${deadline.toISOString().slice(0, 10)}T00:00:00`);
+      const ok = submitted.getTime() <= deadlineDay.getTime();
+      findings.push({
+        criterion: "S2.2/S3.2",
+        check: "report_timeframe",
+        status: ok ? "pass" : "fail",
+        evidence: ok
+          ? `Submitted ${submittedDay ?? submittedAt}, within ${sopTimeframeBusinessDays} business day(s) of receipt (deadline ${deadline.toISOString().slice(0, 10)}).`
+          : `Submitted ${submittedDay ?? submittedAt}, after the ${sopTimeframeBusinessDays}-business-day deadline (${deadline.toISOString().slice(0, 10)}).`,
+      });
     }
   }
 

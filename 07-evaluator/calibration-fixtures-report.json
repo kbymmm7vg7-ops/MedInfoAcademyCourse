@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T18:09:55.766Z",
+  "generated_at": "2026-07-12T13:11:08.274Z",
   "mode": "fixtures-only",
   "received_at": "2026-07-06T14:30:00.000Z",
   "cases": [
@@ -226,10 +226,8 @@
           "changed": true
         },
         {
-          "label": "SC-05-failure-2-specialSituationMissed",
-          "expected_critical_fail": [
-            "S5.2"
-          ],
+          "label": "SC-05-failure-2-omitLegalMedia",
+          "expected_critical_fail": [],
           "docChanged": true,
           "transcriptChanged": false,
           "changed": true
@@ -242,7 +240,7 @@
           "changed": true
         },
         {
-          "label": "SC-05-failure-4-omitLegalComms",
+          "label": "SC-05-failure-4-omitLegalMedia",
           "expected_critical_fail": [],
           "docChanged": true,
           "transcriptChanged": false,
@@ -281,13 +279,6 @@
           "docChanged": true,
           "transcriptChanged": false,
           "changed": true
-        },
-        {
-          "label": "SC-06-failure-3-omitLegalComms",
-          "expected_critical_fail": [],
-          "docChanged": true,
-          "transcriptChanged": false,
-          "changed": true
         }
       ]
     },
@@ -311,7 +302,7 @@
         {
           "label": "SC-07-failure-1-spokespersonStatement",
           "expected_critical_fail": [
-            "S5.2"
+            "S4.2"
           ],
           "docChanged": true,
           "transcriptChanged": true,
@@ -325,7 +316,7 @@
           "changed": true
         },
         {
-          "label": "SC-07-failure-3-omitLegalComms",
+          "label": "SC-07-failure-3-omitLegalMedia",
           "expected_critical_fail": [],
           "docChanged": true,
           "transcriptChanged": false,
@@ -572,7 +563,7 @@
     "cases": 12,
     "gold_validator_clean": 12,
     "applicability_s2s3_match": 12,
-    "total_failure_fixtures": 40,
+    "total_failure_fixtures": 39,
     "no_op_failure_fixtures": 0,
     "problems": 0
   }

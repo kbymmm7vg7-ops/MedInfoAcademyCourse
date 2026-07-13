@@ -86,6 +86,9 @@ export type EvaluationInputs = {
   transcript: TranscriptTurn[];
   doc: DocumentationFormState;
   receivedAt: string;
+  /** when the record was submitted — S2.2/S3.2 timeframe basis (no routed-date
+   *  form field since 2026-07-11) */
+  submittedAt: string;
   sopTimeframeBusinessDays: number | null;
   /** Injectable for tooling (calibration harness) that cannot load the default
    *  dictionary loader; production omits it and uses getSpellChecker(). */
@@ -139,6 +142,7 @@ export async function evaluateCase(inputs: EvaluationInputs) {
     transcript: inputs.transcript,
     groundTruth: inputs.groundTruthJson as Parameters<typeof runValidator>[0]["groundTruth"],
     receivedAt: inputs.receivedAt,
+    submittedAt: inputs.submittedAt,
     sopTimeframeBusinessDays: inputs.sopTimeframeBusinessDays,
     spellCheck,
   });
@@ -164,23 +168,32 @@ export async function evaluateCase(inputs: EvaluationInputs) {
   const pinned = pinValidatorVerdicts(llm.verdicts, validatorFindings, applicability);
 
   // Force MVP-structural-N/A criteria (no field exists in the simulator form)
-  // and two conditional N/As, deterministic like S1.4 — never left to the LLM:
+  // and three conditional N/As, deterministic like S1.4 — never left to the LLM:
   //   S4.6 — no source document when the correct response cites no SRL.
   //   S5.2 — no special situation exists in the case (ground-truth
   //          special_situations empty/["none"] and no pregnancy/lactation).
   //          The LLM otherwise non-deterministically fails S5.2 on serious AEs,
   //          which are NOT one of the enumerated special-situation categories.
+  //   S5.4 — ground truth expects NO departmental routing (correct_routes
+  //          empty — e.g. SC-06's declined off-label request resolves as a
+  //          documented redirect, not a routed report; 2026-07-11 roster).
   const gt = inputs.groundTruthJson as {
     correct_srl?: string;
-    safety?: { special_situations?: string[]; pregnancy_or_lactation?: boolean };
+    safety?: {
+      special_situations?: string[];
+      pregnancy_or_lactation?: boolean;
+      correct_routes?: string[];
+    };
   };
   const noSourceExpected = !gt.correct_srl || gt.correct_srl === "none";
   const specials = (gt.safety?.special_situations ?? []).filter((s) => s && s !== "none");
   const noSpecialSituation = specials.length === 0 && gt.safety?.pregnancy_or_lactation !== true;
+  const noRoutingExpected = (gt.safety?.correct_routes ?? []).length === 0;
   const scoped = pinned.map((v) =>
     MVP_FORCED_NA.has(v.id) ||
     (v.id === "S4.6" && noSourceExpected) ||
-    (v.id === "S5.2" && noSpecialSituation)
+    (v.id === "S5.2" && noSpecialSituation) ||
+    (v.id === "S5.4" && noRoutingExpected)
       ? {
           id: v.id,
           result: "na" as const,

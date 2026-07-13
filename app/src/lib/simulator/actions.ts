@@ -232,6 +232,7 @@ export async function submitCase(
         transcript: (turnRows ?? []) as { speaker: "persona" | "trainee"; content: string }[],
         doc: formState,
         receivedAt: instRow?.started_at ?? nowIso,
+        submittedAt: nowIso,
         sopTimeframeBusinessDays: caseData.sopTimeframeBusinessDays,
       });
       await persistEvaluation({

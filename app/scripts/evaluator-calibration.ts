@@ -66,11 +66,12 @@ const CASES_DIR = join(__dirname, "../../01-seed-cases");
 const OUT_DIR = join(__dirname, "../../07-evaluator");
 const ALL_CODES = Array.from({ length: 12 }, (_, i) => `SC-${String(i + 1).padStart(2, "0")}`);
 
-// Fixed, deterministic "received" moment. 2026-07-06 is a Monday, so same-day
-// routing (gold sets routed_within_timeframe_date = received_date) is trivially
-// within any SOP business-day window.
+// Fixed, deterministic "received" moment. 2026-07-06 is a Monday, and every
+// fixture is "submitted" the same day (SUBMITTED_AT = RECEIVED_AT), so the
+// submission-time S2.2/S3.2 check is trivially within any SOP window.
 const RECEIVED_DATE = "2026-07-06";
 const RECEIVED_AT = "2026-07-06T14:30:00.000Z";
+const SUBMITTED_AT = RECEIVED_AT;
 
 // tsx cannot transform dictionary-en's top-level await, so build the SAME
 // nspell checker (identical domain allowlist) from the package's raw .aff/.dic
@@ -264,6 +265,7 @@ async function runFixturesOnly(fx: CaseFixtures[]): Promise<number> {
       transcript: c.gold.transcript,
       groundTruth: c.answerKey as Parameters<typeof runValidator>[0]["groundTruth"],
       receivedAt: RECEIVED_AT,
+      submittedAt: SUBMITTED_AT,
       sopTimeframeBusinessDays: c.answerKey.sop_timeframe_business_days ?? null,
       spellCheck,
     });
@@ -426,6 +428,7 @@ async function runOne(run: EvalRun): Promise<EvalResult> {
           transcript: run.transcript,
           doc: run.doc,
           receivedAt: RECEIVED_AT,
+          submittedAt: SUBMITTED_AT,
           sopTimeframeBusinessDays: run.sop,
           spellCheck: SPELL,
         }),

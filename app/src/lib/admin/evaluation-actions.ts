@@ -229,6 +229,10 @@ export async function retryEvaluation(instanceId: string): Promise<RetryEvaluati
       transcript,
       doc,
       receivedAt: instance.started_at ?? docRecord.submitted_at ?? new Date().toISOString(),
+      // Retries grade the ORIGINAL submission moment, not the retry moment —
+      // an admin retry must not flip S2.2/S3.2 on a case that was submitted
+      // in time but evaluated late.
+      submittedAt: docRecord.submitted_at ?? new Date().toISOString(),
       sopTimeframeBusinessDays: caseData.sopTimeframeBusinessDays,
     });
 

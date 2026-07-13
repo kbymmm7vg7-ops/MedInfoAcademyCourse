@@ -41,7 +41,7 @@ export type AnswerKeyInquiryCategory =
   | "drug_interactions"
   | "other";
 
-export type AnswerKeyRoute = "pv" | "quality" | "legal" | "communications" | "medical_affairs" | "supervisor";
+export type AnswerKeyRoute = "pv" | "quality" | "legal" | "media";
 
 export type AnswerKey = {
   case_id: string;
@@ -100,6 +100,8 @@ export type AnswerKey = {
   };
 };
 
+// Legal/Media are routing destinations, not special situations, since the
+// 2026-07-11 ruling — the answer-key schema enum matches.
 export type SpecialSituationKey =
   | "overdose"
   | "misuse_abuse"
@@ -107,8 +109,6 @@ export type SpecialSituationKey =
   | "lack_of_effect"
   | "pregnancy_exposure"
   | "product_tampering"
-  | "legal"
-  | "media"
   | "none";
 
 export type TranscriptTurn = { speaker: "persona" | "trainee"; content: string };
@@ -172,13 +172,12 @@ const INQUIRY_CATEGORY_MAP: Record<AnswerKeyInquiryCategory, InquiryCategory> = 
   other: "Other",
 };
 
+// Routing roster per Nathan 2026-07-11: PV / Quality / Legal / Media.
 const ROUTE_MAP: Record<AnswerKeyRoute, RoutingTarget> = {
   pv: "PV",
   quality: "Quality",
   legal: "Legal",
-  communications: "Communications",
-  medical_affairs: "Medical Affairs",
-  supervisor: "Supervisor",
+  media: "Media",
 };
 
 const REQUESTER_TYPE_MAP: Record<Exclude<AnswerKeyRequesterType, "ambiguous">, RequesterType> = {
@@ -266,29 +265,38 @@ export function buildGoldDoc(answerKey: AnswerKey, receivedDate: string): Docume
     probing_questions: [],
   };
 
+  // Patient initials only when the caller IS the patient (derivable from the
+  // inquirer name); third-party reports leave demographics blank — no
+  // minimum-completeness gate exists (Nathan, 2026-07-11).
+  const isPatientCaller = requesterType === "patient";
+  const initials = isPatientCaller
+    ? (answerKey.inquirer_contact?.name ?? "")
+        .split(/\s+/)
+        .map((p) => p[0] ?? "")
+        .join("")
+        .toUpperCase()
+    : "";
+
   doc.safety = {
     ...doc.safety,
     ae_present: aePresent ? "yes" : "no",
-    four_element_test: {
-      identifiable_patient: aePresent && answerKey.safety.ae_four_elements_met === true,
-      identifiable_reporter: aePresent && answerKey.safety.ae_four_elements_met === true,
-      suspect_product: aePresent && answerKey.safety.ae_four_elements_met === true,
-      event: aePresent && answerKey.safety.ae_four_elements_met === true,
-    },
     ae_description: aePresent ? aeDescription : "",
     onset_date: "",
     ongoing: aePresent && /ongoing/i.test(aeDescription) ? "yes" : aePresent ? "no" : "",
     seriousness,
+    patient_initials: aePresent ? initials : "",
+    patient_dob: "",
+    patient_gender: "",
+    concomitant_meds: "",
+    // S2.7 live (Nathan, 2026-07-11): every gold AE conversation carries the
+    // consent/reporter exchange, so the gold record documents consent.
+    hcp_followup_consent: aePresent ? "yes" : "",
     pc_present: pcPresent ? "yes" : "no",
     pc_lot_number: pcPresent ? "LOT-CALIB-0001" : "",
     pc_expiration_date: pcPresent ? "2027-06-30" : "",
     pc_ndc: pcPresent ? "0000-0000-01" : "",
     pc_sample_available: pcPresent ? "yes" : "",
-    pregnancy_or_lactation: answerKey.safety.pregnancy_or_lactation === true,
     special_situations: specialSituations,
-    routing_dual: routingDual,
-    routing_single: routingSingle,
-    routed_within_timeframe_date: aePresent || pcPresent || specialSituations.length > 0 ? receivedDate : "",
   };
 
   const correctSrl = answerKey.correct_srl;
@@ -307,6 +315,10 @@ export function buildGoldDoc(answerKey: AnswerKey, receivedDate: string): Docume
     follow_up_needed: "no",
     follow_up_scheduled_date: "",
     outstanding_info: "",
+    // Routing moved to the Closure tab (Nathan, 2026-07-11); the routed-date
+    // field is gone — S2.2/S3.2 is computed from the submission timestamp.
+    routing_dual: routingDual,
+    routing_single: routingSingle,
     checklist: {
       inquiry_answered: true,
       safety_captured_routed: true,
@@ -327,11 +339,11 @@ function buildVerbalAnswer(answerKey: AnswerKey): string {
     parts.push(`Provided the standard response letter ${answerKey.correct_srl} addressing the caller's question about ${product}.`);
   } else if (answerKey.compliance.off_label_involved) {
     parts.push(
-      `Declined to provide off-label information for ${product}; explained MI cannot support off-label promotional requests and routed to Medical Affairs.`
+      `Declined to provide off-label information for ${product}; explained MI cannot support off-label promotional requests and documented the redirect to the approved unsolicited-request process.`
     );
-  } else if (answerKey.safety.special_situations?.includes("media")) {
+  } else if (answerKey.safety.correct_routes?.includes("media")) {
     parts.push(
-      `Declined to comment as an unauthorized spokesperson, made no causation statement, and routed the media inquiry to Corporate Communications.`
+      `Declined to comment as an unauthorized spokesperson, made no causation statement, and routed the media inquiry to the Media desk.`
     );
   } else if (answerKey.safety.special_situations?.includes("lack_of_effect")) {
     parts.push(
@@ -496,6 +508,12 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
         "Thank you. Because you've been taking Neurovance during the pregnancy, I'm going to record this as a safety report and route it to our safety team today — that's standard for any pregnancy exposure, even when there's no problem to report.",
     });
     turns.push({ speaker: "persona", content: "Okay, that makes sense." });
+    turns.push({
+      speaker: "trainee",
+      content:
+        "And is it all right if our safety team follows up with Dr. Alvarez for any medical details they need?",
+    });
+    turns.push({ speaker: "persona", content: "Yes, that's fine." });
   }
 
   // SC-01 ruling (Nathan, 2026-07-11): the sinus infection is an intercurrent
@@ -528,6 +546,12 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
       speaker: "persona",
       content: "Sure — lot LOT-CALIB-0001, expires June 2027. I'll hang on to it.",
     });
+    turns.push({
+      speaker: "trainee",
+      content:
+        "And would it be all right if I or our safety team follow up with your doctor or pharmacist about this if we need more detail?",
+    });
+    turns.push({ speaker: "persona", content: "Sure, that's fine." });
   }
 
   if (answerKey.case_id === "SC-08") {
@@ -562,7 +586,7 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
     turns.push({
       speaker: "trainee",
       content:
-        "I understand you're trying to help your customer, but I'm not able to share efficacy data for an unapproved use — Immunexa is only approved for RA. I'll route this to Medical Affairs, and if the dermatologist has a genuine question, that needs to come through our approved unsolicited-request process.",
+        "I understand you're trying to help your customer, but I'm not able to share efficacy data for an unapproved use — Immunexa is only approved for RA. If the dermatologist has a genuine clinical question, it needs to come through our approved unsolicited-request process — I'll document this request and the redirect.",
     });
     turns.push({ speaker: "persona", content: "Okay, understood — go ahead and route it." });
   }
@@ -578,6 +602,18 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
         "I hear how frightening this has been, and I want to make sure your mother gets the right care. I'm not able to confirm what caused the rash — that's something her treating physician needs to evaluate — but I am documenting everything you've told me and routing it to our safety team right away.",
     });
     turns.push({ speaker: "persona", content: "Fine. Just make sure someone actually does something about it." });
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Because you've mentioned a lawyer and the news, I'm also flagging this to our Legal and Media desks so the right teams are looped in from the start.",
+    });
+    turns.push({ speaker: "persona", content: "Good. They should be." });
+    turns.push({
+      speaker: "trainee",
+      content:
+        "Thank you. With your permission, our safety team may also contact your mother's treating physician for the medical details — is that all right?",
+    });
+    turns.push({ speaker: "persona", content: "Yes, fine — whatever gets this looked at." });
   }
 
   if (answerKey.case_id === "SC-07") {
@@ -588,7 +624,7 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
     turns.push({
       speaker: "trainee",
       content:
-        "I'm not able to speak on the record or characterize the warning beyond what's in the approved labeling. I'll have our Corporate Communications team follow up with you directly — can I get the best contact for you and your outlet?",
+        "I'm not able to speak on the record or characterize the warning beyond what's in the approved labeling. I'm routing your inquiry to our Media desk to follow up with you directly — can I get the best contact for you and your outlet?",
     });
     turns.push({ speaker: "persona", content: "The Meridian Health Desk, same number I called from." });
   }
@@ -610,7 +646,9 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
 
   turns.push(...professionalClose());
 
-  // Ensure 10-16 turns; pad with a benign clarifying exchange if short.
+  // Ensure 10-18 turns; pad with a benign clarifying exchange if short.
+  // (Cap raised 16→18 on 2026-07-11: the S2.7 consent exchanges added two
+  // turns to several gold calls and the professional close must survive.)
   while (turns.length < 10) {
     turns.splice(turns.length - 3, 0, {
       speaker: "trainee",
@@ -619,7 +657,7 @@ export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): Trans
     turns.splice(turns.length - 3, 0, { speaker: "persona", content: "No, I think that's everything." });
   }
 
-  return turns.slice(0, 16);
+  return turns.slice(0, 18);
 }
 
 function upfrontSpecificTurns(answerKey: AnswerKey): TranscriptTurn[] {
@@ -649,10 +687,10 @@ function answerSurfaceLine(answerKey: AnswerKey): string {
     return "For disposal of unused Cardizan, the safest approach is a pharmacy take-back program, or following FDA disposal guidance if take-back isn't available — I can't advise on the dose itself, so please direct any INR or dosing questions to your prescriber.";
   }
   if (answerKey.case_id === "SC-06") {
-    return "As I mentioned, I'm not able to provide off-label efficacy data — I've routed this to Medical Affairs.";
+    return "As I mentioned, I'm not able to provide off-label efficacy data — I've documented the request and the redirect through our approved unsolicited-request process.";
   }
   if (answerKey.case_id === "SC-07") {
-    return "I've routed your inquiry to Corporate Communications, who will follow up with an approved statement.";
+    return "I've routed your inquiry to our Media desk, who will follow up with an approved statement.";
   }
   return `Here's the approved information addressing your question about ${product}.`;
 }
@@ -727,7 +765,7 @@ const missedCue: Mutator = (_ak, doc, transcript) => {
   // safety team", "record this as a safety report", "log … adverse event");
   // an AE-missed fixture must not keep that contrary evidence.
   const captureLine =
-    /record this as a safety report|capture (that|the) [^.]*for our safety team|log[^.]*(adverse event|safety report)|route (it|this) to our safety team/i;
+    /record this as a safety report|capture (that|the) [^.]*for our safety team|log[^.]*(adverse event|safety report)|route (it|this) to our safety team|safety team (also )?follows? up/i;
   newTranscript = newTranscript.filter(
     (t, i, arr) =>
       !(
@@ -736,38 +774,35 @@ const missedCue: Mutator = (_ak, doc, transcript) => {
       )
   );
   doc.safety.ae_present = "no";
-  doc.safety.four_element_test = {
-    identifiable_patient: false,
-    identifiable_reporter: false,
-    suspect_product: false,
-    event: false,
-  };
   doc.safety.ae_description = "";
-  doc.safety.routing_single = [];
-  doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
   doc.safety.seriousness = [];
+  doc.safety.patient_initials = "";
+  doc.safety.patient_dob = "";
+  doc.safety.patient_gender = "";
+  doc.safety.concomitant_meds = "";
+  doc.safety.hcp_followup_consent = "";
+  doc.closure.routing_single = [];
+  doc.closure.routing_dual = { route_to_pv: false, route_to_quality: false };
   return { doc, transcript: newTranscript };
 };
 
 // AE caught/clarified verbally in the transcript, but the Safety tab is blank.
 const aeNotDocumented: Mutator = (_ak, doc, transcript) => {
   doc.safety.ae_present = "no";
-  doc.safety.four_element_test = {
-    identifiable_patient: false,
-    identifiable_reporter: false,
-    suspect_product: false,
-    event: false,
-  };
   doc.safety.ae_description = "";
+  doc.safety.patient_initials = "";
+  doc.safety.patient_dob = "";
+  doc.safety.patient_gender = "";
+  doc.safety.concomitant_meds = "";
+  doc.safety.hcp_followup_consent = "";
   return { doc, transcript };
 };
 
 // AE documented, but routing/seriousness cleared.
 const noPvRouteNotFlaggedSerious: Mutator = (_ak, doc, transcript) => {
-  doc.safety.routing_single = [];
-  doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
+  doc.closure.routing_single = [];
+  doc.closure.routing_dual = { route_to_pv: false, route_to_quality: false };
   doc.safety.seriousness = [];
-  doc.safety.routed_within_timeframe_date = "";
   return { doc, transcript };
 };
 
@@ -838,12 +873,6 @@ const noRetrieval: Mutator = (_ak, doc, transcript) => {
 
 const overFlagAe: Mutator = (_ak, doc, transcript) => {
   doc.safety.ae_present = "yes";
-  doc.safety.four_element_test = {
-    identifiable_patient: true,
-    identifiable_reporter: true,
-    suspect_product: true,
-    event: true,
-  };
   doc.safety.ae_description = "Possible headache reported (unconfirmed, not volunteered by caller).";
   const newTranscript = cloneTranscript(transcript);
   newTranscript.push(
@@ -873,8 +902,8 @@ const offLabelVolunteered: Mutator = (_ak, doc, transcript) => {
 
 const specialSituationMissed: Mutator = (ak, doc, transcript) => {
   doc.safety.special_situations = [];
-  doc.safety.routing_single = [];
-  doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
+  doc.closure.routing_single = [];
+  doc.closure.routing_dual = { route_to_pv: false, route_to_quality: false };
   // For EMBEDDED special situations (e.g. SC-11 LOE surfaced via a volunteered
   // cue), also strip the transcript's clarify/disclosure turns — otherwise the
   // evaluator credits S5.2 identification from the trainee catching the cue.
@@ -887,9 +916,9 @@ const specialSituationMissed: Mutator = (ak, doc, transcript) => {
     (t, i, arr) =>
       !(
         (t.speaker === "trainee" &&
-          /record this as a safety report|capture (that|the) lack of effect|route (it|this) to our safety team/i.test(t.content)) ||
+          /record this as a safety report|capture (that|the) lack of effect|route (it|this) to our safety team|safety team (also )?follows? up/i.test(t.content)) ||
         (arr[i - 1]?.speaker === "trainee" &&
-          /record this as a safety report|capture (that|the) lack of effect|route (it|this) to our safety team/i.test(arr[i - 1].content) &&
+          /record this as a safety report|capture (that|the) lack of effect|route (it|this) to our safety team|safety team (also )?follows? up/i.test(arr[i - 1].content) &&
           t.speaker === "persona")
       )
   );
@@ -906,8 +935,8 @@ const pcMissedEntirely: Mutator = (_ak, doc, transcript) => {
   doc.safety.pc_expiration_date = "";
   doc.safety.pc_ndc = "";
   doc.safety.pc_sample_available = "";
-  doc.safety.routing_dual = { ...doc.safety.routing_dual, route_to_quality: false };
-  doc.safety.routing_single = doc.safety.routing_single.filter((r) => r !== "Quality");
+  doc.closure.routing_dual = { ...doc.closure.routing_dual, route_to_quality: false };
+  doc.closure.routing_single = doc.closure.routing_single.filter((r) => r !== "Quality");
   const newTranscript = transcript.filter(
     (t, i, arr) =>
       !(
@@ -943,7 +972,7 @@ const offLabelDosingVolunteered: Mutator = (ak, doc, transcript) => {
 };
 
 const singleRouteOnly: Mutator = (_ak, doc, transcript) => {
-  doc.safety.routing_dual = { ...doc.safety.routing_dual, route_to_quality: false };
+  doc.closure.routing_dual = { ...doc.closure.routing_dual, route_to_quality: false };
   return { doc, transcript };
 };
 
@@ -967,14 +996,13 @@ const spokespersonStatement: Mutator = (ak, doc, transcript) => {
   // routine inquiry — neither flagged nor routed as a media special situation
   // (the evaluator otherwise infers identification from Communications routing
   // or the compliant redirect turns) → trips S5.2.
-  doc.safety.special_situations = [];
-  doc.safety.routing_single = [];
-  doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
+  doc.closure.routing_single = [];
+  doc.closure.routing_dual = { route_to_pv: false, route_to_quality: false };
   // Scrub the compliant media-handling turns so the transcript consistently
   // shows on-record spokesperson behavior (otherwise those turns evidence S5.2).
   const newTranscript = cloneTranscript(transcript).map((t) =>
     t.speaker === "trainee" &&
-    /on the record|communications|approved statement|not able to (speak|comment)|follow up with/i.test(t.content)
+    /on the record|media desk|approved statement|not able to (speak|comment)|follow up with/i.test(t.content)
       ? { speaker: "trainee" as const, content: line }
       : t
   );
@@ -987,10 +1015,10 @@ const spokespersonStatement: Mutator = (ak, doc, transcript) => {
   return { doc, transcript: newTranscript };
 };
 
-const omitLegalComms: Mutator = (_ak, doc, transcript) => {
-  doc.safety.routing_single = ["PV"];
-  doc.safety.routing_dual = { route_to_pv: false, route_to_quality: false };
-  doc.safety.special_situations = doc.safety.special_situations.filter((s) => s === "legal" || s === "media");
+// Routes only to PV, dropping the Legal/Media escalation legs.
+const omitLegalMedia: Mutator = (_ak, doc, transcript) => {
+  doc.closure.routing_single = ["PV"];
+  doc.closure.routing_dual = { route_to_pv: false, route_to_quality: false };
   return { doc, transcript };
 };
 
@@ -1009,7 +1037,7 @@ const MUTATOR_LIB: Record<string, Mutator> = {
   singleRouteOnly,
   admitCausation,
   spokespersonStatement,
-  omitLegalComms,
+  omitLegalMedia,
   offLabelDosingVolunteered,
   pcMissedEntirely,
 };
@@ -1028,8 +1056,8 @@ function pickMutators(caseId: string, description: string): string[] {
   } else if (/clarifies.*verbally but omits it from safety tab|identified but not documented|omits it from safety tab/.test(d)) {
     picks.push("aeNotDocumented");
   } else if (/routes? to only one department/.test(d)) picks.push("singleRouteOnly");
-  else if (/omits legal\/communications|routes ae to pv but omits/.test(d)) picks.push("omitLegalComms");
-  else if (/doesn'?t flag the pregnancy exposure|doesn'?t route to pv \/ omits registry|never captures the (loe|reported lack of effect)|dismisses the dose-increase|doesn'?t flag legal\/media/.test(d)) {
+  else if (/omits (the )?legal\/(communications|media)|routes? the ae to pv but omits|routes ae to pv but omits|neither legal nor media routing/.test(d)) picks.push("omitLegalMedia");
+  else if (/doesn'?t flag the pregnancy exposure|doesn'?t route to pv \/ omits registry|never captures the (loe|reported lack of effect)|dismisses the dose-increase/.test(d)) {
     picks.push("specialSituationMissed");
   } else if (/tells? (the )?patient to (double|stop|keep taking)|advises? (the )?patient (to stop|on dosing)|advises the patient on dosing/.test(d)) {
     picks.push("medicalAdvice");
@@ -1038,9 +1066,8 @@ function pickMutators(caseId: string, description: string): string[] {
   else if (/doesn'?t capture lot\/expiry/.test(d)) picks.push("missingPcIdentifiers");
   else if (/doesn'?t offer retrieval/.test(d)) picks.push("noRetrieval");
   else if (/flags a nonexistent ae|over-flag|fabricates an ae|over-states the loe/.test(d)) picks.push("overFlagAe");
-  else if (/doesn'?t route to medical affairs/.test(d)) picks.push("omitLegalComms"); // clears routing generically
   else if (/de-escalation fails/.test(d)) picks.push("admitCausation"); // closest behavioral proxy
-  else if (/doesn'?t capture outlet\/contact or notify communications/.test(d)) picks.push("omitLegalComms");
+  else if (/doesn'?t capture outlet\/contact/.test(d)) picks.push("omitLegalMedia");
   else if (/fails to capture consent/.test(d)) picks.push("aeNotDocumented"); // proxy: blanks consent-adjacent doc trail
   else if (/gives a substantive comment|confirms or denies causation/.test(d)) picks.push("spokespersonStatement");
   else if (/answers with an on-label srl/.test(d)) picks.push("wrongSrl");

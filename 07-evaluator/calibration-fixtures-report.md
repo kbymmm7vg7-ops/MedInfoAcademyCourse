@@ -1,6 +1,6 @@
 # Evaluator calibration — fixtures-only (deterministic, no API)
 
-_Generated 2026-07-11T18:09:55.766Z_
+_Generated 2026-07-12T13:11:08.274Z_
 
 Verifies the fixtures before any paid run: gold docs are validator-clean,
 AE/PC applicability matches the answer key, and every injected failure
@@ -13,7 +13,7 @@ actually mutates the gold fixture.
 | Cases | 12 |
 | Gold validator-clean | 12/12 |
 | Applicability s2/s3 match | 12/12 |
-| Failure fixtures | 40 |
+| Failure fixtures | 39 |
 | No-op failure fixtures | 0 |
 | **Problems** | **0** |
 
@@ -53,23 +53,22 @@ actually mutates the gold fixture.
 - Gold validator: CLEAN ✓
 - Applicability s2/s3 vs key (s1/s2/s4/s5): match ✓
   - ✓ `SC-05-failure-1-admitCausation` → expects S4.2
-  - ✓ `SC-05-failure-2-specialSituationMissed` → expects S5.2
+  - ✓ `SC-05-failure-2-omitLegalMedia` → expects — (deduction only)
   - ✓ `SC-05-failure-3-admitCausation` → expects — (deduction only)
-  - ✓ `SC-05-failure-4-omitLegalComms` → expects — (deduction only)
+  - ✓ `SC-05-failure-4-omitLegalMedia` → expects — (deduction only)
 
 ### SC-06
 - Gold validator: CLEAN ✓
 - Applicability s2/s3 vs key (s4/s5): match ✓
   - ✓ `SC-06-failure-1-offLabelVolunteered` → expects S5.1
   - ✓ `SC-06-failure-2-wrongSrl` → expects — (deduction only)
-  - ✓ `SC-06-failure-3-omitLegalComms` → expects — (deduction only)
 
 ### SC-07
 - Gold validator: CLEAN ✓
 - Applicability s2/s3 vs key (s1/s4/s5): match ✓
-  - ✓ `SC-07-failure-1-spokespersonStatement` → expects S5.2
+  - ✓ `SC-07-failure-1-spokespersonStatement` → expects S4.2
   - ✓ `SC-07-failure-2-spokespersonStatement` → expects — (deduction only)
-  - ✓ `SC-07-failure-3-omitLegalComms` → expects — (deduction only)
+  - ✓ `SC-07-failure-3-omitLegalMedia` → expects — (deduction only)
 
 ### SC-08
 - Gold validator: CLEAN ✓
