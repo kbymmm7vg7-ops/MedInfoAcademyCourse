@@ -36,7 +36,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { join } from "path";
 
-// tsx does not auto-load Next's .env.local — load it so ANTHROPIC_API_KEY /
+// tsx does not auto-load Next's .env.local — load it so the LLM provider key /
 // SUPABASE_SERVICE_ROLE_KEY work (same pattern as persona-transcript-test.ts).
 const envPath = join(__dirname, "../.env.local");
 if (existsSync(envPath)) {
@@ -59,7 +59,7 @@ import { buildSpellChecker } from "../src/lib/validator/spelling";
 import { computeApplicability } from "../src/lib/evaluator/applicability";
 import { EVALUATOR_VERSION } from "../src/lib/evaluator/prompt";
 import { RUBRIC_VERSION } from "../src/lib/evaluator/criteria";
-import { MODEL_POLICY } from "../src/lib/config/models";
+import { modelFor, requiredKeyFor, resolveLlmVendor } from "../src/lib/llm/config";
 import type { DocumentationFormState, TranscriptTurn } from "../src/lib/simulator/types";
 
 const CASES_DIR = join(__dirname, "../../01-seed-cases");
@@ -473,8 +473,11 @@ async function runOne(run: EvalRun): Promise<EvalResult> {
 }
 
 async function runPaid(fx: CaseFixtures[]): Promise<number> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("ANTHROPIC_API_KEY not set — required for the paid calibration run (see BLOCKERS.md).");
+  const requiredKey = requiredKeyFor("evaluator");
+  if (!process.env[requiredKey]) {
+    console.error(
+      `${requiredKey} not set (provider: ${resolveLlmVendor("evaluator")}) — required for the paid calibration run (see BLOCKERS.md).`
+    );
     return 1;
   }
   const runs: EvalRun[] = [];
@@ -509,7 +512,7 @@ async function runPaid(fx: CaseFixtures[]): Promise<number> {
   }
 
   console.log(
-    `Running ${runs.length} evaluations (${MODEL_POLICY.evaluator}, concurrency ${CONCURRENCY})…\n`
+    `Running ${runs.length} evaluations (${modelFor("evaluator")}, concurrency ${CONCURRENCY})…\n`
   );
   let done = 0;
   const results = await runPool(runs, CONCURRENCY, async (run) => {
@@ -535,7 +538,7 @@ async function runPaid(fx: CaseFixtures[]): Promise<number> {
   const report = {
     generated_at: new Date().toISOString(),
     mode: "paid",
-    model: MODEL_POLICY.evaluator,
+    model: modelFor("evaluator"),
     evaluator_version: EVALUATOR_VERSION,
     rubric_version: RUBRIC_VERSION,
     received_at: RECEIVED_AT,

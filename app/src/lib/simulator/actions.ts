@@ -241,7 +241,7 @@ export async function submitCase(
       });
     }
   } catch (err) {
-    // missing ANTHROPIC_API_KEY / SUPABASE_SERVICE_ROLE_KEY or transient LLM
+    // missing LLM provider key / SUPABASE_SERVICE_ROLE_KEY or transient LLM
     // failure: submission stands, evaluation stays pending. SEC-4: log it
     // structured so outages are visible; the admin pending-evaluations view
     // lists these instances and offers retry.

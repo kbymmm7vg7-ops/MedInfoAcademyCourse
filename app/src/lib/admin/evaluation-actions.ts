@@ -18,7 +18,7 @@
 // RETRY mirrors submitCase's inline evaluation exactly:
 //   loadEvaluationCaseData (the sanctioned ground-truth reader) +
 //   conversation_turns transcript + documentation_records form state →
-//   evaluateCase → persistEvaluation. Costs one Anthropic API call —
+//   evaluateCase → persistEvaluation. Costs one paid LLM API call —
 //   acceptable, it is admin-triggered. Every retry writes audit_log.
 // =============================================================================
 

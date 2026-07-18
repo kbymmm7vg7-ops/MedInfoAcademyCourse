@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { buildPersonaSystemPromptForTemplate } from "@/lib/simulator/case-brief";
 import type { VariantSnapshot } from "@/lib/cert/variant-engine";
 import { runPersonaTurn, MAX_TURNS_PER_INSTANCE, type ChatTurn } from "@/lib/persona/engine";
+import { LlmConfigError } from "@/lib/llm/types";
 import { isDeactivated, fetchDeactivatedAt, DEACTIVATED_MESSAGE } from "@/lib/auth/deactivation";
 
 // POST /api/persona/turn — one live persona exchange.
@@ -86,7 +87,7 @@ export async function POST(request: Request) {
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Persona engine error";
     // Surface the missing-key case clearly in dev; keep generic otherwise.
-    const isConfig = msg.includes("ANTHROPIC_API_KEY");
+    const isConfig = err instanceof LlmConfigError;
     return NextResponse.json(
       { error: isConfig ? msg : "The caller connection dropped — try again." },
       { status: isConfig ? 503 : 502 }

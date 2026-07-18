@@ -1,19 +1,18 @@
 // =============================================================================
 // EVALUATION ORCHESTRATOR (PRD §9.5, scoring-contract.md)
 // =============================================================================
-// validator (deterministic) → applicability → LLM verdicts (Sonnet, forced
-// tool) → pin validator-owned criteria → scoring math → ajv-validate against
-// rubric.schema.json → persist (service role) → cert pass_bool + lock hook.
-// SERVER-ONLY.
+// validator (deterministic) → applicability → LLM verdicts (structured output
+// via the LLM adapter) → pin validator-owned criteria → scoring math →
+// ajv-validate against rubric.schema.json → persist (service role) → cert
+// pass_bool + lock hook. SERVER-ONLY.
 // =============================================================================
 
-import Anthropic from "@anthropic-ai/sdk";
 import { Ajv } from "ajv";
 import addFormats from "ajv-formats";
 // Vendored from 02-rubric-schema/rubric.schema.json (Turbopack cannot import
 // outside the app root); that file remains the source of truth.
 import rubricSchema from "./rubric.schema.json";
-import { MODEL_POLICY } from "@/lib/config/models";
+import { getLlm, modelFor } from "@/lib/llm/config";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { runValidator, type ValidatorFinding } from "@/lib/validator/validator";
 import { getSpellChecker } from "@/lib/validator/spelling";
@@ -102,23 +101,19 @@ type LlmOutput = {
 };
 
 async function callEvaluatorLlm(system: string, user: string): Promise<LlmOutput> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error("ANTHROPIC_API_KEY is not set — the evaluator requires it (see BLOCKERS.md).");
-  }
-  const client = new Anthropic();
-  const response = await client.messages.create({
-    model: MODEL_POLICY.evaluator,
-    max_tokens: 8000,
+  const { adapter, model } = getLlm("evaluator");
+  const { json } = await adapter.structured({
+    model,
     system,
     messages: [{ role: "user", content: user }],
-    tools: [EVALUATOR_TOOL_SCHEMA as Anthropic.Tool],
-    tool_choice: { type: "tool", name: "submit_evaluation" },
+    maxTokens: 8000,
+    tool: {
+      name: EVALUATOR_TOOL_SCHEMA.name,
+      description: EVALUATOR_TOOL_SCHEMA.description,
+      inputSchema: EVALUATOR_TOOL_SCHEMA.input_schema,
+    },
   });
-  const block = response.content.find(
-    (b): b is Anthropic.ToolUseBlock => b.type === "tool_use" && b.name === "submit_evaluation"
-  );
-  if (!block) throw new Error("Evaluator returned no structured verdicts");
-  const raw = block.input as {
+  const raw = json as {
     verdicts: (CriterionVerdict & { rating?: number })[];
     constructive_feedback?: string;
     coaching_summary?: string;
@@ -219,7 +214,7 @@ export async function evaluateCase(inputs: EvaluationInputs) {
     case_instance_id: inputs.caseInstanceId,
     case_template_id: inputs.caseTemplateId,
     ...(inputs.variantRef ? { variant_ref: inputs.variantRef } : {}),
-    evaluator: { kind: "ai", version: EVALUATOR_VERSION, model: MODEL_POLICY.evaluator },
+    evaluator: { kind: "ai", version: EVALUATOR_VERSION, model: modelFor("evaluator") },
     channel: inputs.channel,
     reviewed_at: new Date().toISOString(),
     sections: { s1: scored.s1, s2: scored.s2, s3: scored.s3, s4: scored.s4, s5: scored.s5 },
