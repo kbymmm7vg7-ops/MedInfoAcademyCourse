@@ -12,6 +12,78 @@ relative order, directly after the newest (dated) entry from that same source.
 
 ---
 
+## 2026-09-02 · S8 — CI, fake adapter, SEC-3/11/13, docs consolidation
+
+### What shipped
+- **Docs consolidation.** `00-build/STATE.md` is now the single current-state document.
+  This file merges the two former blocker logs verbatim; both originals are deleted and
+  every reference repointed. HISTORICAL banners on the superseded session hand-offs and
+  on `SURVIVOR-HANDBOOK.md` §1–§3 (§4–§10 untouched). New `app/README.md`.
+  `.claude/scheduled_tasks.lock` untracked and gitignored.
+- **CI.** `.github/workflows/ci.yml` on push + PR: Node 22, `npm ci` in `app/`, then
+  eslint / `tsc --noEmit` / vitest / `next build` with placeholder public Supabase env.
+  CI holds no real credentials. A second job runs `app/scripts/ci-invariants.ts`, which
+  bundles the three deterministic checks behind one locally-runnable command.
+- **Lint + audit.** All four eslint errors and all warnings cleared (ref writes moved out
+  of render in the voice UI, `Date.now()` hoisted, `prefer-const`, dead code removed).
+  `next`/`eslint-config-next` 16.2.10 → 16.3.4; `npm audit` and `npm audit --omit=dev`
+  both report 0 vulnerabilities.
+- **Fake LLM adapter.** `LLM_PROVIDER=fake` selects `app/src/lib/llm/fake.ts`: no key, no
+  network, no cost, deterministic. Both harness scripts refuse to run against it.
+- **Playwright E2E scaffolding** under `app/e2e/`, skipped unless the `E2E_*` vars are set.
+- **SEC-3, SEC-11, SEC-13** — see `STATE.md` §5 for the detail.
+
+### Decisions taken this session (flagging for review)
+1. **`EVALUATOR_VERSION` bumped to `eval-prompt-v2`.** SEC-11 materially changed the
+   evaluator prompt. Leaving the version at v1 would make records scored under the
+   unfenced prompt indistinguishable from records scored under the fenced one. The
+   existing `07-evaluator/calibration-report.{json,md}` is stamped v1 and is superseded
+   by the S9 re-run regardless.
+2. **The rubric-schema CI invariant asserts equivalence, not byte-identity.**
+   `app/src/lib/evaluator/rubric.schema.json` is *not* byte-identical to
+   `02-rubric-schema/rubric.schema.json`: the vendored copy is reformatted and carries an
+   appended `[VENDORED COPY — source of truth: …]` note in its top-level `description`.
+   Editing either file to force byte-identity would mean touching a sign-off-gated
+   artifact, so the invariant instead deep-compares the two schemas ignoring the top-level
+   description, and requires the vendored description to still start with the source's.
+   That catches real drift. The **answer-key** schema pair *is* byte-identical and is
+   asserted as such. Raising this because the S8 brief specified byte-identity for both.
+3. **The persona daily turn budget counts trainee turns, not all `conversation_turns`.**
+   One trainee turn is one persona LLM call; counting the persona's replies too would
+   halve the effective budget for no stated reason. Day boundary is UTC.
+4. **An unknown future `attempt_type` resolves as graded.** Only the literal `practice`
+   (or no attempt row at all) is ungraded, so a new sitting type added later cannot
+   silently downgrade a real certification run to the cheap model.
+
+### What Nathan must do
+1. **Groq Dev Tier upgrade** (Groq console → Settings → Billing). Still the blocker on
+   every paid gate.
+2. **Apply migration `0011_audit_insert_service_only.sql`** to the live database, then
+   re-run `app/supabase/tests/rls-two-org-test.sql` and confirm check `8 authenticated
+   inserts audit_log` reports `rejected`. S8 deliberately did not apply it.
+3. **Reset the seeded E2E trainee's password** and populate `E2E_SUPABASE_URL`,
+   `E2E_SUPABASE_ANON_KEY`, `E2E_TRAINEE_EMAIL`, `E2E_TRAINEE_PASSWORD` in
+   `app/.env.local` (point them at a throwaway or local project — the spec writes real
+   rows). Until then the Playwright spec skips.
+
+### S9 run order (all `cd app`)
+1. `npx tsx scripts/groq-structured-probe.ts` → pin `GROQ_STRUCTURED_MODE` in
+   `src/lib/llm/groq.ts`.
+2. `npx tsx scripts/persona-transcript-test.ts` — gate: 12/12 behavior + 12/12 adversarial.
+3. `npx tsx scripts/evaluator-calibration.ts` — gate: 12/12 gold + 18/18 Criticals,
+   **plus the new SEC-11 injection fixture, whose verdicts must match the clean SC-09
+   gold exactly.** A divergence there means the prompt fence is not holding.
+4. Regenerated calibration report → **Nathan's blind-score** → cert-live.
+
+### Not done in S8
+No live-model run of any kind. `app/.env.local` does not exist in the session environment,
+so `GROQ_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` were both absent and the optional
+single-case smoke (`npx tsx scripts/persona-transcript-test.ts SC-09`) was skipped.
+Nothing in S8 was validated against a real provider; everything above was verified with
+deterministic, offline checks only.
+
+---
+
 ## Groq migration (2026-07-18) — Groq org must upgrade to Dev Tier before paid gate runs
 - **Decision of record (Nathan, 2026-07-18):** all LLM calls move from Anthropic to
   Groq to preserve the ~$6 Anthropic balance. Models: evaluator + graded persona =

@@ -19,6 +19,7 @@ code wins.
 | S7 | SEC-1/SEC-2 closed (migration 0007: `case_answer_keys` + `srd_document_bodies` service-role-only, RLS-no-policy + REVOKE); audit helper wired to cert lock + eval-failure logging; `/admin` server-side 404 gate; SEC-7 cert sitting expiry (migration 0008, void-don't-burn, 24h, lazy); admin case bank + gated ground-truth editor + custom scenario intake; training module management with org shadowing (migration 0009); users/roster, orgs, pending-evaluations retry, Cohort Lite under `/manager`; `dictionary-en`/Turbopack production bug fixed (`serverExternalPackages`) | `ec48d73`, `c79b668` |
 | Post-S7: S2.7 safety-tab redesign | Safety tab redesign (four-element test removed; AE block gains patient initials/DOB/gender, concomitant meds, HCP-follow-up consent; pregnancy/lactation boolean dropped in favor of SSE entry; Legal/Media removed as special situations); routing moved to Closure tab with PV/Quality/Legal/Media roster; S2.7 (HCP consent) goes live; new S5.4 conditional-NA; SC-05/06/07 keys regraded (Nathan-ratified) | `04825d2` |
 | Post-S7: Groq LLM migration + SEC-10 | LLM adapter layer (`src/lib/llm/`), Groq as default provider with Anthropic fallback via `LLM_PROVIDER=anthropic`; per-provider `MODEL_POLICY`; evaluator structured output via `json_schema`; SEC-10 persona anti-leak hardening (deflect-in-character + ADVERSARIAL harness strategy, all 12 cases); vitest 114/114 (Nathan-ratified) | `fcf9da0` |
+| S8 | Docs consolidation (this file + `DECISIONS.md`); GitHub Actions CI + `app/scripts/ci-invariants.ts`; all eslint errors/warnings cleared and `next` bumped to 16.3.4 (`npm audit` zero); offline fake LLM adapter (`LLM_PROVIDER=fake`); Playwright E2E scaffolding; SEC-3 (graded resolved from the sitting + per-user daily turn budget), SEC-11 (evaluator prompt-injection fencing + injection calibration fixture), SEC-13 (migration `0011`, audit_log writes service-role-only) | see the S8 entry in `00-build/DECISIONS.md` |
 
 **Checkpoint A** (persona engine go/no-go): **GO** (12/12 green, `05-persona-engine/persona-transcript-test-results.{json,md}`; see `00-build/DECISIONS.md` 2026-07-07 entries for the fixture-fix history).
 
@@ -28,9 +29,15 @@ code wins.
 
 **Runtime LLM**: Groq is the default provider (`src/lib/llm/`). Evaluator + graded persona run on `openai/gpt-oss-120b`; practice persona + coaching run on `openai/gpt-oss-20b`; `moonshotai/kimi-k2-instruct-0905` is a documented escalation slot if the evaluator gate fails on gpt-oss-120b. Anthropic is available as a one-env-var fallback (`LLM_PROVIDER=anthropic`), with per-role overrides in `app/src/lib/llm/config.ts`. The Groq org is on the free `on_demand` tier (8K TPM / 200K TPD for the gpt-oss models) — evaluator calls (~12K tokens) currently 413 on this tier; the Dev Tier upgrade is a Nathan-owned, money-spending decision (see §4 below).
 
-**Tests**: see the S8 close-out entry in `00-build/DECISIONS.md` for the current count. At commit
-`fcf9da0` it was 114 tests / 16 files; S8 adds the fake-adapter, turn-budget, and evaluator-fence
-tests on top. Re-run `cd app && npx vitest run` for the authoritative number.
+**Tests**: 140 tests / 19 files passing at the end of S8 (114/16 at `fcf9da0`; S8 added the
+fake-adapter, offline evaluate-through-fake, turn-budget, and evaluator-fence tests). Re-run
+`cd app && npx vitest run` for the authoritative number.
+
+**CI**: `.github/workflows/ci.yml` runs on every push and pull request — Node 22, `npm ci` in
+`app/`, then eslint / `tsc --noEmit` / vitest / `next build` (placeholder public Supabase env
+only; CI holds no real credentials), plus a second job running `npx tsx scripts/ci-invariants.ts`
+(answer keys validate against their schema, vendored schema copies have not drifted, calibration
+`--fixtures-only` green). That invariants script is the local equivalent — run it before pushing.
 
 **Migrations** (`app/supabase/migrations/`), in order:
 1. `0001_init_schema.sql`
@@ -43,6 +50,7 @@ tests on top. Re-run `cd app && npx vitest run` for the authoritative number.
 8. `0008_cert_sitting_expiry.sql`
 9. `0009_training_module_slug_scope.sql`
 10. `0010_user_deactivation.sql`
+11. `0011_audit_insert_service_only.sql` — **written in S8, NOT yet applied to the live database.** Applying it and re-running `app/supabase/tests/rls-two-org-test.sql` is a sign-off-owner action (see §4).
 
 **Seed files** (`app/supabase/seed/`):
 - `seed_s2.sql`
@@ -91,6 +99,8 @@ Standard local dev/test commands (from `app/`): `npm run dev`, `npx vitest run`,
 | Gate | Owner | Status |
 |---|---|---|
 | Groq Dev Tier upgrade (Groq console → Settings → Billing) | Nathan | Deferred by Nathan (2026-07-18); blocks paid evaluator/calibration runs on Groq |
+| Apply migration `0011_audit_insert_service_only.sql` to the live database and re-run `app/supabase/tests/rls-two-org-test.sql` | Nathan | Pending (SEC-13, written in S8; deliberately not applied by the session) |
+| Reset the seeded E2E trainee's password and populate the `E2E_*` vars for the Playwright spec | Nathan | Pending — the spec skips until all four are set |
 | Full 12-output blind-score of `07-evaluator/calibration-report.md` Part A (post safety-tab redesign + Groq model swap) | Nathan | Pending — required before cert can go live |
 | cert-live flip (per `08-accreditation-cert` spec, no code expected) | Nathan | Blocked on the blind-score above |
 | Rubric schema sign-off, all 12 seed-case answer keys, evaluator-calibration sign-off | Nathan | Standing sign-off authority per `RUNBOOK.md`; individual key edits already ratified are recorded in `00-build/DECISIONS.md` |
@@ -117,6 +127,21 @@ register, as of 2026-07-07, is `00-build/SURVIVOR-HANDBOOK.md` §5 — historica
 - **SEC-10** — persona anti-leak hardening shipped with the Groq migration: a deflect-in-character
   prompt section plus an ADVERSARIAL harness strategy (leak / invention / character-break
   detection) run across all 12 cases. Closed in `fcf9da0`.
+- **SEC-3** (S8) — `/api/persona/turn` no longer hardcodes `graded: true`; the sitting is resolved
+  through the variant snapshot's seed → `accreditation_attempts.variant_ref`, and anything that is
+  not `practice` counts as graded. A per-user daily turn budget
+  (`PERSONA_DAILY_TURN_BUDGET`, default 150) counts the user's own trainee turns since the start of
+  the UTC day and denies 429 past the cap, failing closed if the count itself errors.
+- **SEC-11** (S8) — the transcript and submitted documentation are trainee-authored and were
+  interpolated into the evaluator prompt unmarked. Both are now wrapped in explicit
+  `<<<TRAINEE_DATA … TRAINEE_DATA>>>` fences (markers neutralised inside the body so the fence
+  cannot be closed from within), and binding rule 9 declares fenced text evidence to quote, never
+  an instruction to follow. `EVALUATOR_VERSION` → `eval-prompt-v2`. An SC-09 injection fixture was
+  added to the calibration harness; its expected result is verdicts identical to the clean gold,
+  and the paid run gates on that match. **The S9 calibration re-run must include this fixture.**
+- **SEC-13** (S8) — migration `0011` drops the `audit_insert` policy for `authenticated` and revokes
+  the INSERT grant; audit writes were already service-role-only in code. The two-org RLS test now
+  asserts a trainee insert is rejected. **Not yet applied to the live database** (see §4).
 
 ## 6. Where things live (quick index)
 
