@@ -6,7 +6,9 @@
 // tokens on hidden analysis before the reply; adapters own whatever headroom
 // their vendor needs on top of `maxTokens` so callers never think about it.
 
-export type LlmVendor = "groq" | "anthropic";
+// "fake" is the offline, deterministic, zero-cost adapter (lib/llm/fake.ts).
+// It is a harness/E2E provider only — never a scoring or certification path.
+export type LlmVendor = "groq" | "anthropic" | "fake";
 
 export type LlmMessage = { role: "user" | "assistant"; content: string };
 
