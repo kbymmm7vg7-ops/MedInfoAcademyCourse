@@ -1,3 +1,5 @@
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
+
 # NEXT SESSION — S5 Voice baseline (Opus) + leftovers
 
 *Written by Fable 2026-07-10 at S7 completion. S1–S4, S6, S7 are done; SEC-1/SEC-2 closed.
@@ -14,7 +16,7 @@ Remaining before Checkpoint B: Nathan's S4 blind-scoring gate (his action, not a
 
 ## How to start
 1. Fresh **Opus 4.8** session in the repo root.
-2. **Attach:** `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md`, `00-build/BLOCKERS.md`, this file,
+2. **Attach:** `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md`, `00-build/DECISIONS.md`, this file,
    `06-voice-layer/spec_voice-pipeline.md`, `01-seed-cases/`.
 3. Paste the S5 prompt below (**updated 2026-07-10 for Nathan's TTS pivot to Groq Orpheus** —
    supersedes the RUNBOOK S5 prompt's ElevenLabs wording; spec §TTS has the decision of record):

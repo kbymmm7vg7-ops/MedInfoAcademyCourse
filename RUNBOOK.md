@@ -8,7 +8,7 @@ work. You run the prompts; the agents do the work. Sign-off gates are yours.
 - **Model**: start the session in **Opus 4.8**. Tell it explicitly: *"Dispatch routine, well-specified work (CRUD screens, forms, migrations, content tailoring, seed-data scripts) to Sonnet 5 subagents; do the complex judgment work (persona engine, evaluator, cert logic, RLS, voice) yourself."*
 - **Always attach**: `RUNBOOK.md`, `00-build/BUILD-PLAN.md`, and the numbered stage folder for that session.
 - **Runtime model policy** (in-product, not the build agent): Sonnet 5 for the evaluator and graded/certification personas; Haiku 4.5 only for ungraded practice personas and the coaching agent. Put this in the app config, not hardcoded per call.
-- **Blocker rule**: tell each session *"if required content is missing or ambiguous, stop and write `BLOCKERS.md` — do not invent medical content or answer keys."*
+- **Blocker rule**: tell each session *"if required content is missing or ambiguous, stop and write `00-build/DECISIONS.md` — do not invent medical content or answer keys."*
 - **Sign-off gates**: you personally approve (a) the rubric schema, (b) all 12 seed-case answer keys, (c) the evaluator calibration before certification mode goes live. These are the credibility foundation.
 
 ## Pre-flight (already done by Fable — verify these exist)
@@ -70,7 +70,7 @@ Fable gives an explicit go/no-go before the evaluator is built.
 Bring Fable: the certification variant/burn/lock implementation + the evaluator calibration report vs the
 12 gold fixtures (at minimum SC-03, SC-11, SC-12 — the subtle cue-catch cases). Fable reviews cert-logic
 correctness against `spec_certification-logic.md` and the evaluator's agreement with ground truth, then
-writes the post-48h punch list into `BLOCKERS.md`. This is the last scheduled use of Fable.
+writes the post-48h punch list into `00-build/DECISIONS.md`. This is the last scheduled use of Fable.
 
 ---
 

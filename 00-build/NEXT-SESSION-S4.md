@@ -1,14 +1,16 @@
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
+
 # NEXT SESSION — S4 Evaluator + calibration (Opus)
 
 *Written 2026-07-07 at the S3/Checkpoint-A boundary. Checkpoint A is GO (persona transcript test 12/12 green, committed `023c3f9`). SC-11 answer-key edit is Nathan-approved. This is the literal startup for the next session.*
 
 ## How to start the session
 1. Open a **fresh Opus 4.8** session in the repo root (`/Users/Nathan/Documents/MedInfoAcademyCourse`).
-2. **Attach:** `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md`, `00-build/BLOCKERS.md`, `00-build/NEXT-SESSION-S4.md` (this file), `02-rubric-schema/`, `01-seed-cases/`, `07-evaluator/`, and `app/scripts/calibration/`.
+2. **Attach:** `RUNBOOK.md`, `00-build/HANDOFF-OPUS.md`, `00-build/DECISIONS.md`, `00-build/NEXT-SESSION-S4.md` (this file), `02-rubric-schema/`, `01-seed-cases/`, `07-evaluator/`, and `app/scripts/calibration/`.
 3. **Paste the prompt below.**
 
 ## Prompt to paste
-> You are the Opus orchestrator for the MedInfo Academy build, session **S4 (Evaluation Agent + calibration)**. Dispatch routine, well-specified work to Sonnet 5 subagents; do the evaluator/calibration judgment work yourself. Standing rules: **no vendor/employer names anywhere; never invent medical content or answer keys — stop and write `00-build/BLOCKERS.md` instead; Nathan personally signs off the evaluator calibration before cert goes live.**
+> You are the Opus orchestrator for the MedInfo Academy build, session **S4 (Evaluation Agent + calibration)**. Dispatch routine, well-specified work to Sonnet 5 subagents; do the evaluator/calibration judgment work yourself. Standing rules: **no vendor/employer names anywhere; never invent medical content or answer keys — stop and write `00-build/DECISIONS.md` instead; Nathan personally signs off the evaluator calibration before cert goes live.**
 >
 > Checkpoint A is already **GO** (persona transcript test 12/12 green, committed) — **do NOT re-run the persona transcript test; it spends budget and is done.** Vitest (37/37) and build were green at last handoff.
 >

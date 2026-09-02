@@ -1,4 +1,84 @@
-# BLOCKERS — for Nathan's review
+# DECISIONS — merged decision/blocker log
+
+This file merges the two prior blocker logs that used to live at the repo root and under
+`00-build/` (both now removed) into one, entries ordered **newest first**, content copied
+verbatim from the originals. It is a historical record of decisions and open items as they
+were raised and resolved session-by-session. For the current state of the build (what has
+shipped, what's still gated, and who owns what), see `00-build/STATE.md` instead.
+
+The two entries with no date header (`S4 — two keys needed...`, `S3 — ANTHROPIC_API_KEY
+required...`) came from the root-level log; they are kept here in that file's original
+relative order, directly after the newest (dated) entry from that same source.
+
+---
+
+## Groq migration (2026-07-18) — Groq org must upgrade to Dev Tier before paid gate runs
+- **Decision of record (Nathan, 2026-07-18):** all LLM calls move from Anthropic to
+  Groq to preserve the ~$6 Anthropic balance. Models: evaluator + graded persona =
+  `openai/gpt-oss-120b`, practice persona + coaching = `openai/gpt-oss-20b`
+  (escalation slot: `moonshotai/kimi-k2-instruct-0905` if the evaluator gate fails).
+  Anthropic stays as a one-env-var fallback: `LLM_PROVIDER=anthropic` (per-role
+  overrides in `app/src/lib/llm/config.ts`). SEC-10 persona anti-leak hardening
+  shipped in the same change (deflection rules + ADVERSARIAL harness strategy).
+- **BLOCKED (deferred by Nathan, 2026-07-18):** the Groq org
+  (`org_01ksxtv618e1597rmntmdg3e0k`) is on the free `on_demand` tier — 8K
+  tokens/minute and 200K tokens/day for the gpt-oss models. An evaluator request
+  alone is ~12K tokens → HTTP 413; the full persona transcript test would blow the
+  daily cap. **Nathan's ruling: stay on free tier for now, upgrade to Dev Tier
+  (Groq console → Settings → Billing) closer to production; until then limit
+  testing to single cases at a time.**
+- **Interim operating mode (free tier):**
+  - Persona turns (text + voice) fit the free tier — single-case harness runs are
+    fine: `npx tsx scripts/persona-transcript-test.ts SC-09` (results merge, so the
+    12/12 verdict accumulates across days if run case-by-case under the daily cap).
+  - Evaluator calls CANNOT run on free tier at all (413) — in-app submissions will
+    land as "pending" (submitCase's silent fallback); recover them with the admin
+    pending-evaluations retry view AFTER the Dev Tier upgrade. Calibration paid
+    mode is likewise deferred.
+  - Voice STT/TTS is unaffected.
+- **Verified so far (free tier / free checks):** vitest 114/114; calibration
+  `--fixtures-only` + `--verify-db` green; persona SC-09 live on Groq incl. the new
+  adversarial probe (deflects in character, no leak, no reasoning text in replies);
+  Anthropic fallback path smoke-tested (one Haiku call).
+- **After the upgrade, run in order (all `cd app`):**
+  1. `npx tsx scripts/groq-structured-probe.ts` → pin `GROQ_STRUCTURED_MODE` in
+     `src/lib/llm/groq.ts` (currently `json_schema`).
+  2. `npx tsx scripts/persona-transcript-test.ts` — gate: 12/12 behavior + 12/12
+     adversarial.
+  3. `npx tsx scripts/evaluator-calibration.ts` — gate: 12/12 gold + 18/18 Criticals.
+     If it fails → swap `evaluator.groq` to kimi-k2 in `src/lib/config/models.ts`,
+     re-run; if that fails too → `LLM_PROVIDER_EVALUATOR=anthropic`.
+- The regenerated calibration report then becomes the artifact for Nathan's pending
+  full 12-output blind-score (covers the safety-tab redesign AND the model swap in
+  one review). Cert stays offline until that gate.
+
+---
+
+## S4 — two keys needed in `app/.env.local` (Nathan adding ~$40 API credit EOD 2026-07-07)
+- `ANTHROPIC_API_KEY=sk-ant-...` — persona runtime, S3 transcript test, evaluator runs.
+- `SUPABASE_SERVICE_ROLE_KEY=...` — from the Supabase dashboard (Project Settings →
+  API keys → service_role). The evaluator persists scores/locks with it because RLS
+  intentionally blocks trainees from writing their own `evaluation_scores` /
+  `certification_locks`. Server-only var — never prefix with NEXT_PUBLIC.
+- When both are present:
+  1. `cd app && npx tsx scripts/persona-transcript-test.ts` (S3 DoD → Checkpoint A)
+  2. `cd app && npx tsx scripts/evaluator-calibration.ts` (S4 DoD → calibration report
+     for Nathan's blind-scoring gate)
+  3. In-app: submitting a case evaluates it inline (falls back to "pending" without keys).
+
+---
+
+## S3 — ANTHROPIC_API_KEY required (blocking the live persona test)
+- **What**: The persona engine (S3) and its 12-case transcript test are built and
+  ready, but running them requires an Anthropic API key at runtime.
+- **Where to put it**: add `ANTHROPIC_API_KEY=sk-ant-...` to `app/.env.local`
+  (the file already holds the Supabase keys; it is gitignored).
+- **Then run**: `cd app && npx tsx scripts/persona-transcript-test.ts`
+  → writes `05-persona-engine/persona-transcript-test-results.{json,md}`
+  (the Checkpoint A artifact). Exit 0 = 12/12 behaviors verified.
+- Everything not needing the key is done: validator (13/13 unit tests),
+  persona prompt/engine/API route, chat UI, briefs seeded.
+- Note: the key will also be needed for S4 (evaluator) and the in-app live chat.
 
 ---
 
@@ -42,6 +122,7 @@ extended). Targeted rerun green; final full-run result recorded below/in the rep
 12 outputs in `07-evaluator/calibration-report.md` Part A are new — **redo the full blind-score**
 (not just the 5 from yesterday). Same bar: zero Critical disagreements, ≤1 Major/case. Cert
 stays offline until then.
+
 
 ---
 
@@ -100,6 +181,7 @@ scoped to their org), `/admin/users` deactivate/reactivate with audit writes, 3-
 calibration report + cert variant/burn/lock); post-48h punch list (incl. voice hardening,
 production TTS + commercial license, full PI prose, PC-description form field).
 
+
 ---
 
 ## 2026-07-10 (evening) · DECISION OF RECORD — S5 TTS pivot: ElevenLabs → Groq Orpheus (Nathan)
@@ -110,6 +192,7 @@ remains a launch-time decision (Orpheus vs ElevenLabs paid vs Deepgram Aura-2 �
 available via Groq; it would be a second vendor). Updated: voice spec §TTS (authoritative),
 `NEXT-SESSION-S5.md` prompt, RUNBOOK S5 note. Rationale: one vendor for STT+TTS (single ZDR review
 for the confidentiality tier), no free-tier quota cliff, Groq latency helps the <3s target.
+
 
 ---
 
@@ -146,6 +229,7 @@ green. Full detail in the session commits; highlights + your items:
 **Still open, unchanged:** your S4 blind-scoring gate (cert stays offline until then); S5 voice;
 Checkpoint B after that.
 
+
 ---
 
 ## 2026-07-10 · S4 CLOSED at 12/12 + 17/17 — blind-scoring gate is the only S4 item left (Fable)
@@ -162,6 +246,7 @@ Checkpoint B after that.
   `07-evaluator/calibration-report.{json,md}` regenerated — **blind-score from this version.**
 - Merged to `main`. **Your gate (unchanged): blind-score ≥10 outputs from calibration-report.md
   Part A; ship cert only on zero Critical disagreements, ≤1 Major/case.** Cert stays offline until then.
+
 
 ---
 
@@ -205,6 +290,7 @@ criteria are N/A. Either add the fields (future form enhancement) or keep them N
 **Next (unchanged):** your blind-scoring gate (zero Critical disagreements, ≤1 Major/case) before cert
 goes live. SEC-1/SEC-2 (P0) still open — before any real trainee. Then S5 voice, S7 admin, Checkpoint B.
 
+
 ---
 
 ## 2026-07-07 (later) · Checkpoint A quick re-verification (Fable) + S7 admin-dashboard decisions
@@ -221,6 +307,7 @@ re-seeding** — captured as S4 step 0 (`NEXT-SESSION-S4.md`).
 step 0; scope = Admin UI + Cohort Lite + pending-evaluations view (Manager Dashboard stays V2);
 SEC-7 cert expiry = void-don't-burn, 24h, lazy enforcement. Opus startup doc:
 `00-build/NEXT-SESSION-S7.md`. RUNBOOK S7 paragraph marked superseded.
+
 
 ---
 

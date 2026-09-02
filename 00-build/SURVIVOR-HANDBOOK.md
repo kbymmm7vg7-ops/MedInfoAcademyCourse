@@ -6,12 +6,15 @@ expert, sign-off authority) and **Opus** (build orchestrator). It assumes no mem
 conversation.*
 
 **Precedence when documents disagree:** the code > this handbook > `HANDOFF-OPUS.md` > `RUNBOOK.md`
-> the PRD. Newest dated entry in `BLOCKERS.md` wins for decisions. When something here contradicts
-what you find in the repo, trust the repo and note the drift in `BLOCKERS.md`.
+> the PRD. Newest dated entry in `00-build/DECISIONS.md` wins for decisions; `00-build/STATE.md`
+holds current state. When something here contradicts what you find in the repo, trust the repo and
+note the drift in `00-build/DECISIONS.md`.
 
 ---
 
 ## 1. The product in one page
+
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
 
 **MedInfo Academy** trains Medical Information (MI) professionals by simulating inbound MI calls.
 The core loop: a trainee takes a simulated call from an AI **persona** (patient/HCP/caregiver) →
@@ -37,6 +40,8 @@ every turn runs graded/Sonnet).
 orgs with RLS tenant isolation.
 
 ## 2. System map
+
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
 
 | Thing | Where | Notes |
 |---|---|---|
@@ -71,6 +76,8 @@ cohort_members, user_training_progress, audit_log, certification_locks.
 
 ## 3. Where the project stands (2026-07-07) and the path to launch
 
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
+
 | Stage | Status |
 |---|---|
 | S1 scaffold/DB/auth/RLS · S2 Doc Simulator · S3 persona+validator · S6 training+cert | ✅ done, verified |
@@ -103,7 +110,7 @@ contractually before selling the confidentiality tier.
 **Opus may do without asking:** implement per specs, fix bugs, refactor within invariants, run
 free/local tests, dispatch Sonnet subagents, write BLOCKERS entries.
 
-**Opus must stop and write `BLOCKERS.md` instead of improvising when:** medical content or answer
+**Opus must stop and write `00-build/DECISIONS.md` instead of improvising when:** medical content or answer
 keys would need inventing; a spec conflicts with code; a fix would require weakening a test,
 touching the persona prompt (forces a paid transcript-test re-run — get consent), or altering
 ground truth.
@@ -170,15 +177,15 @@ policy, production TTS license, dependency audit (`npm audit`), Vercel env revie
 **Start:** fresh Opus 4.8 session in repo root. Attach `RUNBOOK.md` + `HANDOFF-OPUS.md` + this
 handbook + the session's `NEXT-SESSION-*.md` + relevant stage folders. Verify keys in
 `app/.env.local`, then `cd app && npx vitest run` (expect all green) and `npm run build` as the
-sanity gate. Read the newest `BLOCKERS.md` entry.
+sanity gate. Read the newest `00-build/DECISIONS.md` entry.
 
 **Standing prompt block (paste every session):** *"Dispatch routine, well-specified work to Sonnet 5
 subagents; do complex judgment work yourself. No vendor/employer names anywhere. Never invent
-medical content or answer keys — stop and write `00-build/BLOCKERS.md`. Nathan signs off rubric,
+medical content or answer keys — stop and write `00-build/DECISIONS.md`. Nathan signs off rubric,
 answer keys, calibration, and any test-criteria change. Do not weaken tests to pass. Paid runs
 (transcript test, calibration) only when the plan calls for them."*
 
-**Close:** vitest green → commit with a descriptive session-prefixed message → update `BLOCKERS.md`
+**Close:** vitest green → commit with a descriptive session-prefixed message → update `00-build/DECISIONS.md`
 (decisions, open threads) → if state changed materially, append to `HANDOFF-OPUS.md` §1 table or
 write the next `NEXT-SESSION-*.md`. An unrecorded decision is a lost decision.
 
