@@ -77,6 +77,15 @@ only; CI holds no real credentials), plus a second job running `npx tsx scripts/
 | `E2E_SUPABASE_URL`, `E2E_SUPABASE_ANON_KEY`, `E2E_TRAINEE_EMAIL`, `E2E_TRAINEE_PASSWORD` | Optional — the Playwright spec (`app/e2e`) is skipped unless all four are set | Server-only (test config) | Signs in as a seeded trainee and writes real rows; point at a throwaway/local Supabase project, never production |
 | `E2E_BASE_URL` | Optional (defaults to a dev server Playwright starts) | Server-only (test config) | Base URL for the Playwright E2E harness |
 
+The E2E spec lives at `app/e2e/simulator-case.spec.ts` and runs with `cd app && npm run e2e`.
+It **skips** unless all four of `E2E_SUPABASE_URL`, `E2E_SUPABASE_ANON_KEY`,
+`E2E_TRAINEE_EMAIL`, `E2E_TRAINEE_PASSWORD` are set, so a bare run on a fresh clone or in
+CI is green-by-skip. When they are set it signs in as that trainee, works SC-09 through a
+live persona chat, submits, and reads back the `evaluation_scores` row as the trainee (no
+service-role key). It writes real rows and, unless the target runs with `LLM_PROVIDER=fake`,
+spends real LLM credit — point it at a throwaway or local project only. It has not yet been
+run against a live target; see the S8 entry in `DECISIONS.md`.
+
 ## 3. Current run order
 
 Taken from the "After the upgrade, run in order" list in `00-build/DECISIONS.md` (the Groq-migration entry, 2026-07-18). All commands run from `app/`:

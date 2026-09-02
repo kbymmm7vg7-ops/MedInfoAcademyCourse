@@ -54,6 +54,30 @@ relative order, directly after the newest (dated) entry from that same source.
 4. **An unknown future `attempt_type` resolves as graded.** Only the literal `practice`
    (or no attempt row at all) is ungraded, so a new sitting type added later cannot
    silently downgrade a real certification run to the cheap model.
+5. **The E2E spec cannot assert "the submitted page shows a score", because the page
+   does not show one.** `src/app/(app)/simulator/case/[instanceId]/submitted/page.tsx`
+   is still the static confirmation page written before the evaluator existed (its copy
+   reads "The AI Evaluator arrives in S4"), and `/history` only ever renders an
+   "Awaiting evaluation" badge. Building a score UI is outside the S8 brief, so the spec
+   asserts what the page really renders (the "Submitted for review" heading) and treats
+   the `evaluation_scores` row — read back as the signed-in trainee under the existing
+   `scores_select` RLS policy, no service-role key — as the authoritative
+   "a score exists" check, since that is where the score actually lands today.
+   **Surfacing the score to the trainee is an open product gap, not a test gap.**
+
+### One thing S8 could not verify
+The Playwright spec has **never been executed against a live target** — no
+`E2E_*` variables and no Supabase project were available in the session environment, so
+it has only ever been observed to skip cleanly. Its selectors were read out of the
+components rather than guessed, and the minimum required field set was derived from the
+`required` props plus `submitCase`'s own hard block on `qc_self_check`, but the first
+real run should be expected to need selector corrections. Two behaviours it depends on
+that come from seed data rather than app code: the trainee must have completed Training
+& Orientation (the simulator gate redirects otherwise), and must be able to see SC-09 in
+its org's case bank. Also note `start-case-button.tsx` reopens an existing instance
+regardless of status, so the flow can only be exercised once per trainee+case — a repeat
+run needs a fresh trainee or a reset project. The spec asserts this explicitly rather
+than silently passing.
 
 ### What Nathan must do
 1. **Groq Dev Tier upgrade** (Groq console → Settings → Billing). Still the blocker on
