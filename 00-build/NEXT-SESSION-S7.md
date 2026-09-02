@@ -1,3 +1,5 @@
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
+
 # SESSION S7 — Admin dashboard + SEC-1/2 hardening (Opus)
 
 > ✅ **DONE 2026-07-10 (Fable orchestrator).** All spec modules built and E2E-verified; SEC-1/SEC-2
@@ -21,7 +23,7 @@ S5 voice may run before or after S7 — no dependency either way. Full design:
 > it fully before writing code; implement it as written. Dispatch routine screens/forms/tables to
 > Sonnet 5 subagents; do the security migration, role-gating, gates, and cert-expiry logic yourself
 > (spec §6 has the exact split). Standing rules: **no vendor/employer names anywhere; never invent
-> medical content or answer keys — stop and write `00-build/BLOCKERS.md` instead; Nathan personally
+> medical content or answer keys — stop and write `00-build/DECISIONS.md` instead; Nathan personally
 > signs off answer keys and any `rubric_approved` flip to true.**
 >
 > **Step 0 is SEC-1/SEC-2 (spec §2) — do it first and verify with direct PostgREST probes before
@@ -46,7 +48,7 @@ S5 voice may run before or after S7 — no dependency either way. Full design:
 > markdown renderer and variant engine are untouchable.
 >
 > **Definition of done is spec §7.** If any spec point conflicts with the code you find, stop and
-> write `00-build/BLOCKERS.md` rather than improvising.
+> write `00-build/DECISIONS.md` rather than improvising.
 
 ## Budget note
 S7 spends no Anthropic API money except the E2E persona-turn smoke test after the reader refactor

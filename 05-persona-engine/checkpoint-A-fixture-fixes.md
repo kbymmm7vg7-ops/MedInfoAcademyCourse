@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-07. **By:** Fable subagent (started; hit a session limit mid-task) + Opus (reviewed and completed). **Result:** persona transcript test **12/12 green** (exit 0). `05-persona-engine/persona-transcript-test-results.{json,md}`.
 
-These four cases were red not because the persona misbehaved — every transcript already showed correct listen-and-clarify behavior (see the 2026-07-07 Checkpoint A section of `00-build/BLOCKERS.md`) — but because the **detection layer** (test harness + one answer-key `detail_withheld` string) mis-measured that behavior. Fixes target those mismatches. **No pass criterion was loosened to force a green; no ground-truth fact was changed.**
+These four cases were red not because the persona misbehaved — every transcript already showed correct listen-and-clarify behavior (see the 2026-07-07 Checkpoint A section of `00-build/DECISIONS.md`) — but because the **detection layer** (test harness + one answer-key `detail_withheld` string) mis-measured that behavior. Fixes target those mismatches. **No pass criterion was loosened to force a green; no ground-truth fact was changed.**
 
 ## SC-01 — invention-heuristic false positive (harness only)
 - **Problem:** the clean-case invention check flagged the symptom-lexicon word `infection` because the caller says "sinus infection" — the patient's condition the antibiotic is *for*, i.e. the case premise/inquiry — not a symptom the persona invented under fishing.

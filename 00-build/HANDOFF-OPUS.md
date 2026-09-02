@@ -1,3 +1,5 @@
+> **HISTORICAL — see `00-build/STATE.md` for current state.**
+
 # HANDOFF — Project Overview & Opus Orchestration Guide
 *Written by Fable, 2026-07-07. This is the post-Fable operating document. Attach it (plus RUNBOOK.md) to every Opus session. Where this document and the code disagree, read the code; where it and RUNBOOK.md disagree, this is newer.*
 
@@ -6,7 +8,7 @@
 > items), symptom→fix job aid, session ritual, and the future-improvements roadmap. It sits above
 > this doc in precedence for anything both cover.
 
-Opus: you are the orchestrator now. Dispatch routine, well-specified work (screens, forms, seed scripts, content tailoring) to Sonnet subagents; do complex judgment work (evaluator calibration loops, security fixes, cert logic, voice pipeline) yourself. Standing rules from RUNBOOK.md all still apply — especially: **no vendor/employer names anywhere**, **never invent medical content or answer keys** (stop and write BLOCKERS.md), and **Nathan personally signs off rubric changes, answer keys, and evaluator calibration**.
+Opus: you are the orchestrator now. Dispatch routine, well-specified work (screens, forms, seed scripts, content tailoring) to Sonnet subagents; do complex judgment work (evaluator calibration loops, security fixes, cert logic, voice pipeline) yourself. Standing rules from RUNBOOK.md all still apply — especially: **no vendor/employer names anywhere**, **never invent medical content or answer keys** (stop and write `00-build/DECISIONS.md`), and **Nathan personally signs off rubric changes, answer keys, and evaluator calibration**.
 
 ---
 
@@ -85,7 +87,7 @@ Budget guidance for the $40: S3 transcript test ≈ $3–5/run; S4 calibration �
 
 1. **Keys** (§5). Then `cd app && npx vitest run` (expect 37) and `npm run build` as a sanity gate.
 2. **S3 DoD**: `cd app && npx tsx scripts/persona-transcript-test.ts` (loads `.env.local` itself). Writes `05-persona-engine/persona-transcript-test-results.{json,md}`; exit 0 = all behaviors pass. If failures: read the failing transcripts in the JSON; fixes belong in `lib/persona/prompt.ts` cue-discipline wording; re-run. Do not weaken the test to pass.
-3. **Checkpoint A** (RUNBOOK): Fable-availability is limited — if no Fable session is available, Nathan reviews directly using this checklist against the results JSON: (a) SC-03/04/08/11/12 catch runs: cue volunteered ≤3 persona turns, detail surfaced only after the clarify turn; (b) pass runs: detail never surfaced despite the cue appearing; (c) SC-01/09/06 fish runs: zero invented symptoms; (d) no transcript reads as an interrogation. Explicit go/no-go recorded in BLOCKERS.md before calibration.
+3. **Checkpoint A** (RUNBOOK): Fable-availability is limited — if no Fable session is available, Nathan reviews directly using this checklist against the results JSON: (a) SC-03/04/08/11/12 catch runs: cue volunteered ≤3 persona turns, detail surfaced only after the clarify turn; (b) pass runs: detail never surfaced despite the cue appearing; (c) SC-01/09/06 fish runs: zero invented symptoms; (d) no transcript reads as an interrogation. Explicit go/no-go recorded in `00-build/DECISIONS.md` before calibration.
 4. **Finish the calibration harness**: `app/scripts/calibration/fixtures.ts` exists (916 lines, from a Sonnet agent that died mid-task on a session limit — **incomplete and unreviewed**: it parses but exposes only a default export, not the specced named exports `buildGoldDoc`/`buildGoldTranscript`/`buildFailureFixtures`; expect to finish or rewrite it, verifying against 2–3 answer keys). Write `app/scripts/evaluator-calibration.ts` per the spec embedded in the fixtures file header comments + RUNBOOK S4: gold 12/12 must produce `pass`; every non-empty `expected_critical_fail` entry must produce those exact criterion fails; report to `07-evaluator/calibration-report.{json,md}` including a blind-scoring appendix. Add a `--fixtures-only` deterministic mode (validator-clean gold docs) before spending API money.
 5. **S4 gate**: Nathan blind-scores ≥10 outputs (zero Critical disagreements, ≤1 Major/case). Loop `lib/evaluator/prompt.ts` on failures.
 6. **SEC-1/SEC-2 fix** — before any real trainee touches the system.
@@ -93,7 +95,7 @@ Budget guidance for the $40: S3 transcript test ≈ $3–5/run; S4 calibration �
 
 ## 7. Artifacts index
 
-- PRD: `miacademycourse_prd_v1.md` · RUNBOOK: `RUNBOOK.md` (S7 added) · Blockers: `BLOCKERS.md`
+- PRD: `miacademycourse_prd_v1.md` · RUNBOOK: `RUNBOOK.md` (S7 added) · State: `00-build/STATE.md` · Decisions/Blockers: `00-build/DECISIONS.md`
 - Rubric contract: `02-rubric-schema/` (scorecard v1, schema, scoring-contract) — Nathan-approved
 - Seed cases + answer keys: `01-seed-cases/` (SC-01…SC-12 `.md` + `.answer-key.json`, addenda, product bank, SOP) — Nathan-approved; `expected_critical_fail` lists only source-marked Criticals (empty array = plain fail), which the calibration harness relies on
 - Specs: `08-accreditation-cert/spec_certification-logic.md`, `09-enterprise-lite/spec_tenant-isolation-rls.md`, `06-voice-layer/spec_voice-pipeline.md`

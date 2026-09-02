@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // =============================================================================
 // READER-REFACTOR SMOKE (S7 step 0) — exercises every sanctioned reader that
 // migration 0007 (SEC-1/SEC-2) rewired to the service-role answer-key store:

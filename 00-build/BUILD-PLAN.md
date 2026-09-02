@@ -83,7 +83,7 @@ Nathan's PRD v1 (`miacademycourse_prd_v1.md`) describes an MI training/simulatio
 
 ## Runbook (F5 will expand; shape)
 
-Each session = fresh Opus 4.8 session in the repo. Attach: always `RUNBOOK.md` + the numbered-stage folder for that session; S1–S2 add rubric schema + seed cases; S4 adds gold fixtures; S6 adds the 4 training refs. Each prompt states: objective, files to read, definition of done, "dispatch routine work to Sonnet subagents," and "stop and write BLOCKERS.md rather than improvising around missing content."
+Each session = fresh Opus 4.8 session in the repo. Attach: always `RUNBOOK.md` + the numbered-stage folder for that session; S1–S2 add rubric schema + seed cases; S4 adds gold fixtures; S6 adds the 4 training refs. Each prompt states: objective, files to read, definition of done, "dispatch routine work to Sonnet subagents," and "stop and write 00-build/DECISIONS.md rather than improvising around missing content."
 
 ## Verification
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // =============================================================================
 // PERSONA TRANSCRIPT TEST — S3 definition-of-done / Checkpoint A artifact
 // =============================================================================
@@ -355,7 +354,7 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
     // CATCH: generic until a cue lands, then clarify each rule once, then wrap up.
     {
       const pendingRules = [...c.rules];
-      let generics = [...GENERIC_LINES];
+      const generics = [...GENERIC_LINES];
       const history: ChatTurn[] = [];
       let clarifiedAt = -1;
       let line = OPENING;
@@ -497,8 +496,14 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
 
 async function main() {
   const requiredKey = requiredKeyFor("gradedPersona");
-  if (!process.env[requiredKey]) {
+  if (requiredKey && !process.env[requiredKey]) {
     console.error(`${requiredKey} is not set (provider: ${resolveLlmVendor("gradedPersona")}). Aborting.`);
+    process.exit(2);
+  }
+  if (resolveLlmVendor("gradedPersona") === "fake") {
+    console.error(
+      "LLM_PROVIDER resolves the graded persona to the fake adapter — this harness is a behavior gate and must never run against it. Aborting."
+    );
     process.exit(2);
   }
   const filter = process.argv.slice(2);

@@ -1,3 +1,4 @@
 .DS_Store
 BLOCKERS.md.draft
 node_modules/
+.claude/scheduled_tasks.lock

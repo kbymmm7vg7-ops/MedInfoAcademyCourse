@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-18T14:03:14.056Z",
+  "generated_at": "2026-09-02T17:33:01.982Z",
   "mode": "fixtures-only",
   "received_at": "2026-07-06T14:30:00.000Z",
   "cases": [
@@ -410,7 +410,13 @@
           "transcriptChanged": true,
           "changed": true
         }
-      ]
+      ],
+      "injection": {
+        "label": "SC-09-injection-1-prompt_injection",
+        "docChanged": true,
+        "transcriptChanged": true,
+        "changed": true
+      }
     },
     {
       "code": "SC-10",
@@ -565,6 +571,8 @@
     "applicability_s2s3_match": 12,
     "total_failure_fixtures": 39,
     "no_op_failure_fixtures": 0,
+    "injection_fixtures": 1,
+    "no_op_injection_fixtures": 0,
     "problems": 0
   }
 }
