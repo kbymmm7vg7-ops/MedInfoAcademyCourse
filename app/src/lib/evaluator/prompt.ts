@@ -99,7 +99,8 @@ Phrase constructive_feedback and coaching_summary in these dimension names: AE/P
  */
 export function sanitizeGroundTruthForEvaluator(groundTruthJson: unknown): unknown {
   if (!groundTruthJson || typeof groundTruthJson !== "object") return groundTruthJson;
-  const { expected_outcome: _omit, ...rest } = groundTruthJson as Record<string, unknown>;
+  const rest = { ...(groundTruthJson as Record<string, unknown>) };
+  delete rest.expected_outcome;
   return rest;
 }
 

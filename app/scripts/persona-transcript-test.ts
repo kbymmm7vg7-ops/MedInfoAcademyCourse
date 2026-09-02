@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // =============================================================================
 // PERSONA TRANSCRIPT TEST — S3 definition-of-done / Checkpoint A artifact
 // =============================================================================
@@ -355,7 +354,7 @@ async function runCase(c: CaseData): Promise<RunResult[]> {
     // CATCH: generic until a cue lands, then clarify each rule once, then wrap up.
     {
       const pendingRules = [...c.rules];
-      let generics = [...GENERIC_LINES];
+      const generics = [...GENERIC_LINES];
       const history: ChatTurn[] = [];
       let clarifiedAt = -1;
       let line = OPENING;

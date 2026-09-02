@@ -16,7 +16,6 @@ import type {
   RequesterType,
   RoutingTarget,
   SeriousnessCriterion,
-  SpecialSituation,
 } from "../../src/lib/simulator/types";
 import { emptyFormState } from "../../src/lib/simulator/types";
 
@@ -403,11 +402,6 @@ const CASE_KIND: Record<string, "upfront" | "clean" | "embedded"> = {
 
 const TRAINEE_OPEN = "Thank you for calling Medical Information, this is Alex Reed speaking. How can I help you today?";
 
-function callerNameFirst(answerKey: AnswerKey): string {
-  const name = answerKey.inquirer_contact?.name ?? "there";
-  return name.split(/[\s,]/)[0] || name;
-}
-
 function surfaceQuestion(caseMd: string): string {
   const beatSheet = section(caseMd, "Beat sheet");
   const firstLine = beatSheet
@@ -456,7 +450,6 @@ function consentTurns(): TranscriptTurn[] {
 export function buildGoldTranscript(answerKey: AnswerKey, caseMd: string): TranscriptTurn[] {
   const kind = CASE_KIND[answerKey.case_id] ?? "embedded";
   const surface = surfaceQuestion(caseMd);
-  const caller = callerNameFirst(answerKey);
   const turns: TranscriptTurn[] = [];
 
   turns.push({ speaker: "trainee", content: TRAINEE_OPEN });

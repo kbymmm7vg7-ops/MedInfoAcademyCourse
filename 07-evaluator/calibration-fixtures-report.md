@@ -1,6 +1,6 @@
 # Evaluator calibration — fixtures-only (deterministic, no API)
 
-_Generated 2026-09-02T17:24:05.691Z_
+_Generated 2026-09-02T17:33:01.982Z_
 
 Verifies the fixtures before any paid run: gold docs are validator-clean,
 AE/PC applicability matches the answer key, and every injected failure

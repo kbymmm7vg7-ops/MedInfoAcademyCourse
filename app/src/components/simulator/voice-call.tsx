@@ -65,7 +65,7 @@ export function VoiceCall({
   const recorderMimeRef = useRef<string | undefined>(undefined);
   const vadRef = useRef<VadState>(createVadState());
   const tickerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const lastSpeechAtRef = useRef<number>(Date.now());
+  const lastSpeechAtRef = useRef<number>(0);
   const activeSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const endedRef = useRef(false);
   const captionIdRef = useRef(0);
@@ -74,8 +74,13 @@ export function VoiceCall({
   const phaseRef = useRef<Phase>("connecting");
   const mutedRef = useRef(false);
 
-  phaseRef.current = phase;
-  mutedRef.current = muted;
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
+
+  useEffect(() => {
+    mutedRef.current = muted;
+  }, [muted]);
 
   const pushCaption = useCallback((speaker: "trainee" | "persona", text: string) => {
     captionIdRef.current += 1;
