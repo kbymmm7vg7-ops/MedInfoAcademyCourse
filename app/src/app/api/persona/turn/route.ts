@@ -5,6 +5,12 @@ import type { VariantSnapshot } from "@/lib/cert/variant-engine";
 import { runPersonaTurn, MAX_TURNS_PER_INSTANCE, type ChatTurn } from "@/lib/persona/engine";
 import { LlmConfigError } from "@/lib/llm/types";
 import { isDeactivated, fetchDeactivatedAt, DEACTIVATED_MESSAGE } from "@/lib/auth/deactivation";
+import {
+  isGradedAttempt,
+  isOverTurnBudget,
+  personaDailyTurnBudget,
+  startOfUtcDay,
+} from "@/lib/persona/budget";
 
 // POST /api/persona/turn — one live persona exchange.
 // Body: { instanceId: string, message: string }
@@ -72,6 +78,44 @@ export async function POST(request: Request) {
     );
   }
 
+  // SEC-3 — per-user daily turn budget. Counts only this user's own trainee
+  // turns (one trainee turn = one persona LLM call) since the start of the UTC
+  // day. The !inner embed filters on case_instances.user_id explicitly rather
+  // than leaning on RLS, which also admits org staff to a trainee's rows.
+  const budget = personaDailyTurnBudget();
+  const { count: usedToday, error: budgetError } = await supabase
+    .from("conversation_turns")
+    .select("id, case_instances!inner(user_id)", { count: "exact", head: true })
+    .eq("case_instances.user_id", user.id)
+    .eq("speaker", "trainee")
+    .gte("ts", startOfUtcDay());
+  if (budgetError) {
+    // Fail closed: an uncountable budget must not become an unlimited one.
+    return NextResponse.json({ error: "Could not verify your daily turn budget" }, { status: 500 });
+  }
+  if (isOverTurnBudget(usedToday ?? 0, budget)) {
+    return NextResponse.json(
+      { error: "Daily conversation limit reached — try again tomorrow." },
+      { status: 429 }
+    );
+  }
+
+  // SEC-3 — graded/ungraded is a property of the sitting, not a constant.
+  // case_instances has no attempt_type; the link is variant seed -> variant_ref.
+  const variantSeed =
+    (instance.variant_snapshot_json as VariantSnapshot | null)?.seed ?? null;
+  let attemptType: string | null = null;
+  if (variantSeed) {
+    const { data: attempt } = await supabase
+      .from("accreditation_attempts")
+      .select("attempt_type")
+      .eq("user_id", user.id)
+      .eq("variant_ref", variantSeed)
+      .maybeSingle<{ attempt_type: string }>();
+    attemptType = attempt?.attempt_type ?? null;
+  }
+  const graded = isGradedAttempt(attemptType);
+
   const systemPrompt = await buildPersonaSystemPromptForTemplate(
     supabase,
     instance.template_id,
@@ -83,7 +127,7 @@ export async function POST(request: Request) {
 
   let reply: string;
   try {
-    reply = await runPersonaTurn({ systemPrompt, history, traineeMessage: message, graded: true });
+    reply = await runPersonaTurn({ systemPrompt, history, traineeMessage: message, graded });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Persona engine error";
     // Surface the missing-key case clearly in dev; keep generic otherwise.

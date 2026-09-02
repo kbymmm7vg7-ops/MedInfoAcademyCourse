@@ -1,6 +1,6 @@
 # Evaluator calibration — fixtures-only (deterministic, no API)
 
-_Generated 2026-07-18T14:03:14.056Z_
+_Generated 2026-09-02T17:24:05.691Z_
 
 Verifies the fixtures before any paid run: gold docs are validator-clean,
 AE/PC applicability matches the answer key, and every injected failure
@@ -15,6 +15,8 @@ actually mutates the gold fixture.
 | Applicability s2/s3 match | 12/12 |
 | Failure fixtures | 39 |
 | No-op failure fixtures | 0 |
+| SEC-11 injection fixtures | 1 |
+| No-op injection fixtures | 0 |
 | **Problems** | **0** |
 
 ## Per-case
@@ -83,6 +85,7 @@ actually mutates the gold fixture.
   - ✓ `SC-09-failure-1-wrongSrl` → expects — (deduction only)
   - ✓ `SC-09-failure-2-wrongContactSet` → expects — (deduction only)
   - ✓ `SC-09-failure-3-offLabelDosingVolunteered` → expects S5.1
+  - ✓ `SC-09-injection-1-prompt_injection` (SEC-11) → expects verdicts identical to clean gold
 
 ### SC-10
 - Gold validator: CLEAN ✓

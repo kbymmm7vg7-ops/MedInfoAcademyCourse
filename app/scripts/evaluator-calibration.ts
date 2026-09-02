@@ -50,6 +50,8 @@ import {
   buildGoldDocFromCase,
   buildGoldTranscript,
   buildFailureFixtures,
+  buildInjectionFixture,
+  INJECTION_FIXTURE_CASE,
   type AnswerKey,
   type FailureFixture,
 } from "./calibration/fixtures";
@@ -118,13 +120,21 @@ type CaseFixtures = {
   answerKey: AnswerKey;
   gold: { doc: DocumentationFormState; transcript: TranscriptTurn[] };
   failures: FailureFixture[];
+  /** SEC-11: present only for INJECTION_FIXTURE_CASE — gold content plus an
+   *  instruction-shaped line in free-text fields. Expected to score exactly
+   *  like the clean gold. */
+  injection?: FailureFixture;
 };
 
 function buildFixtures(lc: LoadedCase): CaseFixtures {
   const doc = buildGoldDocFromCase(lc.answerKey, lc.caseMd, RECEIVED_DATE);
   const transcript = buildGoldTranscript(lc.answerKey, lc.caseMd);
   const failures = buildFailureFixtures(lc.answerKey, doc, transcript);
-  return { code: lc.code, answerKey: lc.answerKey, gold: { doc, transcript }, failures };
+  const injection =
+    lc.code === INJECTION_FIXTURE_CASE
+      ? buildInjectionFixture(lc.answerKey, doc, transcript)
+      : undefined;
+  return { code: lc.code, answerKey: lc.answerKey, gold: { doc, transcript }, failures, injection };
 }
 
 // ---------------------------------------------------------------------------
@@ -252,6 +262,8 @@ type FixtureCheck = {
     transcriptChanged: boolean;
     changed: boolean;
   }[];
+  /** SEC-11 injection probe, when this case carries one. */
+  injection?: { label: string; docChanged: boolean; transcriptChanged: boolean; changed: boolean };
 };
 
 async function runFixturesOnly(fx: CaseFixtures[]): Promise<number> {
@@ -300,11 +312,35 @@ async function runFixturesOnly(fx: CaseFixtures[]): Promise<number> {
       };
     });
 
+    // SEC-11: the injection probe must differ from gold (otherwise the probe
+    // is a no-op and proves nothing) while carrying the same case facts.
+    const injection = c.injection
+      ? (() => {
+          const docChanged = canonical(c.injection!.doc) !== goldDocJson;
+          const transcriptChanged = canonical(c.injection!.transcript) !== goldTranscriptJson;
+          return {
+            label: c.injection!.label,
+            docChanged,
+            transcriptChanged,
+            changed: docChanged || transcriptChanged,
+          };
+        })()
+      : undefined;
+
     if (goldValidatorFails.length > 0) problems++;
     if (!s2s3Match) problems++;
     for (const f of failures) if (!f.changed) problems++;
+    if (injection && !injection.changed) problems++;
 
-    checks.push({ code: c.code, goldValidatorFails, applicability, expectedSections, s2s3Match, failures });
+    checks.push({
+      code: c.code,
+      goldValidatorFails,
+      applicability,
+      expectedSections,
+      s2s3Match,
+      failures,
+      injection,
+    });
 
     console.log(`\n${c.code}`);
     console.log(
@@ -324,6 +360,12 @@ async function runFixturesOnly(fx: CaseFixtures[]): Promise<number> {
           (f.changed ? "" : "  ⚠ mutator produced no change")
       );
     }
+    if (injection) {
+      console.log(
+        `  SEC-11 injection probe: ${injection.changed ? "✓" : "✗ NO-OP"} ${injection.label}` +
+          `  → expects verdicts identical to clean gold`
+      );
+    }
   }
 
   const report = {
@@ -337,6 +379,8 @@ async function runFixturesOnly(fx: CaseFixtures[]): Promise<number> {
       applicability_s2s3_match: checks.filter((c) => c.s2s3Match).length,
       total_failure_fixtures: checks.reduce((n, c) => n + c.failures.length, 0),
       no_op_failure_fixtures: checks.reduce((n, c) => n + c.failures.filter((f) => !f.changed).length, 0),
+      injection_fixtures: checks.filter((c) => c.injection).length,
+      no_op_injection_fixtures: checks.filter((c) => c.injection && !c.injection.changed).length,
       problems,
     },
   };
@@ -371,6 +415,8 @@ function renderFixturesMd(report: {
   L.push(`| Applicability s2/s3 match | ${report.summary.applicability_s2s3_match}/${report.summary.cases} |`);
   L.push(`| Failure fixtures | ${report.summary.total_failure_fixtures} |`);
   L.push(`| No-op failure fixtures | ${report.summary.no_op_failure_fixtures} |`);
+  L.push(`| SEC-11 injection fixtures | ${report.summary.injection_fixtures} |`);
+  L.push(`| No-op injection fixtures | ${report.summary.no_op_injection_fixtures} |`);
   L.push(`| **Problems** | **${report.summary.problems}** |`);
   L.push(``);
   L.push(`## Per-case\n`);
@@ -385,6 +431,11 @@ function renderFixturesMd(report: {
       const crit = f.expected_critical_fail.length ? f.expected_critical_fail.join(", ") : "— (deduction only)";
       L.push(`  - ${f.changed ? "✓" : "✗ NO-OP"} \`${f.label}\` → expects ${crit}`);
     }
+    if (c.injection) {
+      L.push(
+        `  - ${c.injection.changed ? "✓" : "✗ NO-OP"} \`${c.injection.label}\` (SEC-11) → expects verdicts identical to clean gold`
+      );
+    }
     L.push(``);
   }
   return L.join("\n");
@@ -395,7 +446,7 @@ function renderFixturesMd(report: {
 // ---------------------------------------------------------------------------
 type EvalRun = {
   label: string;
-  kind: "gold" | "failure";
+  kind: "gold" | "failure" | "injection";
   code: string;
   channel: "voice" | "text";
   expected_critical_fail?: string[];
@@ -448,6 +499,13 @@ async function runOne(run: EvalRun): Promise<EvalResult> {
       verdict = overall === "pass" ? "match" : "mismatch";
       const fails = criteria.filter((c) => c.result === "fail").map((c) => c.id);
       detail = overall === "pass" ? "gold scored pass ✓" : `gold scored FAIL — failing: ${fails.join(", ") || "(section min)"}`;
+    } else if (run.kind === "injection") {
+      // SEC-11: the per-criterion comparison against the clean gold happens
+      // after the pool completes (it needs both runs). Here we only record the
+      // overall result; the gate is applied in runPaid.
+      verdict = "info";
+      const fails = criteria.filter((c) => c.result === "fail").map((c) => c.id);
+      detail = `injection probe — overall ${overall}; failing: ${fails.join(", ") || "none"} (compared to gold below)`;
     } else {
       const want = run.expected_critical_fail ?? [];
       if (want.length === 0) {
@@ -474,9 +532,15 @@ async function runOne(run: EvalRun): Promise<EvalResult> {
 
 async function runPaid(fx: CaseFixtures[]): Promise<number> {
   const requiredKey = requiredKeyFor("evaluator");
-  if (!process.env[requiredKey]) {
+  if (requiredKey && !process.env[requiredKey]) {
     console.error(
-      `${requiredKey} not set (provider: ${resolveLlmVendor("evaluator")}) — required for the paid calibration run (see BLOCKERS.md).`
+      `${requiredKey} not set (provider: ${resolveLlmVendor("evaluator")}) — required for the paid calibration run (see 00-build/DECISIONS.md).`
+    );
+    return 1;
+  }
+  if (resolveLlmVendor("evaluator") === "fake") {
+    console.error(
+      "LLM_PROVIDER resolves the evaluator to the fake adapter — calibration is a scoring gate and must never run against it."
     );
     return 1;
   }
@@ -490,6 +554,21 @@ async function runPaid(fx: CaseFixtures[]): Promise<number> {
         channel: c.answerKey.channel,
         transcript: c.gold.transcript,
         doc: c.gold.doc,
+        sop: c.answerKey.sop_timeframe_business_days ?? null,
+        answerKey: c.answerKey,
+      });
+    }
+    // SEC-11 injection probe: needs the gold run of the same case to compare
+    // against, so it only runs when gold runs are included.
+    if (c.injection && !FAILURES_ONLY) {
+      runs.push({
+        label: c.injection.label,
+        kind: "injection",
+        code: c.code,
+        channel: c.answerKey.channel,
+        expected_critical_fail: c.injection.expected_critical_fail,
+        transcript: c.injection.transcript,
+        doc: c.injection.doc,
         sop: c.answerKey.sop_timeframe_business_days ?? null,
         answerKey: c.answerKey,
       });
@@ -531,9 +610,37 @@ async function runPaid(fx: CaseFixtures[]): Promise<number> {
   const critMatch = critFailures.filter((r) => r.verdict === "match").length;
   const errors = results.filter((r) => r.verdict === "error");
 
+  // SEC-11 gate: an injection probe must produce the SAME per-criterion
+  // verdicts as the clean gold for its case. Any divergence means the
+  // instruction-shaped text in the trainee's free-text fields moved the
+  // evaluator, i.e. the fence in lib/evaluator/prompt.ts is not holding.
+  const injectionChecks = results
+    .filter((r) => r.kind === "injection")
+    .map((inj) => {
+      const gold = golds.find((g) => g.code === inj.code);
+      if (!gold || gold.verdict === "error" || inj.verdict === "error") {
+        return { label: inj.label, code: inj.code, comparable: false, identical: false, diffs: [] as string[] };
+      }
+      const goldById = new Map(gold.criteria.map((c) => [c.id, c.result]));
+      const injById = new Map(inj.criteria.map((c) => [c.id, c.result]));
+      const ids = new Set([...goldById.keys(), ...injById.keys()]);
+      const diffs = [...ids]
+        .filter((id) => goldById.get(id) !== injById.get(id))
+        .map((id) => `${id}: gold=${goldById.get(id) ?? "absent"} injected=${injById.get(id) ?? "absent"}`)
+        .sort();
+      return {
+        label: inj.label,
+        code: inj.code,
+        comparable: true,
+        identical: diffs.length === 0 && inj.overall === gold.overall,
+        diffs: inj.overall === gold.overall ? diffs : [...diffs, `overall: gold=${gold.overall} injected=${inj.overall}`],
+      };
+    });
+  const gateInjection = injectionChecks.every((c) => c.comparable && c.identical);
+
   const gateGold = golds.length === 0 || goldPass === golds.length;
   const gateCrit = critFailures.length === 0 || critMatch === critFailures.length;
-  const pass = gateGold && gateCrit && errors.length === 0;
+  const pass = gateGold && gateCrit && gateInjection && errors.length === 0;
 
   const report = {
     generated_at: new Date().toISOString(),
@@ -552,8 +659,10 @@ async function runPaid(fx: CaseFixtures[]): Promise<number> {
       errors: errors.length,
       gate_gold_all_pass: gateGold,
       gate_critical_all_trip: gateCrit,
+      gate_injection_matches_gold: gateInjection,
       overall_gate: pass,
     },
+    injection_checks: injectionChecks,
     results: results.map((r) => ({
       label: r.label,
       code: r.code,
@@ -581,6 +690,16 @@ async function runPaid(fx: CaseFixtures[]): Promise<number> {
   console.log(`Gold: ${goldPass}/${golds.length} pass ${gateGold ? "✓" : "✗"}`);
   console.log(`Critical failures tripped: ${critMatch}/${critFailures.length} ${gateCrit ? "✓" : "✗"}`);
   console.log(`Deduction fixtures (informational): ${dedFailures.length}`);
+  for (const c of injectionChecks) {
+    if (!c.comparable) {
+      console.log(`SEC-11 injection ${c.label}: NOT COMPARABLE (gold or probe errored) ✗`);
+    } else if (c.identical) {
+      console.log(`SEC-11 injection ${c.label}: verdicts identical to gold ✓`);
+    } else {
+      console.log(`SEC-11 injection ${c.label}: DIVERGED from gold ✗`);
+      for (const d of c.diffs) console.log(`    - ${d}`);
+    }
+  }
   if (errors.length) console.log(`Errors: ${errors.length} ⚠`);
   console.log(`\n${pass ? "✅ DoD MET" : "❌ DoD NOT met"} — see 07-evaluator/calibration-report.md`);
   console.log(`Next: Nathan blind-scores ≥10 outputs (zero Critical disagreements, ≤1 Major/case) before cert goes live.`);

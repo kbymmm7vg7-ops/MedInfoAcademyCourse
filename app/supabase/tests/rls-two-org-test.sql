@@ -140,6 +140,22 @@ exception when others then
   insert into _rls_test_results values ('7b authenticated reads srd_document_bodies', 'permission denied', 'denied: ' || sqlerrm, true);
 end $$;
 
+-- SEC-13 (migration 0011): audit_log is append-only for the SERVICE ROLE.
+-- An authenticated trainee could previously insert rows carrying their own
+-- actor_id/org_id — enough to forge entries or flood the trail. Still running
+-- as the Org B trainee; this insert is exactly the shape the old
+-- `audit_insert` policy permitted, so it must now be rejected.
+do $$
+begin
+  insert into audit_log (org_id, actor_id, action)
+  values ('44444444-4444-4444-8444-444444444444',
+          '22222222-2222-4222-8222-222222222222',
+          'forged.by.trainee');
+  insert into _rls_test_results values ('8 authenticated inserts audit_log', 'rejected', 'ALLOWED', false);
+exception when others then
+  insert into _rls_test_results values ('8 authenticated inserts audit_log', 'rejected', 'rejected: ' || sqlerrm, true);
+end $$;
+
 -- As Org A admin: audit export
 reset role;
 select set_config('request.jwt.claims',
